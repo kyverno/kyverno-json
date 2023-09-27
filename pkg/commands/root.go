@@ -1,11 +1,14 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/eddycharly/tf-kyverno/pkg/plan"
 	"github.com/eddycharly/tf-kyverno/pkg/policy"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
 type command struct {
@@ -22,11 +25,21 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "-", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), "loaded")
 	fmt.Fprintln(out, "Loading plan ...")
-	// TODO
+	plan, err := plan.Load(c.plan)
+	if err != nil {
+		return err
+	}
+	resources, ok, err := unstructured.NestedSlice(plan, "planned_values", "root_module", "resources")
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return errors.New("failed to find resources in the plan")
+	}
+	fmt.Fprintln(out, "-", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "loaded")
 	fmt.Fprintln(out, "Running ...")
 	// TODO
 	fmt.Fprintln(out, "Done")
-	// TODO
 	return nil
 }
 
