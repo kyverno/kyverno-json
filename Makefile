@@ -135,20 +135,22 @@ $(PACKAGE_SHIM): $(GOPATH_SHIM)
 	@echo Create package shim... >&2
 	@mkdir -p $(GOPATH_SHIM)/src/github.com/eddycharly && ln -s -f ${PWD} $(PACKAGE_SHIM)
 
-.PHONY: codegen-register
-codegen-register: $(PACKAGE_SHIM) $(REGISTER_GEN) ## Generate types registrations
-	@echo Generate registration... >&2
-	@GOPATH=$(GOPATH_SHIM) $(REGISTER_GEN) \
-		--go-header-file=./scripts/boilerplate.go.txt \
-		--input-dirs=$(INPUT_DIRS)
+# TODO: doesn't work because structs lack DeepCopy
+# .PHONY: codegen-register
+# codegen-register: $(PACKAGE_SHIM) $(REGISTER_GEN) ## Generate types registrations
+# 	@echo Generate registration... >&2
+# 	@GOPATH=$(GOPATH_SHIM) $(REGISTER_GEN) \
+# 		--go-header-file=./scripts/boilerplate.go.txt \
+# 		--input-dirs=$(INPUT_DIRS)
 
-.PHONY: codegen-deepcopy
-codegen-deepcopy: $(PACKAGE_SHIM) $(DEEPCOPY_GEN) ## Generate deep copy functions
-	@echo Generate deep copy functions... >&2
-	@GOPATH=$(GOPATH_SHIM) $(DEEPCOPY_GEN) \
-		--go-header-file=./scripts/boilerplate.go.txt \
-		--input-dirs=$(INPUT_DIRS) \
-		--output-file-base=zz_generated.deepcopy
+# TODO: doesn't work with interface{}
+# .PHONY: codegen-deepcopy
+# codegen-deepcopy: $(PACKAGE_SHIM) $(DEEPCOPY_GEN) ## Generate deep copy functions
+# 	@echo Generate deep copy functions... >&2
+# 	@GOPATH=$(GOPATH_SHIM) $(DEEPCOPY_GEN) \
+# 		--go-header-file=./scripts/boilerplate.go.txt \
+# 		--input-dirs=$(INPUT_DIRS) \
+# 		--output-file-base=zz_generated.deepcopy
 
 .PHONY: codegen-crds
 codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
@@ -156,7 +158,7 @@ codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@$(CONTROLLER_GEN) crd paths=./pkg/apis/... crd:crdVersions=v1 output:dir=$(CRDS_PATH)
 
 .PHONY: codegen-all
-codegen-all: codegen-register codegen-deepcopy codegen-crds ## Rebuild all generated code
+codegen-all: codegen-crds ## Rebuild all generated code
 
 ########
 # HELP #
