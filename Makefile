@@ -1,4 +1,4 @@
-.DEFAULT_GOAL: build-all
+.DEFAULT_GOAL: build
 
 #########
 # TOOLS #
@@ -156,9 +156,31 @@ $(PACKAGE_SHIM): $(GOPATH_SHIM)
 codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@echo Generate crds... >&2
 	@$(CONTROLLER_GEN) crd paths=./pkg/apis/... crd:crdVersions=v1 output:dir=$(CRDS_PATH)
+	@echo Copy generated CRDs to embed in the CLI... >&2
+	@rm -rf pkg/data/crds && mkdir -p pkg/data/crds
+	@cp config/crds/* pkg/data/crds
 
 .PHONY: codegen-all
 codegen-all: codegen-crds ## Rebuild all generated code
+
+#########
+# BUILD #
+#########
+
+LD_FLAGS       ?= "-s -w"
+
+.PHONY: fmt
+fmt: ## Run go fmt
+	@echo Go fmt... >&2
+	@go fmt ./...
+
+.PHONY: vet
+vet: ## Run go vet
+	@echo Go vet... >&2
+	@go vet ./...
+
+build: fmt vet codegen-all ## Build
+	@go build -ldflags=$(LD_FLAGS) .
 
 ########
 # HELP #

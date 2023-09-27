@@ -62,7 +62,7 @@ type ResourceFilter struct {
 	// +kubebuilder:validation:Type=object
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
-	Resource map[string]interface{} `json:"resources,omitempty"`
+	Resource map[string]interface{} `json:"resource,omitempty"`
 }
 
 // Validation defines checks to be performed on matching resources.
