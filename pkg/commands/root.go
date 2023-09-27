@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/eddycharly/tf-kyverno/pkg/engine"
 	"github.com/eddycharly/tf-kyverno/pkg/plan"
 	"github.com/eddycharly/tf-kyverno/pkg/policy"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
@@ -39,6 +40,19 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	fmt.Fprintln(out, "-", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "loaded")
 	fmt.Fprintln(out, "Running ...")
 	// TODO
+	for _, resource := range resources {
+		resourceName, _, _ := unstructured.NestedString(resource.(map[string]interface{}), "address")
+		for _, policy := range policies {
+			for _, rule := range policy.Spec.Rules {
+				match, exclude := engine.MatchExclude(rule.MatchResources, rule.ExcludeResources, resource)
+				if match && !exclude {
+					fmt.Fprintln(out, "-", policy.Name, rule.Name, "matches", resourceName, "(", "match", match, ",", "exclude", exclude, ")")
+				} else {
+					fmt.Fprintln(out, "-", policy.Name, rule.Name, "doesn't match", resourceName, "(", "match", match, ",", "exclude", exclude, ")")
+				}
+			}
+		}
+	}
 	fmt.Fprintln(out, "Done")
 	return nil
 }

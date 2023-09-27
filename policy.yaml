@@ -9,6 +9,10 @@ spec:
         any:
         - resource:
             type: aws_s3_bucket
+      exclude:
+        any:
+        - resource:
+            name: example
       validate:
         message: 'A team tag is required for all S3 buckets'
         pattern:
