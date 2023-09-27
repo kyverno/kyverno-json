@@ -1,0 +1,16 @@
+apiVersion: tf.kyverno.io/v1
+kind: Policy
+metadata:
+  name: require-label
+spec:
+  rules:
+    - name: require-label
+      match:
+        any:
+        - type: aws_s3_bucket
+      validate:
+        message: 'A team tag is required for all S3 buckets'
+        pattern:
+          values:
+            tags:
+              team: ?*
