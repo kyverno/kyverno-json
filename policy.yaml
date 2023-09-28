@@ -9,13 +9,10 @@ spec:
         any:
         - resource:
             type: aws_s3_bucket
-      # exclude:
-      #   any:
-      #   - resource:
-      #       name: example
+            name: ?*
       validate:
-        message: 'A team tag is required for all S3 buckets'
+        message: Bucket `{{ resource.name }}` ({{ resource.address }}) has no Team tag
         pattern:
           values:
             tags:
-              Team: ?*
+              team: ?*

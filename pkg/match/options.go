@@ -6,11 +6,19 @@ type matchOptions struct {
 
 type option func(matchOptions) matchOptions
 
-func WithWildcard(enabled bool) option {
+func ConfigurehWildcard(enabled bool) option {
 	return func(o matchOptions) matchOptions {
 		o.wildcard = enabled
 		return o
 	}
+}
+
+func WithWildcard() option {
+	return ConfigurehWildcard(true)
+}
+
+func WitouthWildcard() option {
+	return ConfigurehWildcard(false)
 }
 
 func newMatchOptions(options ...option) matchOptions {

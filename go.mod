@@ -3,6 +3,7 @@ module github.com/eddycharly/tf-kyverno
 go 1.21
 
 require (
+	github.com/jmespath-community/go-jmespath v1.1.1
 	github.com/kyverno/kyverno v1.5.0-rc1.0.20230927190803-27858f634e28
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
