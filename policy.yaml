@@ -1,10 +1,10 @@
 apiVersion: tf.kyverno.io/v1alpha1
 kind: Policy
 metadata:
-  name: require-label
+  name: required-s3-tags
 spec:
   rules:
-    - name: require-label
+    - name: require-team-tag
       match:
         any:
         - resource:
