@@ -1,12 +1,11 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 
-	"github.com/eddycharly/tf-kyverno/pkg/engine"
 	"github.com/eddycharly/tf-kyverno/pkg/plan"
 	"github.com/eddycharly/tf-kyverno/pkg/policy"
+	tfengine "github.com/eddycharly/tf-kyverno/pkg/tf-engine"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -30,27 +29,19 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	resources, ok, err := unstructured.NestedSlice(plan, "planned_values", "root_module", "resources")
-	if err != nil {
-		return err
-	}
-	if !ok {
-		return errors.New("failed to find resources in the plan")
-	}
-	fmt.Fprintln(out, "-", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "loaded")
+	fmt.Fprintln(out, "-", len(plan.Resources), pluralize.Pluralize(len(plan.Resources), "resource", "resources"), "loaded")
 	fmt.Fprintln(out, "Running ...")
-	// TODO
-	for _, resource := range resources {
-		resourceName, _, _ := unstructured.NestedString(resource.(map[string]interface{}), "address")
-		for _, policy := range policies {
-			for _, rule := range policy.Spec.Rules {
-				match, exclude := engine.MatchExclude(rule.MatchResources, rule.ExcludeResources, resource)
-				if match && !exclude {
-					fmt.Fprintln(out, "-", policy.Name, rule.Name, "matches", resourceName, "(", "match", match, ",", "exclude", exclude, ")")
-				} else {
-					fmt.Fprintln(out, "-", policy.Name, rule.Name, "doesn't match", resourceName, "(", "match", match, ",", "exclude", exclude, ")")
-				}
-			}
+	e := tfengine.New()
+	responses := e.Run(tfengine.TfEngineRequest{
+		Plan:     plan,
+		Policies: policies,
+	})
+	for _, response := range responses {
+		resourceName, _, _ := unstructured.NestedString(response.Resource.(map[string]interface{}), "address")
+		if response.Error == nil {
+			fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "PASSED")
+		} else {
+			fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "FAILED:", response.Error)
 		}
 	}
 	fmt.Fprintln(out, "Done")
