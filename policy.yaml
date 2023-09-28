@@ -10,8 +10,12 @@ spec:
         - resource:
             type: aws_s3_bucket
             name: ?*
+      context:
+      - name: team
+        variable:  
+          value: Kyverno
       validate:
-        message: Bucket `{{ resource.name }}` ({{ resource.address }}) has no Team tag
+        message: Bucket `{{ resource.name }}` ({{ resource.address }}) {{ $team }} has no Team tag
         pattern:
           values:
             tags:

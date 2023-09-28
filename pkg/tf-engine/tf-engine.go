@@ -12,7 +12,10 @@ import (
 	"github.com/eddycharly/tf-kyverno/pkg/engine/builder"
 	"github.com/eddycharly/tf-kyverno/pkg/match"
 	"github.com/eddycharly/tf-kyverno/pkg/plan"
-	"github.com/jmespath-community/go-jmespath"
+	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/jmespath-community/go-jmespath/pkg/functions"
+	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
+	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 )
 
 type TfEngineRequest struct {
@@ -27,13 +30,35 @@ type TfEngineResponse struct {
 	Error    error
 }
 
-var variables = regexp.MustCompile(`\{\{(.*?)\}\}`)
+var (
+	variables = regexp.MustCompile(`\{\{(.*?)\}\}`)
+	parser    = parsing.NewParser()
+	caller    = interpreter.NewFunctionCaller(functions.GetDefaultFunctions()...)
+)
 
-func formatMessage(message string, data interface{}) string {
+func jp(statement string, policy *v1alpha1.Policy, rule *v1alpha1.Rule, resource interface{}) (interface{}, error) {
+	bindings := binding.NewBindings()
+	for _, entry := range rule.Context {
+		bindings = bindings.Register("$"+entry.Name, entry.Variable.Value)
+	}
+	compiled, err := parser.Parse(statement)
+	if err != nil {
+		return nil, err
+	}
+	data := map[string]interface{}{
+		"policy":   policy,
+		"rule":     rule,
+		"resource": resource,
+	}
+	interpreter := interpreter.NewInterpreter(data, caller, bindings)
+	return interpreter.Execute(compiled, data)
+}
+
+func message(message string, policy *v1alpha1.Policy, rule *v1alpha1.Rule, resource interface{}) string {
 	groups := variables.FindAllStringSubmatch(message, -1)
 	for _, group := range groups {
 		statement := strings.TrimSpace(group[1])
-		result, err := jmespath.Search(statement, data)
+		result, err := jp(statement, policy, rule, resource)
 		if err != nil {
 			message = strings.ReplaceAll(message, group[0], fmt.Sprintf("ERR (%s - %s)", statement, err))
 		} else if result == nil {
@@ -76,7 +101,7 @@ func New() engine.Engine[TfEngineRequest, TfEngineResponse] {
 				Resource: r.Resource,
 			}
 			if !match.Match(r.Rule.Validation.Pattern, r.Resource, match.WithWildcard()) {
-				response.Error = errors.New(formatMessage(r.Rule.Validation.Message, r))
+				response.Error = errors.New(message(r.Rule.Validation.Message, r.Policy, r.Rule, r.Resource))
 			}
 			return response
 		}).

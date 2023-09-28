@@ -26,6 +26,10 @@ type Rule struct {
 	// +kubebuilder:validation:MaxLength=63
 	Name string `json:"name"`
 
+	// Context defines variables and data sources that can be used during rule execution.
+	// +optional
+	Context []ContextEntry `json:"context,omitempty"`
+
 	// MatchResources defines when this policy rule should be applied. The match
 	// criteria can include resource information (e.g. kind, name, namespace, labels)
 	// and admission review request information like the user name or role.
@@ -41,6 +45,33 @@ type Rule struct {
 	// Validation is used to validate matching resources.
 	// +optional
 	Validation *Validation `json:"validate,omitempty"`
+}
+
+// ContextEntry adds variables and data sources to a rule Context. Either a
+// ConfigMap reference or a APILookup must be provided.
+type ContextEntry struct {
+	// Name is the variable name.
+	Name string `json:"name"`
+
+	// Variable defines an arbitrary JMESPath context variable that can be defined inline.
+	Variable *Variable `json:"variable,omitempty"`
+}
+
+// Variable defines an arbitrary JMESPath context variable that can be defined inline.
+type Variable struct {
+	// Value is any arbitrary JSON object representable in YAML or JSON form.
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Schemaless
+	Value interface{} `json:"value,omitempty"`
+
+	// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
+	JMESPath string `json:"jmesPath,omitempty"`
+
+	// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
+	// +kubebuilder:validation:Type=object
+	// +kubebuilder:pruning:PreserveUnknownFields
+	// +kubebuilder:validation:Schemaless
+	Default interface{} `json:"default,omitempty"`
 }
 
 type MatchResources struct {
