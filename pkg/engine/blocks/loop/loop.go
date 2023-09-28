@@ -1,7 +1,7 @@
 package loop
 
 import (
-	"github.com/eddycharly/tf-kyverno/pkg/engine"
+	"github.com/eddycharly/json-kyverno/pkg/engine"
 )
 
 type loop[TPARENT any, TCHILD any, TRESPONSE any] struct {

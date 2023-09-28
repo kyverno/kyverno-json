@@ -1,7 +1,7 @@
 package null
 
 import (
-	"github.com/eddycharly/tf-kyverno/pkg/engine"
+	"github.com/eddycharly/json-kyverno/pkg/engine"
 )
 
 type null[TREQUEST any, TRESPONSE any] struct{}

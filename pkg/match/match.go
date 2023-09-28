@@ -3,7 +3,7 @@ package match
 import (
 	"reflect"
 
-	"github.com/eddycharly/tf-kyverno/pkg/apis/v1alpha1"
+	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno/pkg/utils/wildcard"
 )
 

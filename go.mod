@@ -1,4 +1,4 @@
-module github.com/eddycharly/tf-kyverno
+module github.com/eddycharly/json-kyverno
 
 go 1.21
 

@@ -1,36 +1,36 @@
-package tfengine
+package jsonengine
 
 import (
 	"errors"
 
-	"github.com/eddycharly/tf-kyverno/pkg/apis/v1alpha1"
-	"github.com/eddycharly/tf-kyverno/pkg/engine"
-	"github.com/eddycharly/tf-kyverno/pkg/engine/blocks/loop"
-	"github.com/eddycharly/tf-kyverno/pkg/engine/builder"
-	"github.com/eddycharly/tf-kyverno/pkg/match"
-	"github.com/eddycharly/tf-kyverno/pkg/plan"
-	"github.com/eddycharly/tf-kyverno/pkg/template"
+	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
+	"github.com/eddycharly/json-kyverno/pkg/engine"
+	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/loop"
+	"github.com/eddycharly/json-kyverno/pkg/engine/builder"
+	"github.com/eddycharly/json-kyverno/pkg/match"
+	"github.com/eddycharly/json-kyverno/pkg/plan"
+	"github.com/eddycharly/json-kyverno/pkg/template"
 )
 
-type TfEngineRequest struct {
+type JsonEngineRequest struct {
 	Plan     *plan.Plan
 	Policies []*v1alpha1.Policy
 }
 
-type TfEngineResponse struct {
+type JsonEngineResponse struct {
 	Policy   *v1alpha1.Policy
 	Rule     *v1alpha1.Rule
 	Resource interface{}
 	Error    error
 }
 
-func New() engine.Engine[TfEngineRequest, TfEngineResponse] {
+func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	type request struct {
 		Policy   *v1alpha1.Policy
 		Rule     *v1alpha1.Rule
 		Resource interface{}
 	}
-	looper := func(r TfEngineRequest) []request {
+	looper := func(r JsonEngineRequest) []request {
 		var requests []request
 		for _, resource := range r.Plan.Resources {
 			for _, policy := range r.Policies {
@@ -46,8 +46,8 @@ func New() engine.Engine[TfEngineRequest, TfEngineResponse] {
 		return requests
 	}
 	inner := builder.
-		Function(func(r request) TfEngineResponse {
-			response := TfEngineResponse{
+		Function(func(r request) JsonEngineResponse {
+			response := JsonEngineResponse{
 				Policy:   r.Policy,
 				Rule:     r.Rule,
 				Resource: r.Resource,

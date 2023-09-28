@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/eddycharly/tf-kyverno/pkg/apis/v1alpha1"
+	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/functions"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"

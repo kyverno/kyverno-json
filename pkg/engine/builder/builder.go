@@ -1,10 +1,10 @@
 package builder
 
 import (
-	"github.com/eddycharly/tf-kyverno/pkg/engine"
-	"github.com/eddycharly/tf-kyverno/pkg/engine/blocks/constant"
-	"github.com/eddycharly/tf-kyverno/pkg/engine/blocks/function"
-	"github.com/eddycharly/tf-kyverno/pkg/engine/blocks/predicate"
+	"github.com/eddycharly/json-kyverno/pkg/engine"
+	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/constant"
+	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/function"
+	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/predicate"
 )
 
 type Engine[TREQUEST any, TRESPONSE any] struct {

@@ -6,8 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/eddycharly/tf-kyverno/pkg/apis/v1alpha1"
-	"github.com/eddycharly/tf-kyverno/pkg/data"
+	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
+	"github.com/eddycharly/json-kyverno/pkg/data"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/convert"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/loader"
 	yamlutils "github.com/kyverno/kyverno/pkg/utils/yaml"

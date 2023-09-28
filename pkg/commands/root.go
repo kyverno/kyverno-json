@@ -3,9 +3,9 @@ package commands
 import (
 	"fmt"
 
-	"github.com/eddycharly/tf-kyverno/pkg/plan"
-	"github.com/eddycharly/tf-kyverno/pkg/policy"
-	tfengine "github.com/eddycharly/tf-kyverno/pkg/tf-engine"
+	jsonengine "github.com/eddycharly/json-kyverno/pkg/json-engine"
+	"github.com/eddycharly/json-kyverno/pkg/plan"
+	"github.com/eddycharly/json-kyverno/pkg/policy"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -31,8 +31,8 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "-", len(plan.Resources), pluralize.Pluralize(len(plan.Resources), "resource", "resources"), "loaded")
 	fmt.Fprintln(out, "Running ...")
-	e := tfengine.New()
-	responses := e.Run(tfengine.TfEngineRequest{
+	e := jsonengine.New()
+	responses := e.Run(jsonengine.JsonEngineRequest{
 		Plan:     plan,
 		Policies: policies,
 	})
