@@ -18,4 +18,4 @@ spec:
         pattern:
           values:
             tags:
-              team: ?*
+              Team: ?*

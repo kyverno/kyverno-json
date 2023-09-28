@@ -51,7 +51,7 @@ func New() engine.Engine[TfEngineRequest, TfEngineResponse] {
 				Rule:     r.rule,
 				Resource: r.resource,
 			}
-			if !match.Match(r.rule.Validation.Pattern, r.resource) {
+			if !match.Match(r.rule.Validation.Pattern, r.resource, match.WithWildcard(true)) {
 				response.Error = errors.New(r.rule.Validation.Message)
 			}
 			return response
