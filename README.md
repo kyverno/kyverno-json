@@ -1,4 +1,4 @@
-# tf-kyverno
+# json-kyverno
 
 ## create a terraform plan in json format
 
@@ -13,14 +13,14 @@ terraform plan -out=tf.plan
 terraform show -json tf.plan > tf.plan.json
 ```
 
-## build tf-kyverno
+## build json-kyverno
 
 ```console
 make build
 ```
 
-## invoke tf-kyverno
+## invoke json-kyverno
 
 ```console
-./tf-kyverno --plan ./tf.plan.json --policy ./policy.yaml
+./json-kyverno --plan ./tf.plan.json --policy ./policy.yaml
 ```

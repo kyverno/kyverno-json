@@ -51,14 +51,14 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 func NewRootCommand() *cobra.Command {
 	var command command
 	cmd := &cobra.Command{
-		Use:          "tf-kyverno",
-		Short:        "tf-kyverno",
-		Long:         "tf-kyverno is a CLI tool to apply policies to terraform plans",
+		Use:          "json-kyverno",
+		Short:        "json-kyverno",
+		Long:         "json-kyverno is a CLI tool to apply policies to json resources",
 		Args:         cobra.NoArgs,
 		RunE:         command.Run,
 		SilenceUsage: true,
 	}
 	cmd.Flags().StringVar(&command.plan, "plan", "", "Path to terraform plan file (in json format)")
-	cmd.Flags().StringSliceVar(&command.policies, "policy", nil, "Path to tf-kyverno policies")
+	cmd.Flags().StringSliceVar(&command.policies, "policy", nil, "Path to json-kyverno policies")
 	return cmd
 }
