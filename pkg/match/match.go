@@ -47,6 +47,9 @@ func Match(expected, actual interface{}, options ...option) bool {
 }
 
 func match(expected, actual interface{}, options matchOptions) bool {
+	if options.template != nil && reflect.TypeOf(expected).Kind() == reflect.String {
+		expected = options.template.Interface(reflect.ValueOf(expected).String())
+	}
 	if reflect.TypeOf(expected) != reflect.TypeOf(actual) {
 		return false
 	}
