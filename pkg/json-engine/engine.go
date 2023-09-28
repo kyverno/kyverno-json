@@ -8,13 +8,12 @@ import (
 	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/loop"
 	"github.com/eddycharly/json-kyverno/pkg/engine/builder"
 	"github.com/eddycharly/json-kyverno/pkg/match"
-	"github.com/eddycharly/json-kyverno/pkg/plan"
 	"github.com/eddycharly/json-kyverno/pkg/template"
 )
 
 type JsonEngineRequest struct {
-	Plan     *plan.Plan
-	Policies []*v1alpha1.Policy
+	Resources []interface{}
+	Policies  []*v1alpha1.Policy
 }
 
 type JsonEngineResponse struct {
@@ -32,7 +31,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	}
 	looper := func(r JsonEngineRequest) []request {
 		var requests []request
-		for _, resource := range r.Plan.Resources {
+		for _, resource := range r.Resources {
 			for _, policy := range r.Policies {
 				for _, rule := range policy.Spec.Rules {
 					requests = append(requests, request{

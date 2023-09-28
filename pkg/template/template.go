@@ -73,6 +73,15 @@ func (t *template) Interface(in string) interface{} {
 	}
 }
 
+func Execute(statement string, data interface{}) (interface{}, error) {
+	interpreter := interpreter.NewInterpreter(data, caller, nil)
+	compiled, err := parser.Parse(statement)
+	if err != nil {
+		return nil, err
+	}
+	return interpreter.Execute(compiled, data)
+}
+
 func (t *template) jp(statement string) (interface{}, error) {
 	compiled, err := parser.Parse(statement)
 	if err != nil {

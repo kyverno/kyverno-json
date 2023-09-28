@@ -10,8 +10,10 @@ func TestCommand(t *testing.T) {
 	cmd := NewRootCommand()
 	assert.NotNil(t, cmd)
 	cmd.SetArgs([]string{
-		"--plan",
+		"--payload",
 		"../../tf.plan.json",
+		"--pre-process",
+		"planned_values.root_module.resources",
 		"--policy",
 		"../../policy.yaml",
 	})

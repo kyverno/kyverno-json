@@ -1,19 +1,22 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
 
 	jsonengine "github.com/eddycharly/json-kyverno/pkg/json-engine"
-	"github.com/eddycharly/json-kyverno/pkg/plan"
+	"github.com/eddycharly/json-kyverno/pkg/payload"
 	"github.com/eddycharly/json-kyverno/pkg/policy"
+	"github.com/eddycharly/json-kyverno/pkg/template"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
 type command struct {
-	plan     string
-	policies []string
+	payload       string
+	preprocessors []string
+	policies      []string
 }
 
 func (c *command) Run(cmd *cobra.Command, _ []string) error {
@@ -23,18 +26,36 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprintln(out, "-", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), "loaded")
 	fmt.Fprintln(out, "Loading plan ...")
-	plan, err := plan.Load(c.plan)
+	payload, err := payload.Load(c.payload)
 	if err != nil {
 		return err
 	}
-	fmt.Fprintln(out, "-", len(plan.Resources), pluralize.Pluralize(len(plan.Resources), "resource", "resources"), "loaded")
-	fmt.Fprintln(out, "Running ...")
+	if payload == nil {
+		return errors.New("payload is `null`")
+	}
+	fmt.Fprintln(out, "Pre processing ...")
+	for _, preprocessor := range c.preprocessors {
+		result, err := template.Execute(preprocessor, payload)
+		if err != nil {
+			return err
+		}
+		if result == nil {
+			return fmt.Errorf("prepocessor resulted in `null` payload (%s)", preprocessor)
+		}
+		payload = result
+	}
+	var resources []interface{}
+	if slice, ok := payload.([]interface{}); ok {
+		resources = slice
+	} else {
+		resources = append(resources, payload)
+	}
+	fmt.Fprintln(out, "Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
 	e := jsonengine.New()
 	responses := e.Run(jsonengine.JsonEngineRequest{
-		Plan:     plan,
-		Policies: policies,
+		Resources: resources,
+		Policies:  policies,
 	})
 	for _, response := range responses {
 		resourceName, _, _ := unstructured.NestedString(response.Resource.(map[string]interface{}), "address")
@@ -58,7 +79,8 @@ func NewRootCommand() *cobra.Command {
 		RunE:         command.Run,
 		SilenceUsage: true,
 	}
-	cmd.Flags().StringVar(&command.plan, "plan", "", "Path to terraform plan file (in json format)")
+	cmd.Flags().StringVar(&command.payload, "payload", "", "Path to json payload")
+	cmd.Flags().StringSliceVar(&command.preprocessors, "pre-process", nil, "JmesPath expression used to pre process payload")
 	cmd.Flags().StringSliceVar(&command.policies, "policy", nil, "Path to json-kyverno policies")
 	return cmd
 }
