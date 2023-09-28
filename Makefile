@@ -155,6 +155,7 @@ $(PACKAGE_SHIM): $(GOPATH_SHIM)
 .PHONY: codegen-crds
 codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@echo Generate crds... >&2
+	@rm -rf $(CRDS_PATH)
 	@$(CONTROLLER_GEN) crd paths=./pkg/apis/... crd:crdVersions=v1 output:dir=$(CRDS_PATH)
 	@echo Copy generated CRDs to embed in the CLI... >&2
 	@rm -rf pkg/data/crds && mkdir -p pkg/data/crds

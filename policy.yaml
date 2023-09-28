@@ -1,4 +1,4 @@
-apiVersion: tf.kyverno.io/v1alpha1
+apiVersion: json.kyverno.io/v1alpha1
 kind: Policy
 metadata:
   name: required-s3-tags
@@ -9,14 +9,13 @@ spec:
         any:
         - resource:
             type: aws_s3_bucket
-            name: ?*
       context:
-      - name: team
-        variable:  
-          value: Kyverno
+      - name: tags
+        variable:
+          value:
+            team: Kyverno
       validate:
-        message: Bucket `{{ resource.name }}` ({{ resource.address }}) {{ $team }} has no Team tag
+        message: Bucket `{{ resource.name }}` ({{ resource.address }}) does not have the required tags {{ to_string($tags) }}
         pattern:
           values:
-            tags:
-              team: ?*
+            tags: '{{ $tags }}'
