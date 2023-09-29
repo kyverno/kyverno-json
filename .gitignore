@@ -1,7 +1,3 @@
 .tools
 .gopath
 json-kyverno
-.terraform/
-.terraform.lock.hcl
-tf.plan
-tf.plan.json

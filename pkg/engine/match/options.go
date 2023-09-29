@@ -1,7 +1,7 @@
 package match
 
 import (
-	"github.com/eddycharly/json-kyverno/pkg/template"
+	"github.com/eddycharly/json-kyverno/pkg/engine/template"
 )
 
 type matchOptions struct {

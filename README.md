@@ -22,5 +22,9 @@ make build
 ## invoke json-kyverno
 
 ```console
-./json-kyverno --payload ./tf.plan.json --pre-process "planned_values.root_module.resources" --policy ./policy.yaml
+# with json payload
+./json-kyverno --payload ./testdata/tf-plan/tf.plan.json --pre-process "planned_values.root_module.resources" --policy ./testdata/tf-plan/policy.yaml
+
+# with yaml payload
+./json-kyverno --payload ./testdata/payload-yaml/payload.yaml --pre-process "planned_values.root_module.resources" --policy ./testdata/payload-yaml/policy.yaml
 ```

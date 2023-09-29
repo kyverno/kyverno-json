@@ -7,8 +7,8 @@ import (
 	"github.com/eddycharly/json-kyverno/pkg/engine"
 	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/loop"
 	"github.com/eddycharly/json-kyverno/pkg/engine/builder"
-	"github.com/eddycharly/json-kyverno/pkg/match"
-	"github.com/eddycharly/json-kyverno/pkg/template"
+	"github.com/eddycharly/json-kyverno/pkg/engine/match"
+	"github.com/eddycharly/json-kyverno/pkg/engine/template"
 )
 
 type JsonEngineRequest struct {

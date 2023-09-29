@@ -7,6 +7,7 @@ require (
 	github.com/kyverno/kyverno v1.5.0-rc1.0.20230927190803-27858f634e28
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
+	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.28.2
 	sigs.k8s.io/kubectl-validate v0.0.0-20230927155409-3b3ca3ad91d0
 )
@@ -282,7 +283,6 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	inet.af/netaddr v0.0.0-20230525184311-b8eac61e914a // indirect
 	k8s.io/api v0.28.2 // indirect
 	k8s.io/apiextensions-apiserver v0.28.1 // indirect

@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/eddycharly/json-kyverno/pkg/engine/template"
 	jsonengine "github.com/eddycharly/json-kyverno/pkg/json-engine"
 	"github.com/eddycharly/json-kyverno/pkg/payload"
 	"github.com/eddycharly/json-kyverno/pkg/policy"
-	"github.com/eddycharly/json-kyverno/pkg/template"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -26,7 +26,7 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprintln(out, "Loading plan ...")
+	fmt.Fprintln(out, "Loading payload ...")
 	payload, err := payload.Load(c.payload)
 	if err != nil {
 		return err
@@ -79,7 +79,7 @@ func NewRootCommand() *cobra.Command {
 		RunE:         command.Run,
 		SilenceUsage: true,
 	}
-	cmd.Flags().StringVar(&command.payload, "payload", "", "Path to json payload")
+	cmd.Flags().StringVar(&command.payload, "payload", "", "Path to payload (json or yaml file)")
 	cmd.Flags().StringSliceVar(&command.preprocessors, "pre-process", nil, "JmesPath expression used to pre process payload")
 	cmd.Flags().StringSliceVar(&command.policies, "policy", nil, "Path to json-kyverno policies")
 	return cmd

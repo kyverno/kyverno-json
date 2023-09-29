@@ -8,6 +8,7 @@ import (
 
 	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
 	"github.com/eddycharly/json-kyverno/pkg/data"
+	fileinfo "github.com/eddycharly/json-kyverno/pkg/utils/file-info"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/convert"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/loader"
 	yamlutils "github.com/kyverno/kyverno/pkg/utils/yaml"
@@ -19,14 +20,6 @@ var (
 	gv_v1alpha1     = schema.GroupVersion{Group: "json.kyverno.io", Version: "v1alpha1"}
 	policy_v1alpha1 = gv_v1alpha1.WithKind("Policy")
 )
-
-func IsYaml(file fs.FileInfo) bool {
-	if file.IsDir() {
-		return false
-	}
-	ext := filepath.Ext(file.Name())
-	return ext == ".yml" || ext == ".yaml"
-}
 
 func Load(path ...string) ([]*v1alpha1.Policy, error) {
 	var policies []*v1alpha1.Policy
@@ -46,7 +39,7 @@ func load(path string) ([]*v1alpha1.Policy, error) {
 		if err != nil {
 			return err
 		}
-		if IsYaml(info) {
+		if fileinfo.IsYaml(info) {
 			files = append(files, file)
 		}
 		return nil
