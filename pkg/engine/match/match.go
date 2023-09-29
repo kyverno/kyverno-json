@@ -50,15 +50,21 @@ func match(expected, actual interface{}, options matchOptions) bool {
 	if options.template != nil && reflect.TypeOf(expected).Kind() == reflect.String {
 		expected = options.template.Interface(reflect.ValueOf(expected).String())
 	}
-	if reflect.TypeOf(expected) != reflect.TypeOf(actual) {
-		return false
-	}
+	// if reflect.TypeOf(expected) != reflect.TypeOf(actual) {
+	// 	return false
+	// }
 	switch reflect.TypeOf(expected).Kind() {
 	case reflect.String:
 		if options.wildcard {
+			if reflect.TypeOf(actual).Kind() != reflect.String {
+				return false
+			}
 			return wildcard.Match(reflect.ValueOf(expected).String(), reflect.ValueOf(actual).String())
 		}
 	case reflect.Slice:
+		if reflect.TypeOf(actual).Kind() != reflect.Slice {
+			return false
+		}
 		if reflect.ValueOf(expected).Len() != reflect.ValueOf(actual).Len() {
 			return false
 		}
@@ -69,6 +75,9 @@ func match(expected, actual interface{}, options matchOptions) bool {
 		}
 		return true
 	case reflect.Map:
+		if reflect.TypeOf(actual).Kind() != reflect.Map {
+			return false
+		}
 		iter := reflect.ValueOf(expected).MapRange()
 		for iter.Next() {
 			actualValue := reflect.ValueOf(actual).MapIndex(iter.Key())
@@ -81,5 +90,33 @@ func match(expected, actual interface{}, options matchOptions) bool {
 		}
 		return true
 	}
-	return reflect.DeepEqual(expected, actual)
+	return matchScalar(expected, actual)
+}
+
+func matchScalar(expected, actual interface{}) bool {
+	// if they are the same type we can use reflect.DeepEqual
+	if reflect.TypeOf(expected) == reflect.TypeOf(actual) {
+		return reflect.DeepEqual(expected, actual)
+	}
+	e := reflect.ValueOf(expected)
+	a := reflect.ValueOf(actual)
+	if !a.IsValid() && !e.IsValid() {
+		return true
+	}
+	if a.IsZero() && e.IsZero() {
+		return true
+	}
+	if a.CanComplex() && e.CanComplex() {
+		return a.Complex() == e.Complex()
+	}
+	if a.CanFloat() && e.CanFloat() {
+		return a.Float() == e.Float()
+	}
+	if a.CanInt() && e.CanInt() {
+		return a.Int() == e.Int()
+	}
+	if a.CanUint() && e.CanUint() {
+		return a.Uint() == e.Uint()
+	}
+	return false
 }

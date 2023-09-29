@@ -67,7 +67,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			return !match.MatchResources(r.Rule.ExcludeResources, r.Resource, match.WithWildcard())
 		}).
 		Predicate(func(r request) bool {
-			return match.MatchResources(r.Rule.MatchResources, r.Resource, match.WithWildcard())
+			return r.Rule.MatchResources == nil || match.MatchResources(r.Rule.MatchResources, r.Resource, match.WithWildcard())
 		})
 	// TODO: we can't use the builder package for loops :(
 	return loop.New(inner, looper)
