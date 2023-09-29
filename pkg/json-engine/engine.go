@@ -52,10 +52,13 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 				Resource: r.Resource,
 			}
 			template := template.New(r, r.Rule.Context...)
-			if !match.Match(r.Rule.Validation.Pattern, r.Resource, match.WithWildcard(), match.WithTemplate(template)) {
+			match, err := match.Match(r.Rule.Validation.Pattern, r.Resource, match.WithWildcard(), match.WithTemplate(template))
+			if err != nil {
+				response.Error = err
+			} else if !match {
 				message := r.Rule.Validation.Message
 				if message != "" {
-					message = template.String(message)
+					message = template.String(message, r)
 				} else {
 					message = "failed to match pattern"
 				}
@@ -64,10 +67,15 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			return response
 		}).
 		Predicate(func(r request) bool {
-			return !match.MatchResources(r.Rule.ExcludeResources, r.Resource, match.WithWildcard())
+			match, err := match.MatchResources(r.Rule.ExcludeResources, r.Resource, match.WithWildcard())
+			return err == nil && !match
 		}).
 		Predicate(func(r request) bool {
-			return r.Rule.MatchResources == nil || match.MatchResources(r.Rule.MatchResources, r.Resource, match.WithWildcard())
+			if r.Rule.MatchResources == nil {
+				return true
+			}
+			match, err := match.MatchResources(r.Rule.MatchResources, r.Resource, match.WithWildcard())
+			return err == nil && match
 		})
 	// TODO: we can't use the builder package for loops :(
 	return loop.New(inner, looper)

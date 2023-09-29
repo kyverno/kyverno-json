@@ -1,0 +1,13 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: Policy
+metadata:
+  name: test
+spec:
+  rules:
+    - name: foo-bar-4
+      validate:
+        pattern:
+          foo:
+            '{{ bar > `3` }}': true
+            '{{ !baz }}': false
+            '{{ bar + bat }}': 10

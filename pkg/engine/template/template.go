@@ -20,8 +20,8 @@ var (
 )
 
 type Template interface {
-	String(string) string
-	Interface(string) interface{}
+	String(string, interface{}) string
+	Interface(string, interface{}) (interface{}, error)
 }
 
 type template struct {
@@ -40,11 +40,11 @@ func New(data interface{}, context ...v1alpha1.ContextEntry) Template {
 	}
 }
 
-func (t *template) String(in string) string {
+func (t *template) String(in string, data interface{}) string {
 	groups := variable.FindAllStringSubmatch(in, -1)
 	for _, group := range groups {
 		statement := strings.TrimSpace(group[1])
-		result, err := t.jp(statement)
+		result, err := t.jp(statement, data)
 		if err != nil {
 			in = strings.ReplaceAll(in, group[0], fmt.Sprintf("ERR (%s - %s)", statement, err))
 		} else if result == nil {
@@ -58,18 +58,18 @@ func (t *template) String(in string) string {
 	return in
 }
 
-func (t *template) Interface(in string) interface{} {
+func (t *template) Interface(in string, data interface{}) (interface{}, error) {
 	if inline.MatchString(in) {
 		in = strings.TrimPrefix(in, "{{")
 		in = strings.TrimSuffix(in, "}}")
 		statement := strings.TrimSpace(in)
-		result, err := t.jp(statement)
+		result, err := t.jp(statement, data)
 		if err != nil {
-			return nil
+			return nil, err
 		}
-		return result
+		return result, nil
 	} else {
-		return t.String(in)
+		return t.String(in, data), nil
 	}
 }
 
@@ -82,10 +82,10 @@ func Execute(statement string, data interface{}) (interface{}, error) {
 	return interpreter.Execute(compiled, data)
 }
 
-func (t *template) jp(statement string) (interface{}, error) {
+func (t *template) jp(statement string, data interface{}) (interface{}, error) {
 	compiled, err := parser.Parse(statement)
 	if err != nil {
 		return nil, err
 	}
-	return t.interpreter.Execute(compiled, t.data)
+	return t.interpreter.Execute(compiled, data)
 }

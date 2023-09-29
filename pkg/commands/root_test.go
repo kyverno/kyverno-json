@@ -48,3 +48,16 @@ func Test_FooBar(t *testing.T) {
 	err := cmd.Execute()
 	assert.NoError(t, err)
 }
+
+func Test_Scripted(t *testing.T) {
+	cmd := NewRootCommand()
+	assert.NotNil(t, cmd)
+	cmd.SetArgs([]string{
+		"--payload",
+		"../../testdata/scripted/payload.yaml",
+		"--policy",
+		"../../testdata/scripted/policy.yaml",
+	})
+	err := cmd.Execute()
+	assert.NoError(t, err)
+}

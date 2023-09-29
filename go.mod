@@ -301,3 +301,5 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.3.0 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
+
+replace github.com/jmespath-community/go-jmespath => github.com/eddycharly/go-community-jmespath v1.1.1-0.20230929121033-cb50a1973e28
