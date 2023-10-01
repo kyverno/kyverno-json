@@ -5,10 +5,12 @@ import (
 
 	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
 	"github.com/eddycharly/json-kyverno/pkg/engine"
+	"github.com/eddycharly/json-kyverno/pkg/engine/assert"
 	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/loop"
 	"github.com/eddycharly/json-kyverno/pkg/engine/builder"
 	"github.com/eddycharly/json-kyverno/pkg/engine/match"
 	"github.com/eddycharly/json-kyverno/pkg/engine/template"
+	"github.com/jmespath-community/go-jmespath/pkg/binding"
 )
 
 type JsonEngineRequest struct {
@@ -20,6 +22,7 @@ type JsonEngineResponse struct {
 	Policy   *v1alpha1.Policy
 	Rule     *v1alpha1.Rule
 	Resource interface{}
+	Failure  error
 	Error    error
 }
 
@@ -51,18 +54,22 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 				Rule:     r.Rule,
 				Resource: r.Resource,
 			}
-			template := template.New(r, r.Rule.Context...)
-			match, err := match.Match(r.Rule.Validation.Pattern, r.Resource, match.WithWildcard(), match.WithTemplate(template))
+			bindings := binding.NewBindings()
+			bindings = bindings.Register("$resource", r.Resource)
+			bindings = bindings.Register("$rule", r.Rule)
+			bindings = bindings.Register("$policy", r.Policy)
+			for _, entry := range r.Rule.Context {
+				bindings = bindings.Register("$"+entry.Name, entry.Variable.Value)
+			}
+			errs, err := assert.Assert(r.Rule.Validation.Pattern, r.Resource, bindings)
 			if err != nil {
-				response.Error = err
-			} else if !match {
-				message := r.Rule.Validation.Message
-				if message != "" {
-					message = template.String(message, r)
+				response.Failure = err
+			} else if err := errs.ToAggregate(); err != nil {
+				if r.Rule.Validation.Message != "" {
+					response.Error = errors.New(template.String(r.Rule.Validation.Message, r.Resource, bindings))
 				} else {
-					message = "failed to match pattern"
+					response.Error = err
 				}
-				response.Error = errors.New(message)
 			}
 			return response
 		}).

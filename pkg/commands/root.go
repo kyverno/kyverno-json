@@ -36,7 +36,7 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "Pre processing ...")
 	for _, preprocessor := range c.preprocessors {
-		result, err := template.Execute(preprocessor, payload)
+		result, err := template.Execute(preprocessor, payload, nil)
 		if err != nil {
 			return err
 		}
@@ -59,10 +59,14 @@ func (c *command) Run(cmd *cobra.Command, _ []string) error {
 	})
 	for _, response := range responses {
 		resourceName, _, _ := unstructured.NestedString(response.Resource.(map[string]interface{}), "address")
-		if response.Error == nil {
-			fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "PASSED")
+		if response.Failure != nil {
+			fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "ERROR:", response.Failure)
 		} else {
-			fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "FAILED:", response.Error)
+			if response.Error == nil {
+				fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "PASSED")
+			} else {
+				fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "FAILED:", response.Error)
+			}
 		}
 	}
 	fmt.Fprintln(out, "Done")

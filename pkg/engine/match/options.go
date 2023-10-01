@@ -1,12 +1,7 @@
 package match
 
-import (
-	"github.com/eddycharly/json-kyverno/pkg/engine/template"
-)
-
 type matchOptions struct {
 	wildcard bool
-	template template.Template
 }
 
 type option func(matchOptions) matchOptions
@@ -24,13 +19,6 @@ func WithWildcard() option {
 
 func WithoutWildcard() option {
 	return ConfigurehWildcard(false)
-}
-
-func WithTemplate(template template.Template) option {
-	return func(o matchOptions) matchOptions {
-		o.template = template
-		return o
-	}
 }
 
 func newMatchOptions(options ...option) matchOptions {

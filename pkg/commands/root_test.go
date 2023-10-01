@@ -61,3 +61,16 @@ func Test_Scripted(t *testing.T) {
 	err := cmd.Execute()
 	assert.NoError(t, err)
 }
+
+func Test_PodNoLatest(t *testing.T) {
+	cmd := NewRootCommand()
+	assert.NotNil(t, cmd)
+	cmd.SetArgs([]string{
+		"--payload",
+		"../../testdata/pod-no-latest/payload.yaml",
+		"--policy",
+		"../../testdata/pod-no-latest/policy.yaml",
+	})
+	err := cmd.Execute()
+	assert.NoError(t, err)
+}
