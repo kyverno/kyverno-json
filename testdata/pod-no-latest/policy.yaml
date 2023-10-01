@@ -1,0 +1,23 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: Policy
+metadata:
+  name: test
+spec:
+  rules:
+    - name: foo-bar-4
+      match:
+        any:
+        - resource:
+            apiVersion: v1
+            kind: Pod
+      validate:
+        pattern:
+          # (spec.containers[*].image):
+          #   (contains(@,':')): true
+          #   (ends_with(@,':latest')): false
+          spec:
+            ~containers:
+              image:
+                (contains(@, ':')): true
+                # (ends_with($image, ':latest')): false
+                (length($containers)): (length($spec.containers))
