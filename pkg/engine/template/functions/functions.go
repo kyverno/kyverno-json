@@ -12,13 +12,20 @@ func GetFunctions() []functions.FunctionEntry {
 			// TODO: we should introduce a JpInteger type
 			{Types: []functions.JpType{functions.JpAny}},
 		},
-		Handler: at,
+		Handler: jpfAt,
 	}, {
 		Name: "concat",
 		Arguments: []functions.ArgSpec{
 			{Types: []functions.JpType{functions.JpString}},
 			{Types: []functions.JpType{functions.JpString}},
 		},
-		Handler: concat,
+		Handler: jpfConcat,
+	}, {
+		Name: "wildcard",
+		Arguments: []functions.ArgSpec{
+			{Types: []functions.JpType{functions.JpString}},
+			{Types: []functions.JpType{functions.JpString}},
+		},
+		Handler: jpfWildcard,
 	}}
 }

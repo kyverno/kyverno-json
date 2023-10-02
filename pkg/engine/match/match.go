@@ -6,22 +6,21 @@ import (
 
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
-	"github.com/kyverno/kyverno/pkg/utils/wildcard"
 )
 
-func MatchResources(match *v1alpha1.MatchResources, actual interface{}, options ...option) (bool, error) {
+func MatchResources(match *v1alpha1.MatchResources, actual interface{}) (bool, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return false, nil
 	}
 	if len(match.Any) != 0 {
-		if match, err := MatchAny(match.Any, actual, options...); err != nil {
+		if match, err := MatchAny(match.Any, actual); err != nil {
 			return false, err
 		} else if !match {
 			return false, nil
 		}
 	}
 	if len(match.All) != 0 {
-		if match, err := MatchAll(match.All, actual, options...); err != nil {
+		if match, err := MatchAll(match.All, actual); err != nil {
 			return false, err
 		} else if !match {
 			return false, nil
@@ -30,9 +29,9 @@ func MatchResources(match *v1alpha1.MatchResources, actual interface{}, options 
 	return true, nil
 }
 
-func MatchAny(filters v1alpha1.ResourceFilters, actual interface{}, options ...option) (bool, error) {
+func MatchAny(filters v1alpha1.ResourceFilters, actual interface{}) (bool, error) {
 	for _, filter := range filters {
-		if match, err := Match(filter.Resource, actual, options...); err != nil {
+		if match, err := Match(filter.Resource, actual); err != nil {
 			return false, err
 		} else if match {
 			return true, nil
@@ -41,9 +40,9 @@ func MatchAny(filters v1alpha1.ResourceFilters, actual interface{}, options ...o
 	return false, nil
 }
 
-func MatchAll(filters v1alpha1.ResourceFilters, actual interface{}, options ...option) (bool, error) {
+func MatchAll(filters v1alpha1.ResourceFilters, actual interface{}) (bool, error) {
 	for _, filter := range filters {
-		if match, err := Match(filter.Resource, actual, options...); err != nil {
+		if match, err := Match(filter.Resource, actual); err != nil {
 			return false, err
 		} else if !match {
 			return false, nil
@@ -52,20 +51,13 @@ func MatchAll(filters v1alpha1.ResourceFilters, actual interface{}, options ...o
 	return true, nil
 }
 
-func Match(expected, actual interface{}, options ...option) (bool, error) {
-	return match(expected, actual, newMatchOptions(options...))
+func Match(expected, actual interface{}) (bool, error) {
+	return match(expected, actual)
 }
 
-func match(expected, actual interface{}, options matchOptions) (bool, error) {
+func match(expected, actual interface{}) (bool, error) {
 	if expected != nil {
 		switch reflectutils.GetKind(expected) {
-		case reflect.String:
-			if options.wildcard {
-				if reflectutils.GetKind(actual) != reflect.String {
-					return false, fmt.Errorf("invalid actual value, must be a string, found %s", reflectutils.GetKind(actual))
-				}
-				return wildcard.Match(reflect.ValueOf(expected).String(), reflect.ValueOf(actual).String()), nil
-			}
 		case reflect.Slice:
 			if reflectutils.GetKind(actual) != reflect.Slice {
 				return false, fmt.Errorf("invalid actual value, must be a slice, found %s", reflectutils.GetKind(actual))
@@ -74,7 +66,7 @@ func match(expected, actual interface{}, options matchOptions) (bool, error) {
 				return false, nil
 			}
 			for i := 0; i < reflect.ValueOf(expected).Len(); i++ {
-				if inner, err := match(reflect.ValueOf(expected).Index(i).Interface(), reflect.ValueOf(actual).Index(i).Interface(), options); err != nil {
+				if inner, err := match(reflect.ValueOf(expected).Index(i).Interface(), reflect.ValueOf(actual).Index(i).Interface()); err != nil {
 					return false, err
 				} else if !inner {
 					return false, nil
@@ -91,7 +83,7 @@ func match(expected, actual interface{}, options matchOptions) (bool, error) {
 				if !actualValue.IsValid() {
 					return false, nil
 				}
-				if inner, err := match(iter.Value().Interface(), actualValue.Interface(), options); err != nil {
+				if inner, err := match(iter.Value().Interface(), actualValue.Interface()); err != nil {
 					return false, err
 				} else if !inner {
 					return false, nil
