@@ -5,11 +5,9 @@ import (
 )
 
 func at(arguments []interface{}) (interface{}, error) {
-	sliceArg := arguments[0]
-	indexArg := arguments[1]
-	if slice, ok := sliceArg.([]interface{}); !ok {
+	if slice, ok := arguments[0].([]interface{}); !ok {
 		return nil, errors.New("invalid type, first argument must be an array")
-	} else if index, ok := indexArg.(int); !ok {
+	} else if index, ok := arguments[1].(int); !ok {
 		return nil, errors.New("invalid type, second argument must be an int")
 	} else {
 		return slice[index], nil

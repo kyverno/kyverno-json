@@ -74,3 +74,16 @@ func Test_PodNoLatest(t *testing.T) {
 	err := cmd.Execute()
 	assert.NoError(t, err)
 }
+
+func Test_PodAllLatest(t *testing.T) {
+	cmd := NewRootCommand()
+	assert.NotNil(t, cmd)
+	cmd.SetArgs([]string{
+		"--payload",
+		"../../testdata/pod-all-latest/payload.yaml",
+		"--policy",
+		"../../testdata/pod-all-latest/policy.yaml",
+	})
+	err := cmd.Execute()
+	assert.NoError(t, err)
+}

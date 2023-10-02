@@ -13,5 +13,12 @@ func GetFunctions() []functions.FunctionEntry {
 			{Types: []functions.JpType{functions.JpAny}},
 		},
 		Handler: at,
+	}, {
+		Name: "concat",
+		Arguments: []functions.ArgSpec{
+			{Types: []functions.JpType{functions.JpString}},
+			{Types: []functions.JpType{functions.JpString}},
+		},
+		Handler: concat,
 	}}
 }

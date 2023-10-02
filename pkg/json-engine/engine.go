@@ -58,9 +58,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			bindings = bindings.Register("$resource", jpbinding.NewBinding(r.Resource))
 			bindings = bindings.Register("$rule", jpbinding.NewBinding(r.Rule))
 			bindings = bindings.Register("$policy", jpbinding.NewBinding(r.Policy))
-			for _, entry := range r.Rule.Context {
-				bindings = bindings.Register("$"+entry.Name, template.NewLazyBindingWithValue(entry.Variable.Value))
-			}
+			bindings = assert.NewContextBindings(bindings, r.Resource, r.Rule.Context...)
 			errs, err := assert.Assert(r.Rule.Validation.Pattern, r.Resource, bindings)
 			if err != nil {
 				response.Failure = err

@@ -1,0 +1,26 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: Policy
+metadata:
+  name: test
+spec:
+  rules:
+    - name: pod-no-latest
+      context:
+        - name: tag
+          variable:
+            value: latest
+        - name: tag
+          variable:
+            value: (concat(':', $tag))
+      match:
+        any:
+        - resource:
+            apiVersion: v1
+            kind: Pod
+      validate:
+        pattern:
+          ~(spec.containers[*].image):
+            # an image tag is required
+            (contains(@, ':')): true
+            # using a mutable image tag e.g. 'latest' is not allowed
+            (ends_with(@, $tag)): true
