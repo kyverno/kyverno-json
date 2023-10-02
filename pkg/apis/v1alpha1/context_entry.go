@@ -7,4 +7,7 @@ type ContextEntry struct {
 
 	// Variable defines an arbitrary JMESPath context variable that can be defined inline.
 	Variable *Variable `json:"variable,omitempty"`
+
+	// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
+	ImageRegistry *ImageRegistry `json:"imageRegistry,omitempty"`
 }
