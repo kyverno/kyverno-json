@@ -5,8 +5,9 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/eddycharly/json-kyverno/pkg/engine/template/functions"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
-	"github.com/jmespath-community/go-jmespath/pkg/functions"
+	jpfunctions "github.com/jmespath-community/go-jmespath/pkg/functions"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 )
@@ -14,7 +15,12 @@ import (
 var (
 	variable = regexp.MustCompile(`{{(.*?)}}`)
 	parser   = parsing.NewParser()
-	caller   = interpreter.NewFunctionCaller(functions.GetDefaultFunctions()...)
+	caller   = interpreter.NewFunctionCaller(func() []jpfunctions.FunctionEntry {
+		var funcs []jpfunctions.FunctionEntry
+		funcs = append(funcs, jpfunctions.GetDefaultFunctions()...)
+		funcs = append(funcs, functions.GetFunctions()...)
+		return funcs
+	}()...)
 )
 
 func String(in string, value interface{}, bindings binding.Bindings) string {

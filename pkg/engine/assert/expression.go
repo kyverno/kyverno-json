@@ -2,22 +2,27 @@ package assert
 
 import (
 	"reflect"
+	"regexp"
 	"strings"
 
 	reflectutils "github.com/eddycharly/json-kyverno/pkg/utils/reflect"
 )
 
 const (
-	foreachMarker          = '~'
-	foreachPrefix          = "~"
+	defaultForeachVariable = "index"
 	expressionPrefix       = "("
 	expressionSuffix       = ")"
 	legacyExpressionPrefix = "{{"
 	legacyExpressionSuffix = "}}"
 )
 
+var (
+	foreachRegex = regexp.MustCompile(`^~(?:(\w*)\.)?`)
+	bindingRegex = regexp.MustCompile(`@(\w*)$`)
+)
+
 type expression struct {
-	foreach   bool
+	foreach   string
 	statement string
 	binding   string
 	engine    string
@@ -28,13 +33,20 @@ func parseExpression(value interface{}) *expression {
 		return nil
 	}
 	statement := reflect.ValueOf(value).String()
-	foreach := false
+	foreach := ""
 	binding := ""
 	engine := ""
-	if statement[0] == foreachMarker {
-		foreach = true
+	if match := foreachRegex.FindStringSubmatch(statement); match != nil {
+		foreach = match[1]
+		if foreach == "" {
+			foreach = defaultForeachVariable
+		}
+		statement = strings.TrimPrefix(statement, match[0])
 	}
-	statement = strings.TrimPrefix(statement, foreachPrefix)
+	if match := bindingRegex.FindStringSubmatch(statement); match != nil {
+		binding = match[1]
+		statement = strings.TrimSuffix(statement, match[0])
+	}
 	if strings.HasPrefix(statement, legacyExpressionPrefix) {
 		statement = strings.TrimPrefix(statement, legacyExpressionPrefix)
 		statement = strings.TrimSuffix(statement, legacyExpressionSuffix)
@@ -43,7 +55,7 @@ func parseExpression(value interface{}) *expression {
 		statement = strings.TrimPrefix(statement, expressionPrefix)
 		statement = strings.TrimSuffix(statement, expressionSuffix)
 		engine = "jp"
-	} else {
+	} else if binding == "" {
 		binding = strings.TrimSpace(statement)
 	}
 	return &expression{

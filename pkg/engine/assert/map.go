@@ -20,19 +20,34 @@ func (n mapNode) assert(path *field.Path, value interface{}, bindings binding.Bi
 		if err != nil {
 			return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
 		} else {
-			bindings := bindings.Register("$"+binding, projected)
-			if foreach {
-				if reflectutils.GetKind(projected) != reflect.Slice {
-					return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projected, "expected a slice")
-				} else {
+			if binding != "" {
+				bindings = bindings.Register("$"+binding, projected)
+			}
+			if foreach != "" {
+				projectedKind := reflectutils.GetKind(projected)
+				if projectedKind == reflect.Slice {
 					valueOf := reflect.ValueOf(projected)
 					for i := 0; i < valueOf.Len(); i++ {
+						bindings := bindings.Register("$"+foreach, i)
 						if _errs, err := v.assert(path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
 							return nil, err
 						} else {
 							errs = append(errs, _errs...)
 						}
 					}
+				} else if projectedKind == reflect.Map {
+					iter := reflect.ValueOf(projected).MapRange()
+					for iter.Next() {
+						key := iter.Key().Interface()
+						bindings := bindings.Register("$"+foreach, key)
+						if _errs, err := v.assert(path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings); err != nil {
+							return nil, err
+						} else {
+							errs = append(errs, _errs...)
+						}
+					}
+				} else {
+					return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projected, "expected a slice or a map")
 				}
 			} else {
 				if _errs, err := v.assert(path.Child(fmt.Sprint(k)), projected, bindings); err != nil {

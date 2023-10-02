@@ -9,23 +9,32 @@ import (
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 )
 
-func project(projection interface{}, value interface{}, bindings binding.Bindings) (interface{}, bool, string, error) {
+func project(projection interface{}, value interface{}, bindings binding.Bindings) (interface{}, string, string, error) {
 	expression := parseExpression(projection)
 	if expression != nil {
 		if expression.engine != "" {
 			projected, err := template.Execute(expression.statement, value, bindings)
 			if err != nil {
-				return nil, false, "", err
+				return nil, "", "", err
 			}
 			return projected, expression.foreach, expression.binding, nil
 		} else {
 			if reflectutils.GetKind(value) == reflect.Map {
-				return reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement)).Interface(), expression.foreach, expression.binding, nil
+				projected := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
+				if !projected.IsValid() {
+					return nil, "", "", fmt.Errorf("failed to find the map index `%s`", expression.statement)
+				}
+				return projected.Interface(), expression.foreach, expression.binding, nil
 			}
 		}
 	}
 	if reflectutils.GetKind(value) == reflect.Map {
-		return reflect.ValueOf(value).MapIndex(reflect.ValueOf(projection)).Interface(), false, fmt.Sprint(projection), nil
+		projected := reflect.ValueOf(value).MapIndex(reflect.ValueOf(projection))
+		if !projected.IsValid() {
+			return nil, "", "", fmt.Errorf("failed to find the map index `%v`", projection)
+		}
+		return projected.Interface(), "", fmt.Sprint(projection), nil
 	}
-	return value, false, "", nil
+	// TODO is this an error ?
+	return value, "", "", nil
 }
