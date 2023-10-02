@@ -1,7 +1,7 @@
 package constant
 
 import (
-	"github.com/eddycharly/json-kyverno/pkg/engine"
+	"github.com/kyverno/kyverno-json/pkg/engine"
 )
 
 type constant[TREQUEST any, TRESPONSE any] struct {

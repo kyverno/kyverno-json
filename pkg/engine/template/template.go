@@ -5,11 +5,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/eddycharly/json-kyverno/pkg/engine/template/functions"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpfunctions "github.com/jmespath-community/go-jmespath/pkg/functions"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
+	"github.com/kyverno/kyverno-json/pkg/engine/template/functions"
 )
 
 var (

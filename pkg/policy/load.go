@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
-	"github.com/eddycharly/json-kyverno/pkg/data"
-	fileinfo "github.com/eddycharly/json-kyverno/pkg/utils/file-info"
+	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/data"
+	fileinfo "github.com/kyverno/kyverno-json/pkg/utils/file-info"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/convert"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/loader"
 	yamlutils "github.com/kyverno/kyverno/pkg/utils/yaml"

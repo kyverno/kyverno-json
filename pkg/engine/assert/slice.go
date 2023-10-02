@@ -3,8 +3,8 @@ package assert
 import (
 	"reflect"
 
-	reflectutils "github.com/eddycharly/json-kyverno/pkg/utils/reflect"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 

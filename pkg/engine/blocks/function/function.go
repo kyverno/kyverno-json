@@ -1,7 +1,7 @@
 package function
 
 import (
-	"github.com/eddycharly/json-kyverno/pkg/engine"
+	"github.com/kyverno/kyverno-json/pkg/engine"
 )
 
 type function[TREQUEST any, TRESPONSE any] struct {

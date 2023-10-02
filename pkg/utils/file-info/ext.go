@@ -3,7 +3,7 @@ package fileinfo
 import (
 	"io/fs"
 
-	"github.com/eddycharly/json-kyverno/pkg/utils/file"
+	"github.com/kyverno/kyverno-json/pkg/utils/file"
 )
 
 func IsYaml(info fs.FileInfo) bool {

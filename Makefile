@@ -120,7 +120,7 @@ clean-tools: ## Remove installed tools
 # CODEGEN #
 ###########
 
-PACKAGE                     ?= github.com/eddycharly/json-kyverno
+PACKAGE                     ?= github.com/kyverno/kyverno-json
 GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1

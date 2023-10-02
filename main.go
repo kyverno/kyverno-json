@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/eddycharly/json-kyverno/pkg/commands"
+	"github.com/kyverno/kyverno-json/pkg/commands"
 )
 
 func main() {

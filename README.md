@@ -1,4 +1,4 @@
-# json-kyverno
+# kyverno-json
 
 This CLI tool is very similar to the [Kyverno CLI](https://github.com/kyverno/kyverno/tree/main/cmd/cli/kubectl-kyverno) tool.
 
@@ -164,7 +164,7 @@ This CLI tool contains an initial implementation of an SDK to allow flexible cre
 The [json-engine](./pkg/json-engine/) at the heart of this tool is built by assembling blocks provided by the [engine](./pkg/engine/) SDK.
 
 
-## Build json-kyverno
+## Build kyverno-json
 
 To build this tool locally, simply run:
 
@@ -213,12 +213,12 @@ In order to extract the data under the `resources` stanza before processing happ
 You can chain mutliple preprocessing queries by specifying the `--pre-process` flag multiple times.
 There is no limitation in a preprocessing [jmespath](https://jmespath.site) expression.
 
-## Invoke json-kyverno
+## Invoke kyverno-json
 
 ```console
 # with yaml payload
-./json-kyverno --payload ./testdata/foo-bar/payload.yaml --policy ./testdata/foo-bar/policy.yaml
+./kyverno-json --payload ./testdata/foo-bar/payload.yaml --policy ./testdata/foo-bar/policy.yaml
 
 # with json payload (and pre processing)
-./json-kyverno --payload ./testdata/tf-plan/tf.plan.json --pre-process "planned_values.root_module.resources" --policy ./testdata/tf-plan/policy.yaml
+./kyverno-json --payload ./testdata/tf-plan/tf.plan.json --pre-process "planned_values.root_module.resources" --policy ./testdata/tf-plan/policy.yaml
 ```

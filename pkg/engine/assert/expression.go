@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	reflectutils "github.com/eddycharly/json-kyverno/pkg/utils/reflect"
+	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
 const (

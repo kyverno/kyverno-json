@@ -3,7 +3,7 @@ package assert
 import (
 	"reflect"
 
-	reflectutils "github.com/eddycharly/json-kyverno/pkg/utils/reflect"
+	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
 func Parse(assertion interface{}) Assertion {

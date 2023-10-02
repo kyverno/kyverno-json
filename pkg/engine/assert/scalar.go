@@ -3,9 +3,9 @@ package assert
 import (
 	"fmt"
 
-	"github.com/eddycharly/json-kyverno/pkg/engine/match"
-	"github.com/eddycharly/json-kyverno/pkg/engine/template"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/engine/match"
+	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 

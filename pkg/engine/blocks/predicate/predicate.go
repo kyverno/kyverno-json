@@ -1,7 +1,7 @@
 package predicate
 
 import (
-	"github.com/eddycharly/json-kyverno/pkg/engine"
+	"github.com/kyverno/kyverno-json/pkg/engine"
 )
 
 type predicate[TREQUEST any, TRESPONSE any] struct {

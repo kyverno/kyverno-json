@@ -3,14 +3,14 @@ package jsonengine
 import (
 	"errors"
 
-	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
-	"github.com/eddycharly/json-kyverno/pkg/engine"
-	"github.com/eddycharly/json-kyverno/pkg/engine/assert"
-	"github.com/eddycharly/json-kyverno/pkg/engine/blocks/loop"
-	"github.com/eddycharly/json-kyverno/pkg/engine/builder"
-	"github.com/eddycharly/json-kyverno/pkg/engine/match"
-	"github.com/eddycharly/json-kyverno/pkg/engine/template"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/engine"
+	"github.com/kyverno/kyverno-json/pkg/engine/assert"
+	"github.com/kyverno/kyverno-json/pkg/engine/blocks/loop"
+	"github.com/kyverno/kyverno-json/pkg/engine/builder"
+	"github.com/kyverno/kyverno-json/pkg/engine/match"
+	"github.com/kyverno/kyverno-json/pkg/engine/template"
 )
 
 type JsonEngineRequest struct {

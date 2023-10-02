@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/eddycharly/json-kyverno/pkg/utils/file"
+	"github.com/kyverno/kyverno-json/pkg/utils/file"
 	yamlutils "github.com/kyverno/kyverno/pkg/utils/yaml"
 	"gopkg.in/yaml.v3"
 )

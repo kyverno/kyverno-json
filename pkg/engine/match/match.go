@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/eddycharly/json-kyverno/pkg/apis/v1alpha1"
-	reflectutils "github.com/eddycharly/json-kyverno/pkg/utils/reflect"
+	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"github.com/kyverno/kyverno/pkg/utils/wildcard"
 )
 

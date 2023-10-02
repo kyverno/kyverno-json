@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/eddycharly/json-kyverno/pkg/engine/template"
-	reflectutils "github.com/eddycharly/json-kyverno/pkg/utils/reflect"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
 func project(projection interface{}, value interface{}, bindings binding.Bindings) (interface{}, string, string, error) {
