@@ -4,7 +4,7 @@ metadata:
   name: test
 spec:
   rules:
-    - name: foo-bar-4
+    - name: pod-no-latest
       match:
         any:
         - resource:
@@ -12,12 +12,11 @@ spec:
             kind: Pod
       validate:
         pattern:
-          # (spec.containers[*].image):
-          #   (contains(@,':')): true
-          #   (ends_with(@,':latest')): false
-          spec:
-            ~containers:
-              image:
-                (contains(@, ':')): true
-                # (ends_with($image, ':latest')): false
-                (length($containers)): (length($spec.containers))
+          ~(spec.containers[*].image):
+            (contains(@,':')): true
+            (ends_with(@,':latest')): false
+          # spec:
+          #   ~containers:
+          #     image:
+          #       (contains(@, ':')): true
+          #       (ends_with($image, ':latest')): false
