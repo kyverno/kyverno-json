@@ -10,7 +10,7 @@ import (
 	"github.com/eddycharly/json-kyverno/pkg/engine/builder"
 	"github.com/eddycharly/json-kyverno/pkg/engine/match"
 	"github.com/eddycharly/json-kyverno/pkg/engine/template"
-	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 )
 
 type JsonEngineRequest struct {
@@ -54,12 +54,12 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 				Rule:     r.Rule,
 				Resource: r.Resource,
 			}
-			bindings := binding.NewBindings()
-			bindings = bindings.Register("$resource", r.Resource)
-			bindings = bindings.Register("$rule", r.Rule)
-			bindings = bindings.Register("$policy", r.Policy)
+			bindings := jpbinding.NewBindings()
+			bindings = bindings.Register("$resource", jpbinding.NewBinding(r.Resource))
+			bindings = bindings.Register("$rule", jpbinding.NewBinding(r.Rule))
+			bindings = bindings.Register("$policy", jpbinding.NewBinding(r.Policy))
 			for _, entry := range r.Rule.Context {
-				bindings = bindings.Register("$"+entry.Name, entry.Variable.Value)
+				bindings = bindings.Register("$"+entry.Name, template.NewLazyBindingWithValue(entry.Variable.Value))
 			}
 			errs, err := assert.Assert(r.Rule.Validation.Pattern, r.Resource, bindings)
 			if err != nil {

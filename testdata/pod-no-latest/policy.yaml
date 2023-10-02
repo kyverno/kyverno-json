@@ -5,6 +5,10 @@ metadata:
 spec:
   rules:
     - name: pod-no-latest
+      context:
+        - name: tag
+          variable:
+            value: :latest
       match:
         any:
         - resource:
@@ -18,7 +22,7 @@ spec:
                 # an image tag is required
                 (contains($foo, ':')): true
                 # using a mutable image tag e.g. 'latest' is not allowed
-                (ends_with($foo, ':latest')): false
+                (ends_with($foo, $tag)): false
             ~.containers@foo:
               image:
                 # an image tag is required

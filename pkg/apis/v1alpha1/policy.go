@@ -63,15 +63,6 @@ type Variable struct {
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
 	Value interface{} `json:"value,omitempty"`
-
-	// JMESPath is an optional JMESPath Expression that can be used to transform the variable.
-	JMESPath string `json:"jmesPath,omitempty"`
-
-	// Default is an optional arbitrary JSON object that the variable may take if the JMESPath expression evaluates to nil
-	// +kubebuilder:validation:Type=object
-	// +kubebuilder:pruning:PreserveUnknownFields
-	// +kubebuilder:validation:Schemaless
-	Default interface{} `json:"default,omitempty"`
 }
 
 type MatchResources struct {
