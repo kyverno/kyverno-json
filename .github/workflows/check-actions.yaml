@@ -9,7 +9,7 @@ on:
       - 'release*'
 
 jobs:
-  check:
+  required:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

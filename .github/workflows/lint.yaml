@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests:
+  required:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
