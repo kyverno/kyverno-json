@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmespath-community/go-jmespath v1.1.1
-	github.com/kyverno/kyverno v1.5.0-rc1.0.20230927190803-27858f634e28
+	github.com/kyverno/kyverno v1.11.0-beta.4
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v3 v3.0.1

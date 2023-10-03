@@ -946,8 +946,8 @@ github.com/kunwardeep/paralleltest v1.0.2/go.mod h1:ZPqNm1fVHPllh5LPVujzbVz1JN2G
 github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0SNc=
 github.com/kylelemons/godebug v1.1.0/go.mod h1:9/0rRGxNHcop5bhtWyNeEfOS8JIWk580+fNqagV/RAw=
 github.com/kyoh86/exportloopref v0.1.8/go.mod h1:1tUcJeiioIs7VWe5gcOObrux3lb66+sBqGZrRkMwPgg=
-github.com/kyverno/kyverno v1.5.0-rc1.0.20230927190803-27858f634e28 h1:2eUrRgwGsYcthI9+si26zi7LclyC2Cy7kMVxzvJRMbg=
-github.com/kyverno/kyverno v1.5.0-rc1.0.20230927190803-27858f634e28/go.mod h1:+UK6hUZKISlNFGWDlSuf6qIfI9xTfgFY3W7qT0h5BbQ=
+github.com/kyverno/kyverno v1.11.0-beta.4 h1:QxzTscQg4/68TY2cWxVostgg2QtbQIB4VfcWO+0MK9o=
+github.com/kyverno/kyverno v1.11.0-beta.4/go.mod h1:i/QVQ7mihIndXw79I/Hjz5j3vbhwxGiGE2PKHhfjLeQ=
 github.com/ldez/gomoddirectives v0.2.1/go.mod h1:sGicqkRgBOg//JfpXwkB9Hj0X5RyJ7mlACM5B9f6Me4=
 github.com/ldez/tagliatelle v0.2.0/go.mod h1:8s6WJQwEYHbKZDsp/LjArytKOG8qaMrKQQ3mFukHs88=
 github.com/leodido/go-urn v1.2.4 h1:XlAE/cm/ms7TE/VMVoduSpNBoyc2dOxHs5MZSwAN63Q=
