@@ -1,6 +1,8 @@
 package file
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestIsYaml(t *testing.T) {
 	tests := []struct {

@@ -18,9 +18,11 @@ spec:
             apiVersion: v1
             kind: Pod
       validate:
-        pattern:
-          ~(spec.containers[*].image):
-            # an image tag is required
-            (contains(@, ':')): true
-            # using a mutable image tag e.g. 'latest' is not allowed
-            (ends_with(@, $tag)): true
+        assert:
+          all:
+          - resource:
+              ~(spec.containers[*].image):
+                # an image tag is required
+                (contains(@, ':')): true
+                # using a mutable image tag e.g. 'latest' is not allowed
+                (ends_with(@, $tag)): true

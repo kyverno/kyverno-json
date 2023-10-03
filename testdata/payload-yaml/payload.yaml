@@ -15,11 +15,9 @@ planned_values:
         tags:
           Environment: Dev
           Name: My bucket
-          Team: Kyverno
         tags_all:
           Environment: Dev
           Name: My bucket
-          Team: Kyverno
         timeouts:
       sensitive_values:
         cors_rule: []
