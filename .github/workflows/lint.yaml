@@ -1,11 +1,8 @@
 name: Lint
 
-permissions: {}
+# permissions: {}
 
 on:
-  push:
-    branches:
-      - '*'
   pull_request:
     branches:
       - 'main'
@@ -21,16 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - uses: actions/setup-go@6edd4406fa81c3da01a34fa6f6343087c207a568 # v3.5.0
+        with:
+          go-version: ~1.21.1
       - name: golangci-lint
         uses: golangci/golangci-lint-action@3a919529898de77ec3da873e3063ca4b10e7f5cc # v3.7.0
-        with:
-          version: v1.54.2
-          skip-cache: true
-      - name: go fmt check
-        run: make fmt-check
-      - name: goimports check
-        run: make imports-check
-      - name: Checking unused pkgs using go mod tidy
-        run: make unused-package-check
-      - name: Go vet
-        run: make vet

@@ -34,7 +34,7 @@ func Parse(assertion interface{}) Assertion {
 }
 
 // mapNode is the assertion type represented by a map.
-// it is reponsible for projecting the analysed resource and passing the result to the descendant
+// it is responsible for projecting the analysed resource and passing the result to the descendant
 type mapNode map[interface{}]Assertion
 
 func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
