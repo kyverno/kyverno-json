@@ -1,6 +1,8 @@
 package v1alpha1
 
-import "github.com/jinzhu/copier"
+import (
+	"github.com/jinzhu/copier"
+)
 
 type Value = interface{}
 

@@ -14,6 +14,9 @@ type Variable struct {
 }
 
 func (in *Variable) DeepCopy() *Variable {
+	if in == nil {
+		return nil
+	}
 	out := &Variable{}
 	if err := copier.Copy(out, in); err != nil {
 		panic("deep copy failed")
