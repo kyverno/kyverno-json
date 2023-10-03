@@ -104,74 +104,46 @@ spec:
                         type: object
                       type: array
                     exclude:
-                      description: ExcludeResources defines when this policy rule
-                        should not be applied. The exclude criteria can include resource
-                        information (e.g. kind, name, namespace, labels) and admission
-                        review request information like the name or role.
+                      description: Exclude defines when this policy rule should not
+                        be applied. The exclude criteria can include resource information
+                        (e.g. kind, name, namespace, labels) and admission review
+                        request information like the name or role.
                       properties:
                         all:
                           description: All allows specifying resources which will
                             be ANDed.
                           items:
-                            description: ResourceFilter allow users to "AND" or "OR"
-                              between resources.
-                            properties:
-                              resource:
-                                description: ResourceDescription contains information
-                                  about the resource being created or modified.
-                                type: object
-                                x-kubernetes-preserve-unknown-fields: true
                             type: object
+                            x-kubernetes-preserve-unknown-fields: true
                           type: array
                         any:
                           description: Any allows specifying resources which will
                             be ORed.
                           items:
-                            description: ResourceFilter allow users to "AND" or "OR"
-                              between resources.
-                            properties:
-                              resource:
-                                description: ResourceDescription contains information
-                                  about the resource being created or modified.
-                                type: object
-                                x-kubernetes-preserve-unknown-fields: true
                             type: object
+                            x-kubernetes-preserve-unknown-fields: true
                           type: array
                       type: object
                     match:
-                      description: MatchResources defines when this policy rule should
-                        be applied. The match criteria can include resource information
-                        (e.g. kind, name, namespace, labels) and admission review
-                        request information like the user name or role. At least one
-                        kind is required.
+                      description: Match defines when this policy rule should be applied.
+                        The match criteria can include resource information (e.g.
+                        kind, name, namespace, labels) and admission review request
+                        information like the user name or role. At least one kind
+                        is required.
                       properties:
                         all:
                           description: All allows specifying resources which will
                             be ANDed.
                           items:
-                            description: ResourceFilter allow users to "AND" or "OR"
-                              between resources.
-                            properties:
-                              resource:
-                                description: ResourceDescription contains information
-                                  about the resource being created or modified.
-                                type: object
-                                x-kubernetes-preserve-unknown-fields: true
                             type: object
+                            x-kubernetes-preserve-unknown-fields: true
                           type: array
                         any:
                           description: Any allows specifying resources which will
                             be ORed.
                           items:
-                            description: ResourceFilter allow users to "AND" or "OR"
-                              between resources.
-                            properties:
-                              resource:
-                                description: ResourceDescription contains information
-                                  about the resource being created or modified.
-                                type: object
-                                x-kubernetes-preserve-unknown-fields: true
                             type: object
+                            x-kubernetes-preserve-unknown-fields: true
                           type: array
                       type: object
                     name:
@@ -182,15 +154,29 @@ spec:
                     validate:
                       description: Validation is used to validate matching resources.
                       properties:
+                        assert:
+                          description: Assert specifies an overlay-style pattern used
+                            to check resources.
+                          properties:
+                            all:
+                              description: All allows specifying resources which will
+                                be ANDed.
+                              items:
+                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
+                              type: array
+                            any:
+                              description: Any allows specifying resources which will
+                                be ORed.
+                              items:
+                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
+                              type: array
+                          type: object
                         message:
                           description: Message specifies a custom message to be displayed
                             on failure.
                           type: string
-                        pattern:
-                          description: Pattern specifies an overlay-style pattern
-                            used to check resources.
-                          type: object
-                          x-kubernetes-preserve-unknown-fields: true
                       type: object
                   required:
                   - name

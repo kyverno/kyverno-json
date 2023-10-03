@@ -3,13 +3,13 @@ package jsonengine
 import (
 	"errors"
 
+	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/loop"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
-	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 )
 
@@ -20,7 +20,7 @@ type JsonEngineRequest struct {
 
 type JsonEngineResponse struct {
 	Policy   *v1alpha1.Policy
-	Rule     *v1alpha1.Rule
+	Rule     v1alpha1.Rule
 	Resource interface{}
 	Failure  error
 	Error    error
@@ -28,19 +28,26 @@ type JsonEngineResponse struct {
 
 func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	type request struct {
-		Policy   *v1alpha1.Policy
-		Rule     *v1alpha1.Rule
-		Resource interface{}
+		policy   *v1alpha1.Policy
+		rule     v1alpha1.Rule
+		value    map[string]interface{}
+		bindings binding.Bindings
 	}
 	looper := func(r JsonEngineRequest) []request {
 		var requests []request
+		bindings := jpbinding.NewBindings()
 		for _, resource := range r.Resources {
+			bindings = bindings.Register("$resource", jpbinding.NewBinding(resource))
 			for _, policy := range r.Policies {
+				bindings = bindings.Register("$policy", jpbinding.NewBinding(policy))
 				for _, rule := range policy.Spec.Rules {
+					bindings = bindings.Register("$rule", jpbinding.NewBinding(rule))
+					bindings = assert.NewContextBindings(bindings, resource, rule.Context...)
 					requests = append(requests, request{
-						Policy:   policy,
-						Rule:     &rule,
-						Resource: resource,
+						policy:   policy,
+						rule:     rule,
+						value:    map[string]interface{}{"resource": resource},
+						bindings: bindings,
 					})
 				}
 			}
@@ -50,21 +57,16 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	inner := builder.
 		Function(func(r request) JsonEngineResponse {
 			response := JsonEngineResponse{
-				Policy:   r.Policy,
-				Rule:     r.Rule,
-				Resource: r.Resource,
+				Policy:   r.policy,
+				Rule:     r.rule,
+				Resource: r.value["resource"],
 			}
-			bindings := jpbinding.NewBindings()
-			bindings = bindings.Register("$resource", jpbinding.NewBinding(r.Resource))
-			bindings = bindings.Register("$rule", jpbinding.NewBinding(r.Rule))
-			bindings = bindings.Register("$policy", jpbinding.NewBinding(r.Policy))
-			bindings = assert.NewContextBindings(bindings, r.Resource, r.Rule.Context...)
-			errs, err := assert.Assert(r.Rule.Validation.Pattern, r.Resource, bindings)
+			errs, err := assert.Match(nil, r.rule.Validation.Assert, r.value, r.bindings)
 			if err != nil {
 				response.Failure = err
 			} else if err := errs.ToAggregate(); err != nil {
-				if r.Rule.Validation.Message != "" {
-					response.Error = errors.New(template.String(r.Rule.Validation.Message, r.Resource, bindings))
+				if r.rule.Validation.Message != "" {
+					response.Error = errors.New(template.String(r.rule.Validation.Message, r.value, r.bindings))
 				} else {
 					response.Error = err
 				}
@@ -72,15 +74,15 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			return response
 		}).
 		Predicate(func(r request) bool {
-			match, err := match.MatchResources(r.Rule.ExcludeResources, r.Resource)
-			return err == nil && !match
+			errs, err := assert.Match(nil, r.rule.Exclude, r.value, r.bindings)
+			return err == nil && len(errs) != 0
 		}).
 		Predicate(func(r request) bool {
-			if r.Rule.MatchResources == nil {
+			if r.rule.Match == nil {
 				return true
 			}
-			match, err := match.MatchResources(r.Rule.MatchResources, r.Resource)
-			return err == nil && match
+			errs, err := assert.Match(nil, r.rule.Match, r.value, r.bindings)
+			return err == nil && len(errs) == 0
 		})
 	// TODO: we can't use the builder package for loops :(
 	return loop.New(inner, looper)

@@ -87,3 +87,16 @@ func Test_PodAllLatest(t *testing.T) {
 	err := cmd.Execute()
 	assert.NoError(t, err)
 }
+
+func Test_Jim(t *testing.T) {
+	cmd := NewRootCommand()
+	assert.NotNil(t, cmd)
+	cmd.SetArgs([]string{
+		"--payload",
+		"../../testdata/jim/payload.json",
+		"--policy",
+		"../../testdata/jim/policy.yaml",
+	})
+	err := cmd.Execute()
+	assert.NoError(t, err)
+}

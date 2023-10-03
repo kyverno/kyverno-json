@@ -8,16 +8,16 @@ type Rule struct {
 	// Context defines variables and data sources that can be used during rule execution.
 	Context []ContextEntry `json:"context,omitempty"`
 
-	// MatchResources defines when this policy rule should be applied. The match
+	// Match defines when this policy rule should be applied. The match
 	// criteria can include resource information (e.g. kind, name, namespace, labels)
 	// and admission review request information like the user name or role.
 	// At least one kind is required.
-	MatchResources *MatchResources `json:"match,omitempty"`
+	Match *Match `json:"match,omitempty"`
 
-	// ExcludeResources defines when this policy rule should not be applied. The exclude
+	// Exclude defines when this policy rule should not be applied. The exclude
 	// criteria can include resource information (e.g. kind, name, namespace, labels)
 	// and admission review request information like the name or role.
-	ExcludeResources *MatchResources `json:"exclude,omitempty"`
+	Exclude *Match `json:"exclude,omitempty"`
 
 	// Validation is used to validate matching resources.
 	Validation *Validation `json:"validate,omitempty"`
