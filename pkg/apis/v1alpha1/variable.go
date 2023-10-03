@@ -1,5 +1,9 @@
 package v1alpha1
 
+import (
+	"github.com/jinzhu/copier"
+)
+
 // Variable defines an arbitrary JMESPath context variable that can be defined inline.
 // +k8s:deepcopy-gen=false
 type Variable struct {
@@ -10,6 +14,9 @@ type Variable struct {
 }
 
 func (in *Variable) DeepCopy() *Variable {
-	// TODO
-	return nil
+	out := &Variable{}
+	if err := copier.Copy(out, in); err != nil {
+		panic("deep copy failed")
+	}
+	return out
 }
