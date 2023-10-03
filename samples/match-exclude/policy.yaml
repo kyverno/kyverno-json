@@ -1,0 +1,19 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: Policy
+metadata:
+  name: required-s3-tags
+spec:
+  rules:
+    - name: require-team-tag
+      match:
+        any:
+        - resource: 
+            type: aws_s3_bucket
+      exclude:
+        any:
+        - resource:
+            name: bypass-*
+      validate:
+        pattern:
+          tags:
+            Team: ?*

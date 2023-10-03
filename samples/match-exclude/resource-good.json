@@ -1,0 +1,7 @@
+{
+    "type": "aws_s3_bucket",
+    "name": "bucket1",
+    "tags": {
+        "Team": "A-Team"
+    }
+}
