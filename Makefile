@@ -179,8 +179,19 @@ vet: ## Run go vet
 	@echo Go vet... >&2
 	@go vet ./...
 
+.PHONY: build
 build: fmt vet codegen-all ## Build
+	@echo Building... >&2
 	@go build -ldflags=$(LD_FLAGS) .
+
+########
+# TEST #
+########
+
+.PHONY: tests
+tests: ## Run tests
+	@echo Running tests... >&2
+	@go test ./...
 
 ########
 # HELP #
