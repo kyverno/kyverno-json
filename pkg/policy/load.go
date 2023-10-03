@@ -9,10 +9,9 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/data"
 	fileinfo "github.com/kyverno/kyverno-json/pkg/utils/file-info"
+	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/convert"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/loader"
 	yamlutils "github.com/kyverno/kyverno/pkg/utils/yaml"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/kubectl-validate/pkg/openapiclient"
 )
@@ -81,9 +80,7 @@ func Parse(content []byte) ([]*v1alpha1.Policy, error) {
 		}
 		switch gvk {
 		case policy_v1alpha1:
-			// TODO: don't use kyverno's convert for now to workaround the bug in api machinery code
-			// https://kubernetes.slack.com/archives/C0EG7JC6T/p1696331287543159
-			policy, err := To[v1alpha1.Policy](untyped)
+			policy, err := convert.To[v1alpha1.Policy](untyped)
 			if err != nil {
 				return nil, err
 			}
@@ -93,16 +90,4 @@ func Parse(content []byte) ([]*v1alpha1.Policy, error) {
 		}
 	}
 	return policies, nil
-}
-
-func Into[T any](untyped unstructured.Unstructured, result *T) error {
-	return runtime.DefaultUnstructuredConverter.FromUnstructured(untyped.UnstructuredContent(), result)
-}
-
-func To[T any](untyped unstructured.Unstructured) (*T, error) {
-	var result T
-	if err := Into(untyped, &result); err != nil {
-		return nil, err
-	}
-	return &result, nil
 }

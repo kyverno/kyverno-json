@@ -12,8 +12,7 @@ spec:
       context:
       - name: tags
         variable:
-          value:
-            Team: Kyverno
+          Team: Kyverno
       validate:
         message: Bucket `{{ resource.name }}` ({{ resource.address }}) does not have the required tags {{ to_string($tags) }}
         assert:
