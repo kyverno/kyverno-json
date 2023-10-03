@@ -5,5 +5,5 @@ type Variable struct {
 	// Value is any arbitrary object.
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
-	Value interface{} `json:"value,omitempty"`
+	Value Any `json:"value,omitempty"`
 }

@@ -120,7 +120,8 @@ clean-tools: ## Remove installed tools
 # CODEGEN #
 ###########
 
-PACKAGE                     ?= github.com/kyverno/kyverno-json
+ORG                         ?= kyverno
+PACKAGE                     ?= github.com/$(ORG)/kyverno-json
 GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
@@ -133,24 +134,22 @@ $(GOPATH_SHIM):
 .INTERMEDIATE: $(PACKAGE_SHIM)
 $(PACKAGE_SHIM): $(GOPATH_SHIM)
 	@echo Create package shim... >&2
-	@mkdir -p $(GOPATH_SHIM)/src/github.com/eddycharly && ln -s -f ${PWD} $(PACKAGE_SHIM)
+	@mkdir -p $(GOPATH_SHIM)/src/github.com/$(ORG) && ln -s -f ${PWD} $(PACKAGE_SHIM)
 
-# TODO: doesn't work because structs lack DeepCopy
-# .PHONY: codegen-register
-# codegen-register: $(PACKAGE_SHIM) $(REGISTER_GEN) ## Generate types registrations
-# 	@echo Generate registration... >&2
-# 	@GOPATH=$(GOPATH_SHIM) $(REGISTER_GEN) \
-# 		--go-header-file=./scripts/boilerplate.go.txt \
-# 		--input-dirs=$(INPUT_DIRS)
+.PHONY: codegen-register
+codegen-register: $(PACKAGE_SHIM) $(REGISTER_GEN) ## Generate types registrations
+	@echo Generate registration... >&2
+	@GOPATH=$(GOPATH_SHIM) $(REGISTER_GEN) \
+		--go-header-file=./scripts/boilerplate.go.txt \
+		--input-dirs=$(INPUT_DIRS)
 
-# TODO: doesn't work with interface{}
-# .PHONY: codegen-deepcopy
-# codegen-deepcopy: $(PACKAGE_SHIM) $(DEEPCOPY_GEN) ## Generate deep copy functions
-# 	@echo Generate deep copy functions... >&2
-# 	@GOPATH=$(GOPATH_SHIM) $(DEEPCOPY_GEN) \
-# 		--go-header-file=./scripts/boilerplate.go.txt \
-# 		--input-dirs=$(INPUT_DIRS) \
-# 		--output-file-base=zz_generated.deepcopy
+.PHONY: codegen-deepcopy
+codegen-deepcopy: $(PACKAGE_SHIM) $(DEEPCOPY_GEN) ## Generate deep copy functions
+	@echo Generate deep copy functions... >&2
+	@GOPATH=$(GOPATH_SHIM) $(DEEPCOPY_GEN) \
+		--go-header-file=./scripts/boilerplate.go.txt \
+		--input-dirs=$(INPUT_DIRS) \
+		--output-file-base=zz_generated.deepcopy
 
 .PHONY: codegen-crds
 codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
@@ -162,7 +161,7 @@ codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@cp config/crds/* pkg/data/crds
 
 .PHONY: codegen-all
-codegen-all: codegen-crds ## Rebuild all generated code
+codegen-all: codegen-crds codegen-deepcopy codegen-register ## Rebuild all generated code
 
 #########
 # BUILD #
