@@ -28,7 +28,7 @@ linters:
     - noctx
     - nolintlint
     - nosprintfhostport
-    - paralleltest
+    # - paralleltest
     - staticcheck
     - tenv
     - thelper

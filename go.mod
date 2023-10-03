@@ -3,6 +3,7 @@ module github.com/kyverno/kyverno-json
 go 1.21
 
 require (
+	github.com/jinzhu/copier v0.4.0
 	github.com/jmespath-community/go-jmespath v1.1.1
 	github.com/kyverno/kyverno v1.5.0-rc1.0.20230927190803-27858f634e28
 	github.com/spf13/cobra v1.7.0
@@ -154,7 +155,6 @@ require (
 	github.com/in-toto/in-toto-golang v0.9.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jedisct1/go-minisign v0.0.0-20230811132847-661be99b8267 // indirect
-	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
