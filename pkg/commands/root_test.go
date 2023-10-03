@@ -76,12 +76,12 @@ func Test_Execute(t *testing.T) {
 			}
 			args = append(args, "--payload", tt.payload)
 			cmd.SetArgs(args)
-			b := bytes.NewBufferString("")
-			cmd.SetOut(b)
+			out := bytes.NewBufferString("")
+			cmd.SetOut(out)
 			if err := cmd.Execute(); (err != nil) != tt.wantErr {
 				t.Errorf("command.Run() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			actual, err := io.ReadAll(b)
+			actual, err := io.ReadAll(out)
 			assert.NoError(t, err)
 			if tt.out != "" {
 				expected, err := os.ReadFile(tt.out)
