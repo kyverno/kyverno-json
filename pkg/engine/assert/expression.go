@@ -55,9 +55,9 @@ func parseExpression(value interface{}) *expression {
 		statement = strings.TrimPrefix(statement, expressionPrefix)
 		statement = strings.TrimSuffix(statement, expressionSuffix)
 		engine = "jp"
-	} else if binding == "" {
+	} /* else if binding == "" {
 		binding = strings.TrimSpace(statement)
-	}
+	}*/
 	return &expression{
 		foreach:   foreach,
 		statement: strings.TrimSpace(statement),

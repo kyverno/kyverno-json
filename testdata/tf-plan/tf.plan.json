@@ -16,13 +16,11 @@
                         "force_destroy": false,
                         "tags": {
                             "Environment": "Dev",
-                            "Name": "My bucket",
-                            "Team": "Kyverno"
+                            "Name": "My bucket"
                         },
                         "tags_all": {
                             "Environment": "Dev",
-                            "Name": "My bucket",
-                            "Team": "Kyverno"
+                            "Name": "My bucket"
                         },
                         "timeouts": null
                     },

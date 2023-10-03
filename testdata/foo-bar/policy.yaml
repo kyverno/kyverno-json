@@ -6,6 +6,7 @@ spec:
   rules:
     - name: foo-bar-4
       validate:
-        pattern:
-          foo:
-            bar: 4
+        assert:
+          all:
+          - foo:
+              bar: 4

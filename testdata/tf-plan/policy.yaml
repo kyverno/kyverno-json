@@ -16,6 +16,8 @@ spec:
             Team: Kyverno
       validate:
         message: Bucket `{{ resource.name }}` ({{ resource.address }}) does not have the required tags {{ to_string($tags) }}
-        pattern:
-          values:
-            tags: '{{ $tags }}'
+        assert:
+          all:
+          - resource:
+              values:
+                tags: ($tags)
