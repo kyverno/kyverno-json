@@ -7,8 +7,7 @@ spec:
     - name: pod-no-latest
       context:
         - name: tag
-          variable:
-            value: :latest
+          variable: :latest
       match:
         any:
         - resource:

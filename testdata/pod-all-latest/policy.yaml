@@ -7,11 +7,9 @@ spec:
     - name: pod-no-latest
       context:
         - name: tag
-          variable:
-            value: latest
+          variable: latest
         - name: tag
-          variable:
-            value: (concat(':', $tag))
+          variable: (concat(':', $tag))
       match:
         any:
         - resource:
