@@ -415,10 +415,10 @@ There is no limitation in a preprocessing [jmespath](https://jmespath.site) expr
 
 ```console
 # with yaml payload
-./kyverno-json --payload ./testdata/foo-bar/payload.yaml --policy ./testdata/foo-bar/policy.yaml
+./kyverno-json scan --payload ./testdata/foo-bar/payload.yaml --policy ./testdata/foo-bar/policy.yaml
 
 # with json payload (and pre processing)
-./kyverno-json --payload ./testdata/tf-plan/tf.plan.json --pre-process "planned_values.root_module.resources" --policy ./testdata/tf-plan/policy.yaml
+./kyverno-json scan --payload ./testdata/tf-plan/tf.plan.json --pre-process "planned_values.root_module.resources" --policy ./testdata/tf-plan/policy.yaml
 ```
 
 ## Documentation
