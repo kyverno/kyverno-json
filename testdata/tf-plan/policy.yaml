@@ -7,16 +7,14 @@ spec:
     - name: require-team-tag
       match:
         any:
-        - resource:
-            type: aws_s3_bucket
+        - type: aws_s3_bucket
       context:
       - name: tags
         variable:
           Team: Kyverno
       validate:
-        message: Bucket `{{ resource.name }}` ({{ resource.address }}) does not have the required tags {{ to_string($tags) }}
+        message: Bucket `{{ name }}` ({{ address }}) does not have the required tags {{ to_string($tags) }}
         assert:
           all:
-          - resource:
-              values:
-                tags: ($tags)
+          - values:
+              tags: ($tags)

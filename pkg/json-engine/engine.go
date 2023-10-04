@@ -30,7 +30,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	type request struct {
 		policy   *v1alpha1.Policy
 		rule     v1alpha1.Rule
-		value    map[string]interface{}
+		value    interface{}
 		bindings binding.Bindings
 	}
 	looper := func(r JsonEngineRequest) []request {
@@ -46,7 +46,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 					requests = append(requests, request{
 						policy:   policy,
 						rule:     rule,
-						value:    map[string]interface{}{"resource": resource},
+						value:    resource,
 						bindings: bindings,
 					})
 				}
@@ -59,7 +59,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			response := JsonEngineResponse{
 				Policy:   r.policy,
 				Rule:     r.rule,
-				Resource: r.value["resource"],
+				Resource: r.value,
 			}
 			errs, err := assert.Match(nil, r.rule.Validation.Assert, r.value, r.bindings)
 			if err != nil {

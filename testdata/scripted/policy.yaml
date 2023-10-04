@@ -8,10 +8,8 @@ spec:
       validate:
         assert:
           all:
-          - resource:
-              foo:
-                (bar > `3`): true
-                (!baz): false
-          - resource:
-              foo:
-                (bar + bat): 10
+          - foo:
+              (bar > `3`): true
+              (!baz): false
+          - foo:
+              (bar + bat): 10
