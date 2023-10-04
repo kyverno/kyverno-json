@@ -12,7 +12,7 @@ body:
     attributes:
       label: Kyverno JSON Version
       description: >-
-        What version of the Kyverno JSON are you running (`kyverno version`)?
+        What version of the Kyverno JSON are you running?
       options:
         - 1.0.0
     validations:
