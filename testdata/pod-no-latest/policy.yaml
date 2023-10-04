@@ -23,7 +23,7 @@ spec:
                   # using a mutable image tag e.g. 'latest' is not allowed
                   (ends_with($foo, $tag)): false
           - spec:
-              ~.containers@foo:
+              ~containers@foo:
                 image:
                   # an image tag is required
                   (contains(@, ':')): true

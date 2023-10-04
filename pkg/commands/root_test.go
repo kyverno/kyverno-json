@@ -61,6 +61,12 @@ func Test_Execute(t *testing.T) {
 		policies:      []string{"../../testdata/tf-plan/policy.yaml"},
 		out:           "../../testdata/tf-plan/out.txt",
 		wantErr:       false,
+	}, {
+		name:     "escaped",
+		payload:  "../../testdata/escaped/payload.yaml",
+		policies: []string{"../../testdata/escaped/policy.yaml"},
+		out:      "../../testdata/escaped/out.txt",
+		wantErr:  false,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

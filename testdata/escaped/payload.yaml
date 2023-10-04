@@ -1,0 +1,7 @@
+foo:
+  (bar): 4
+  (bar)@test: 6
+  ~foos:
+  - 1
+  - 2
+  - 3

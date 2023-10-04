@@ -21,7 +21,7 @@ func NewContextBinding(path *field.Path, bindings binding.Bindings, value interf
 		func() (interface{}, error) {
 			expression := parseExpression(entry.Variable.Value)
 			if expression != nil && expression.engine != "" {
-				if expression.foreach != "" {
+				if expression.foreachName != "" {
 					return nil, field.Invalid(path.Child("variable", "value"), entry.Variable.Value, "foreach is not supported in context")
 				}
 				if expression.binding != "" {
