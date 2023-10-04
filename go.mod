@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/jinzhu/copier v0.4.0
-	github.com/jmespath-community/go-jmespath v1.1.1
+	github.com/jmespath-community/go-jmespath v1.1.2-0.20231004164315-78945398586a
 	github.com/kyverno/kyverno v1.11.0-beta.4
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
@@ -301,5 +301,3 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.3.0 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
-
-replace github.com/jmespath-community/go-jmespath => github.com/eddycharly/go-community-jmespath v1.1.1-0.20231002150022-0274ad918d4c
