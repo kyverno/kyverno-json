@@ -40,19 +40,22 @@ type mapNode map[interface{}]Assertion
 func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for k, v := range n {
-		projected, foreach, binding, err := project(k, value, bindings)
+		projection, err := project(k, value, bindings)
 		if err != nil {
 			return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
 		} else {
-			if binding != "" {
-				bindings = bindings.Register("$"+binding, jpbinding.NewBinding(projected))
+			if projection.binding != "" {
+				bindings = bindings.Register("$"+projection.binding, jpbinding.NewBinding(projection.result))
 			}
-			if foreach != "" {
-				projectedKind := reflectutils.GetKind(projected)
+			if projection.foreach {
+				projectedKind := reflectutils.GetKind(projection.result)
 				if projectedKind == reflect.Slice {
-					valueOf := reflect.ValueOf(projected)
+					valueOf := reflect.ValueOf(projection.result)
 					for i := 0; i < valueOf.Len(); i++ {
-						bindings := bindings.Register("$"+foreach, jpbinding.NewBinding(i))
+						bindings := bindings
+						if projection.foreachName != "" {
+							bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(i))
+						}
 						if _errs, err := v.assert(path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
 							return nil, err
 						} else {
@@ -60,10 +63,13 @@ func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.
 						}
 					}
 				} else if projectedKind == reflect.Map {
-					iter := reflect.ValueOf(projected).MapRange()
+					iter := reflect.ValueOf(projection.result).MapRange()
 					for iter.Next() {
 						key := iter.Key().Interface()
-						bindings := bindings.Register("$"+foreach, jpbinding.NewBinding(key))
+						bindings := bindings
+						if projection.foreachName != "" {
+							bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(key))
+						}
 						if _errs, err := v.assert(path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings); err != nil {
 							return nil, err
 						} else {
@@ -71,10 +77,10 @@ func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.
 						}
 					}
 				} else {
-					return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projected, "expected a slice or a map")
+					return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projection.result, "expected a slice or a map")
 				}
 			} else {
-				if _errs, err := v.assert(path.Child(fmt.Sprint(k)), projected, bindings); err != nil {
+				if _errs, err := v.assert(path.Child(fmt.Sprint(k)), projection.result, bindings); err != nil {
 					return nil, err
 				} else {
 					errs = append(errs, _errs...)
@@ -125,7 +131,7 @@ func (n *scalarNode) assert(path *field.Path, value interface{}, bindings bindin
 	// this is to avoid the case where the value is a map and the RHS is a string
 	// TODO: we need a way to escape the projection
 	if expression != nil && expression.engine != "" {
-		if expression.foreach != "" {
+		if expression.foreachName != "" {
 			return nil, field.Invalid(path, rhs, "foreach is not supported on the RHS")
 		}
 		if expression.binding != "" {

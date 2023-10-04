@@ -3,65 +3,62 @@ package assert
 import (
 	"reflect"
 	"regexp"
-	"strings"
 
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
-const (
-	defaultForeachVariable = "index"
-	expressionPrefix       = "("
-	expressionSuffix       = ")"
-	legacyExpressionPrefix = "{{"
-	legacyExpressionSuffix = "}}"
-)
-
 var (
-	foreachRegex = regexp.MustCompile(`^~(?:(\w*)\.)?`)
-	bindingRegex = regexp.MustCompile(`@(\w*)$`)
+	foreachRegex = regexp.MustCompile(`^~(?:(\w+)\.)?(.*)`)
+	bindingRegex = regexp.MustCompile(`(.*)@(\w+)$`)
+	escapeRegex  = regexp.MustCompile(`^/(.+)/$`)
+	engineRegex  = regexp.MustCompile(`^\((?:(\w+):)?(.+)\)$`)
 )
 
 type expression struct {
-	foreach   string
-	statement string
-	binding   string
-	engine    string
+	foreach     bool
+	foreachName string
+	statement   string
+	binding     string
+	engine      string
+}
+
+func parseExpressionRegex(in string) *expression {
+	expression := &expression{}
+	// 1. match foreach
+	if match := foreachRegex.FindStringSubmatch(in); match != nil {
+		expression.foreach = true
+		expression.foreachName = match[1]
+		in = match[2]
+	}
+	// 2. match binding
+	if match := bindingRegex.FindStringSubmatch(in); match != nil {
+		expression.binding = match[2]
+		in = match[1]
+	}
+	// 3. match escape, if there's no escaping then match engine
+	if match := escapeRegex.FindStringSubmatch(in); match != nil {
+		in = match[1]
+	} else {
+		if match := engineRegex.FindStringSubmatch(in); match != nil {
+			expression.engine = match[1]
+			// account for default engine
+			if expression.engine == "" {
+				expression.engine = "jp"
+			}
+			in = match[2]
+		}
+	}
+	// parse statement
+	expression.statement = in
+	if expression.statement == "" {
+		return nil
+	}
+	return expression
 }
 
 func parseExpression(value interface{}) *expression {
 	if reflectutils.GetKind(value) != reflect.String {
 		return nil
 	}
-	statement := reflect.ValueOf(value).String()
-	foreach := ""
-	binding := ""
-	engine := ""
-	if match := foreachRegex.FindStringSubmatch(statement); match != nil {
-		foreach = match[1]
-		if foreach == "" {
-			foreach = defaultForeachVariable
-		}
-		statement = strings.TrimPrefix(statement, match[0])
-	}
-	if match := bindingRegex.FindStringSubmatch(statement); match != nil {
-		binding = match[1]
-		statement = strings.TrimSuffix(statement, match[0])
-	}
-	if strings.HasPrefix(statement, legacyExpressionPrefix) {
-		statement = strings.TrimPrefix(statement, legacyExpressionPrefix)
-		statement = strings.TrimSuffix(statement, legacyExpressionSuffix)
-		engine = "jp"
-	} else if strings.HasPrefix(statement, expressionPrefix) {
-		statement = strings.TrimPrefix(statement, expressionPrefix)
-		statement = strings.TrimSuffix(statement, expressionSuffix)
-		engine = "jp"
-	} /* else if binding == "" {
-		binding = strings.TrimSpace(statement)
-	}*/
-	return &expression{
-		foreach:   foreach,
-		statement: strings.TrimSpace(statement),
-		binding:   binding,
-		engine:    engine,
-	}
+	return parseExpressionRegex(reflect.ValueOf(value).String())
 }
