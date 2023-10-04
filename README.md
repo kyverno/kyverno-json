@@ -237,9 +237,6 @@ This is possible to add an explicit at every node in the tree by appending the `
 Given the input document:
 
 ```yaml
-Given the input payload below:
-
-```yaml
 foo:
   bar: 4
   bat: 6
