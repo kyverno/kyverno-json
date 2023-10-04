@@ -1,6 +1,5 @@
-# `kyverno-json` user documentation
+# User docs
 
-This documentations contains user docs for:
+This documentation contains the following user docs:
 
-- [API references (markdown format)](./apis/md/kyverno-json.v1alpha1.md)
-- [API references (html format)](./apis/html/kyverno-json.v1alpha1.html)
+- [API reference docs](./apis/README.md)
