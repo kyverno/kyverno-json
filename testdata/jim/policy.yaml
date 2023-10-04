@@ -7,15 +7,12 @@ spec:
     - name: require-team-tag
       match:
         any:
-        - resource: 
-            type: aws_s3_bucket
+        - type: aws_s3_bucket
       exclude:
         any:
-        - resource:
-            (wildcard('bypass-*', name)): true
+        - (wildcard('bypass-*', name)): true
       validate:
         assert:
-          any:
-          - resource:
-              tags:
-                (wildcard('?*', Team)): false
+          all:
+          - tags:
+              (wildcard('?*', Team)): false
