@@ -242,3 +242,7 @@ There is no limitation in a preprocessing [jmespath](https://jmespath.site) expr
 # with json payload (and pre processing)
 ./kyverno-json --payload ./testdata/tf-plan/tf.plan.json --pre-process "planned_values.root_module.resources" --policy ./testdata/tf-plan/policy.yaml
 ```
+
+## Documentation
+
+User documentation for `kyverno-json` can be found in [docs/user](docs/user/README.md)

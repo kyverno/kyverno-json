@@ -1,0 +1,1115 @@
+
+  <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+      <style type="text/css">
+        td p {
+          margin-bottom: 0
+        }
+        code {
+          color: #802060;
+          display: inline-block;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        
+          
+          
+            <H2 id="json-kyverno-io-v1alpha1">Package: <span style="font-family: monospace">json.kyverno.io/v1alpha1</span></H2>
+            <p><p>Package v1alpha1 contains API Schema definitions for the policy v1alpha1 API group</p>
+</p>
+          
+        
+        
+          
+            
+            <H3>Resource Types:</H3>
+            <ul><li>
+                    <a href="#json-kyverno-io-v1alpha1-Policy">Policy</a>
+                  </li></ul>
+
+            
+            
+  <H3 id="json-kyverno-io-v1alpha1-Policy">Policy
+    </H3>
+
+  
+
+  <p></p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+          
+          <tr>
+            <td><code>apiVersion</code></br>string</td>
+            <td><code>json.kyverno.io/v1alpha1</code></td>
+          </tr>
+          <tr>
+            <td><code>kind</code></br>string</td>
+            <td><code>Policy</code></td>
+          </tr>
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>TypeMeta</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">k8s.io/apimachinery/pkg/apis/meta/v1.TypeMeta</span>
+            
+          
+        </td>
+        <td>
+          
+            <p>(Members of <code>TypeMeta</code> are embedded into this type.)</p>
+          
+
+          
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>metadata</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta</span>
+            
+          
+        </td>
+        <td>
+          
+
+          
+
+          
+            Refer to the Kubernetes API documentation for the fields of the
+            <code>metadata</code> field.
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>spec</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-PolicySpec">
+                <span style="font-family: monospace">PolicySpec</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          
+
+          
+
+          
+            <br/>
+            <br/>
+            <table>
+              
+
+  
+  
+    
+    
+      <tr>
+        <td><code>rules</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Rule">
+                <span style="font-family: monospace">[]Rule</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+            </table>
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-Any">Any
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-ContextEntry">ContextEntry</a>)
+    </p>
+  
+
+  <p></p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>Value</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">interface{}</span>
+            
+          
+        </td>
+        <td>
+          
+            <p>(Members of <code>Value</code> are embedded into this type.)</p>
+          
+
+          
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-Assertions">Assertions
+    (<code>[]github.com/kyverno/kyverno-json/pkg/apis/v1alpha1.Any</code> alias)</p></H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-Match">Match</a>)
+    </p>
+  
+
+  <p></p>
+
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-ContextEntry">ContextEntry
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-Rule">Rule</a>)
+    </p>
+  
+
+  <p><p>ContextEntry adds variables and data sources to a rule Context.</p>
+</p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>name</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">string</span>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Name is the variable name.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>variable</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Any">
+                <span style="font-family: monospace">Any</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Variable defines an arbitrary JMESPath context variable that can be defined inline.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>imageRegistry</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-ImageRegistry">
+                <span style="font-family: monospace">ImageRegistry</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-ImageRegistry">ImageRegistry
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-ContextEntry">ContextEntry</a>)
+    </p>
+  
+
+  <p><p>ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.</p>
+</p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>reference</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">string</span>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Reference is image reference to a container image in the registry.
+Example: ghcr.io/kyverno/kyverno:latest</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>imageRegistryCredentials</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-ImageRegistryCredentials">
+                <span style="font-family: monospace">ImageRegistryCredentials</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>ImageRegistryCredentials provides credentials that will be used for authentication with registry.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-ImageRegistryCredentials">ImageRegistryCredentials
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-ImageRegistry">ImageRegistry</a>)
+    </p>
+  
+
+  <p></p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>allowInsecureRegistry</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">bool</span>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>AllowInsecureRegistry allows insecure access to a registry.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>providers</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-ImageRegistryCredentialsProvider">
+                <span style="font-family: monospace">[]ImageRegistryCredentialsProvider</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Providers specifies a list of OCI Registry names, whose authentication providers are provided.
+It can be of one of these values: AWS, ACR, GCP, GHCR.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>secrets</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">[]string</span>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Secrets specifies a list of secrets that are provided for credentials.
+Secrets must live in the Kyverno namespace.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-ImageRegistryCredentialsProvider">ImageRegistryCredentialsProvider
+    (<code>string</code> alias)</p></H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-ImageRegistryCredentials">ImageRegistryCredentials</a>)
+    </p>
+  
+
+  <p><p>ImageRegistryCredentialsProvider provides the list of credential providers required.</p>
+</p>
+
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-Match">Match
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-Rule">Rule</a>, 
+        <a href="#json-kyverno-io-v1alpha1-Validation">Validation</a>)
+    </p>
+  
+
+  <p></p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>any</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Assertions">
+                <span style="font-family: monospace">Assertions</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Any allows specifying resources which will be ORed.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>all</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Assertions">
+                <span style="font-family: monospace">Assertions</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>All allows specifying resources which will be ANDed.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-PolicySpec">PolicySpec
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-Policy">Policy</a>)
+    </p>
+  
+
+  <p></p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>rules</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Rule">
+                <span style="font-family: monospace">[]Rule</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-Rule">Rule
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-PolicySpec">PolicySpec</a>)
+    </p>
+  
+
+  <p></p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>name</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">string</span>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Name is a label to identify the rule, It must be unique within the policy.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>context</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-ContextEntry">
+                <span style="font-family: monospace">[]ContextEntry</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Context defines variables and data sources that can be used during rule execution.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>match</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Match">
+                <span style="font-family: monospace">Match</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Match defines when this policy rule should be applied. The match
+criteria can include resource information (e.g. kind, name, namespace, labels)
+and admission review request information like the user name or role.
+At least one kind is required.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>exclude</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Match">
+                <span style="font-family: monospace">Match</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Exclude defines when this policy rule should not be applied. The exclude
+criteria can include resource information (e.g. kind, name, namespace, labels)
+and admission review request information like the name or role.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>validate</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Validation">
+                <span style="font-family: monospace">Validation</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Validation is used to validate matching resources.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+  <H3 id="json-kyverno-io-v1alpha1-Validation">Validation
+    </H3>
+
+  
+    <p>
+      (<em>Appears in:</em>
+        <a href="#json-kyverno-io-v1alpha1-Rule">Rule</a>)
+    </p>
+  
+
+  <p><p>Validation defines checks to be performed on matching resources.</p>
+</p>
+
+  
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+
+        
+        
+
+  
+  
+    
+    
+      <tr>
+        <td><code>message</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <span style="font-family: monospace">string</span>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Message specifies a custom message to be displayed on failure.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+    
+    
+      <tr>
+        <td><code>assert</code>
+          
+          <span style="color:blue;"> *</span>
+          
+          </br>
+
+          
+          
+            
+              <a href="#json-kyverno-io-v1alpha1-Match">
+                <span style="font-family: monospace">Match</span>
+              </a>
+            
+          
+        </td>
+        <td>
+          
+
+          <p>Assert specifies an overlay-style pattern used to check resources.</p>
+
+
+          
+
+          
+        </td>
+      </tr>
+    
+  
+
+
+      </tbody>
+    </table>
+  
+
+          
+          <HR />
+        
+      </div>
+
+      <div class="container">
+        <p><em>Generated with <code>genref</code> on git commit <code>f789837</code></em></p>
+      </div>
+    </body>
+  </html>
