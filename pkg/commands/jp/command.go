@@ -3,6 +3,7 @@ package jp
 import (
 	"github.com/kyverno/kyverno-json/pkg/commands/jp/function"
 	"github.com/kyverno/kyverno-json/pkg/commands/jp/parse"
+	"github.com/kyverno/kyverno-json/pkg/commands/jp/query"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +21,7 @@ func Command() *cobra.Command {
 	cmd.AddCommand(
 		function.Command(),
 		parse.Command(),
-		// query.Command(),
+		query.Command(),
 	)
 	return cmd
 }
