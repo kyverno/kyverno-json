@@ -422,4 +422,5 @@ There is no limitation in a preprocessing [jmespath](https://jmespath.site) expr
 
 ## Documentation
 
-User documentation for `kyverno-json` can be found in [docs/user](docs/user/README.md)
+User documentation can be found in [docs/user](./docs/user/README.md)
+Dev documentation can be found in [docs/dev](./docs/dev/README.md)
