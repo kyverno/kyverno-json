@@ -12,15 +12,13 @@ spec:
           variable: (concat(':', $tag))
       match:
         any:
-        - resource:
-            apiVersion: v1
-            kind: Pod
+        - apiVersion: v1
+          kind: Pod
       validate:
         assert:
           all:
-          - resource:
-              ~(spec.containers[*].image):
-                # an image tag is required
-                (contains(@, ':')): true
-                # using a mutable image tag e.g. 'latest' is not allowed
-                (ends_with(@, $tag)): true
+          - ~(spec.containers[*].image):
+              # an image tag is required
+              (contains(@, ':')): true
+              # using a mutable image tag e.g. 'latest' is not allowed
+              (ends_with(@, $tag)): true
