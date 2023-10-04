@@ -35,9 +35,10 @@ spec:
   rules:
     - name: foo-bar-4
       validate:
-        pattern:
-          foo:
-            bar: 4
+        assert:
+          all:
+          - foo:
+              bar: 4
 ```
 
 The concept of clustered vs namespaced resources exist only in the [Kubernetes](https://kubernetes.io) world and it didn't make sense to reproduce the same pattern in this tool.
@@ -48,7 +49,7 @@ Both [Kyverno policies](https://kyverno.io/docs/kyverno-policies/) and policies 
 
 [Kyverno policies](https://kyverno.io/docs/kyverno-policies/) use [Kubernetes](https://kubernetes.io) specific constructs for that matter that didn't map well with arbitrary payloads.
 
-This tool uses partial resource definitions to implement `match` and `exclude` statements (the approach was inspired by [kuttl](https://github.com/kudobuilder/kuttl)):
+This tool uses [assertion trees](#assertion-trees-replace-pattern-syntax) to implement `match` and `exclude` statements:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
@@ -60,24 +61,21 @@ spec:
     - name: require-team-tag
       match:
         any:
-        - resource:
-            type: aws_s3_bucket
+        - type: aws_s3_bucket
       exclude:
         any:
-        - resource:
-            name: bypass-*
+        - name: bypass-me
       validate:
-        pattern:
-          values:
-            tags:
-              Team: ?*
+        assert:
+          all:
+          - values:
+              tags:
+                Team: ?*
 ```
 
-In the example above, every *resource* having `type: aws_s3_bucket` will match, and *resources* having `name: bypass-*` will be excluded.
+In the example above, every *resource* having `type: aws_s3_bucket` will match, and *resources* having `name: bypass-me` will be excluded.
 
-Note that wildcards are supported when evaluating string fields.
-
-### Different jmesPath implementation
+### Different `jmesPath` implementation
 
 This tool uses [jmespath-community/go-jmespath](https://github.com/jmespath-community/go-jmespath), a more modern implementation than the one used in [Kyverno](https://kyverno.io).
 
@@ -93,36 +91,40 @@ spec:
     - name: require-team-tag
       match:
         any:
-        - resource:
-            type: aws_s3_bucket
+        - type: aws_s3_bucket
       context:
       - name: expectedTeam
-        variable:
-          value: Kyverno
+        variable: Kyverno
       validate:
-        message: Bucket `{{ resource.name }}` ({{ resource.address }}) does not have the required Team tag {{ $expectedTeam }}
-        pattern:
-          values:
-            tags:
-              Team: '{{ $expectedTeam }}'
+        message: Bucket `{{ name }}` ({{ address }}) does not have the required Team tag {{ $expectedTeam }}
+        assert:
+          all:
+          - values:
+              tags:
+                Team: ($expectedTeam)
 ```
 
-### No preconditions, pattern operators or anchors
+Note that all context entries are lazily evaluated, a context entry will only be evaluated once. They can be used in all [assertion trees](#assertion-trees-replace-pattern-syntax), including `match` and `exclude` statements.
 
-Policies used by this tool don't support `preconditions`, pattern operators or anchors.
+### No preconditions, pattern operators, anchors or wildcards
+
+Policies used by this tool don't support `preconditions`, pattern operators, anchors or wildcards.
 
 Most of the time `preconditions` can be replaced by the more flexible `match` and `exclude` statements.
 
-Pattern operators and anchors can be replaced with an enhanced pattern syntax detailed [below](#enhanced-pattern-syntax).
+Pattern operators, anchors and wildcards can be replaced with an improved pattern matching system.
+The new pattern matching system is called *assertion trees*, this is detailed [below](#assertion-trees-replace-pattern-syntax).
 
-### Enhanced pattern syntax
+### Assertion trees replace pattern matching
 
 [Kyverno policies](https://kyverno.io/docs/kyverno-policies/) started with a declarative approach but slowly adopted the imperative approach too, because of the limitations in the implemented declarative approach.
 
-This tool tries to be as declarative as possible, for now `forEach`, pattern operators and anchors are not supported are not supported.
+This tool tries to be as declarative as possible, for now `forEach`, pattern operators, anchors and wildcards are not supported are not supported.
 Hopefully we won't need to adopt an imperative approach anymore.
 
-Instead, the pattern syntax can now be used to express complex and dynamic conditions by using [jmespath](https://jmespath.site) expressions as pattern keys.
+Instead, assertion trees can now be used to express complex and dynamic conditions by using [jmespath](https://jmespath.site) expressions. Those expressions represent projections of the being analysed *resource* and the result of this projection is passed to descendants for further analysis.
+
+All comparisons happen in the leaves of the assertion tree.
 
 Given the input payload below:
 
@@ -133,7 +135,7 @@ foo:
   bat: 6
 ```
 
-It is now possible to write a validation pattern like this:
+It is now possible to write a validation tree like this:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
@@ -144,18 +146,36 @@ spec:
   rules:
     - name: foo-bar-4
       validate:
-        pattern:
-          foo:
-            '{{ bar > `3` }}': true
-            '{{ !baz }}': false
-            '{{ bar + bat }}': 10
+        assert:
+          all:
+          -
+            # project field `foo` onto itself, the content of `foo` becomes the current object for descendants
+            foo:
+
+              # evaluate expression `(bar > `3`)`, the result becomes the current object for descendants (in this case the result will be a simple boolean)
+              # then we hit the `true` leaf, comparison happens and we expect the current value to be `true`
+              (bar > `3`): true
+
+              # evaluate expression `(!baz)`, the result becomes the current object for descendants (in this case the result will be a simple boolean)
+              # then we hit the `true` leaf, comparison happens and we expect the current value to be `false`
+              (!baz): false
+
+              # evaluate expression `(bar + bat)`, the result becomes the current object for descendants (in this case the result will be a number)
+              # then we hit the `10` leaf, comparison happens and we expect the current value to be `10`
+              (bar + bat): 10
 ```
 
-As the expected pattern is traversed, the current node in the actual *resource* is made available to eventual [jmespath](https://jmespath.site) expressions defined in child keys.
+#### Projection modifiers
 
-When a key is a [jmespath](https://jmespath.site) expression, the reult of the evaluation will be matched against the value in the pattern.
+TODO
 
-Of course, the expression can return a complex object or array. This object (or array) will then be traversed and compared against the value as if it was the actual *resource*.
+#### Explicit bindings
+
+TODO
+
+#### Escaping projection
+
+TODO
 
 ## SDK
 
