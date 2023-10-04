@@ -263,6 +263,7 @@ spec:
 ```
 
 All binding are available to descendants, if a descendant creates a binding with a name that already exists the binding will be overriden for descendants only and it doesn't affect the bindings at upper levels in the tree.
+
 In other words, a node in the tree always sees bindings that are definied in the parents and if a name is reused, the first binding with the given name wins when winding up the tree.
 
 As a consequence, the policy below is perfectly valid:
@@ -422,5 +423,5 @@ There is no limitation in a preprocessing [jmespath](https://jmespath.site) expr
 
 ## Documentation
 
-User documentation can be found in [docs/user](./docs/user/README.md)
-Dev documentation can be found in [docs/dev](./docs/dev/README.md)
+- User documentation can be found in [docs/user](./docs/user/README.md)
+- Dev documentation can be found in [docs/dev](./docs/dev/README.md)

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/kyverno/kyverno-json/pkg/commands/docs"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/payload"
@@ -86,5 +87,8 @@ func NewRootCommand() *cobra.Command {
 	cmd.Flags().StringVar(&command.payload, "payload", "", "Path to payload (json or yaml file)")
 	cmd.Flags().StringSliceVar(&command.preprocessors, "pre-process", nil, "JmesPath expression used to pre process payload")
 	cmd.Flags().StringSliceVar(&command.policies, "policy", nil, "Path to kyverno-json policies")
+	cmd.AddCommand(
+		docs.Command(cmd),
+	)
 	return cmd
 }
