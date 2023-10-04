@@ -129,7 +129,6 @@ func (n *scalarNode) assert(path *field.Path, value interface{}, bindings bindin
 	expression := parseExpression(rhs)
 	// we only project if the expression uses the engine syntax
 	// this is to avoid the case where the value is a map and the RHS is a string
-	// TODO: we need a way to escape the projection
 	if expression != nil && expression.engine != "" {
 		if expression.foreachName != "" {
 			return nil, field.Invalid(path, rhs, "foreach is not supported on the RHS")
