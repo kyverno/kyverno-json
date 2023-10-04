@@ -68,14 +68,14 @@ $(PACKAGE_SHIM): $(GOPATH_SHIM)
 codegen-register: $(PACKAGE_SHIM) $(REGISTER_GEN) ## Generate types registrations
 	@echo Generate registration... >&2
 	@GOPATH=$(GOPATH_SHIM) $(REGISTER_GEN) \
-		--go-header-file=./.hack/boilerplate.go.txt \
+		--go-header-file=./hack/boilerplate.go.txt \
 		--input-dirs=$(INPUT_DIRS)
 
 .PHONY: codegen-deepcopy
 codegen-deepcopy: $(PACKAGE_SHIM) $(DEEPCOPY_GEN) ## Generate deep copy functions
 	@echo Generate deep copy functions... >&2
 	@GOPATH=$(GOPATH_SHIM) $(DEEPCOPY_GEN) \
-		--go-header-file=./.hack/boilerplate.go.txt \
+		--go-header-file=./hack/boilerplate.go.txt \
 		--input-dirs=$(INPUT_DIRS) \
 		--output-file-base=zz_generated.deepcopy
 
@@ -109,8 +109,14 @@ codegen-cli-docs: build ## Generate CLI docs
 	@rm -rf docs/user/commands && mkdir -p docs/user/commands
 	@./kyverno-json docs -o docs/user/commands --autogenTag=false
 
+.PHONY: codegen-jp-docs
+codegen-jp-docs: ## Generate JP docs
+	@echo Generate jp docs... >&2
+	@rm -rf docs/user/jp && mkdir -p docs/user/jp
+	@go run ./hack/docs/jp/main.go > docs/user/jp/functions.md
+
 .PHONY: codegen-docs
-codegen-docs: codegen-api-docs-md codegen-cli-docs ## Generate docs
+codegen-docs: codegen-api-docs-md codegen-cli-docs codegen-jp-docs ## Generate docs
 
 .PHONY: codegen-all
 codegen-all: codegen-crds codegen-deepcopy codegen-register codegen-docs ## Rebuild all generated code and docs
