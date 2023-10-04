@@ -50,7 +50,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "foreach simple field",
-		in:   "~test",
+		in:   "~.test",
 		want: &expression{
 			foreach:     true,
 			foreachName: "",
@@ -58,7 +58,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "foreach simple field",
-		in:   "~(test)",
+		in:   "~.(test)",
 		want: &expression{
 			foreach:     true,
 			foreachName: "",
@@ -67,7 +67,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "foreach nested field",
-		in:   "~(test.test)",
+		in:   "~.(test.test)",
 		want: &expression{
 			foreach:     true,
 			foreachName: "",
@@ -95,7 +95,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "foreach and binding",
-		in:   "~test@foo",
+		in:   "~.test@foo",
 		want: &expression{
 			foreach:     true,
 			foreachName: "",
@@ -104,7 +104,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "foreach and binding",
-		in:   "~(test)@foo",
+		in:   "~.(test)@foo",
 		want: &expression{
 			foreach:     true,
 			foreachName: "",
