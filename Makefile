@@ -197,7 +197,7 @@ build: fmt vet codegen-all ## Build
 ########
 
 .PHONY: tests
-tests: ## Run tests
+tests: build ## Run tests
 	@echo Running tests... >&2
 	@go test ./...
 
