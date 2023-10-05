@@ -49,7 +49,7 @@ Both [Kyverno policies](https://kyverno.io/docs/kyverno-policies/) and policies 
 
 [Kyverno policies](https://kyverno.io/docs/kyverno-policies/) use [Kubernetes](https://kubernetes.io) specific constructs for that matter that didn't map well with arbitrary payloads.
 
-This tool uses [assertion trees](#assertion-trees-replace-pattern-syntax) to implement `match` and `exclude` statements:
+This tool uses [assertion trees](#assertion-trees-replace-pattern-matching) to implement `match` and `exclude` statements:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
@@ -104,7 +104,7 @@ spec:
                 Team: ($expectedTeam)
 ```
 
-Note that all context entries are lazily evaluated, a context entry will only be evaluated once. They can be used in all [assertion trees](#assertion-trees-replace-pattern-syntax), including `match` and `exclude` statements.
+Note that all context entries are lazily evaluated, a context entry will only be evaluated once. They can be used in all [assertion trees](#assertion-trees-replace-pattern-matching), including `match` and `exclude` statements.
 
 ### No preconditions, pattern operators, anchors or wildcards
 
@@ -113,7 +113,7 @@ Policies used by this tool don't support `preconditions`, pattern operators, anc
 Most of the time `preconditions` can be replaced by the more flexible `match` and `exclude` statements.
 
 Pattern operators, anchors and wildcards can be replaced with an improved pattern matching system.
-The new pattern matching system is called *assertion trees*, this is detailed [below](#assertion-trees-replace-pattern-syntax).
+The new pattern matching system is called *assertion trees*, this is detailed [below](#assertion-trees-replace-pattern-matching).
 
 ### Assertion trees replace pattern matching
 
