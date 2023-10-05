@@ -5,13 +5,23 @@ Generates reference documentation.
 ### Synopsis
 
 Generates reference documentation.
-  
-  The docs command generates CLI reference documentation.
-  
-  It can be used to generate simple markdown files or markdown to be used for the website.
+
+The docs command generates CLI reference documentation.
+It can be used to generate simple markdown files or markdown to be used for the website.
 
 ```
 kyverno-json docs [flags]
+```
+
+### Examples
+
+```
+  # Generate simple markdown documentation
+  kyverno-json docs -o . --autogenTag=false
+
+  # Generate website documentation
+  kyverno-json docs -o . --website
+
 ```
 
 ### Options

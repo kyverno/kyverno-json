@@ -70,7 +70,7 @@ func Test_Execute(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cmd := Command(nil)
+			cmd := Command()
 			assert.NotNil(t, cmd)
 			var args []string
 			args = append(args, "--payload", tt.payload)
