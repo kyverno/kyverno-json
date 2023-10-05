@@ -1,6 +1,7 @@
 package scan
 
 import (
+	"context"
 	"errors"
 	"fmt"
 
@@ -36,7 +37,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "Pre processing ...")
 	for _, preprocessor := range c.preprocessors {
-		result, err := template.Execute(preprocessor, payload, nil)
+		result, err := template.Execute(context.Background(), preprocessor, payload, nil)
 		if err != nil {
 			return err
 		}
@@ -53,7 +54,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
 	e := jsonengine.New()
-	responses := e.Run(jsonengine.JsonEngineRequest{
+	responses := e.Run(context.Background(), jsonengine.JsonEngineRequest{
 		Resources: resources,
 		Policies:  policies,
 	})

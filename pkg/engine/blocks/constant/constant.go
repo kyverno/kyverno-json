@@ -1,6 +1,8 @@
 package constant
 
 import (
+	"context"
+
 	"github.com/kyverno/kyverno-json/pkg/engine"
 )
 
@@ -8,7 +10,7 @@ type constant[TREQUEST any, TRESPONSE any] struct {
 	responses []TRESPONSE
 }
 
-func (b *constant[TREQUEST, TRESPONSE]) Run(_ TREQUEST) []TRESPONSE {
+func (b *constant[TREQUEST, TRESPONSE]) Run(_ context.Context, _ TREQUEST) []TRESPONSE {
 	return b.responses
 }
 
