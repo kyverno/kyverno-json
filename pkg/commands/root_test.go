@@ -12,7 +12,7 @@ import (
 func TestRootCommand(t *testing.T) {
 	cmd := RootCommand()
 	assert.NotNil(t, cmd)
-	assert.Len(t, cmd.Commands(), 2)
+	assert.Len(t, cmd.Commands(), 3)
 	err := cmd.Execute()
 	assert.NoError(t, err)
 }
