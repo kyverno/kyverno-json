@@ -1,4 +1,4 @@
-package commands
+package parse
 
 import (
 	"bytes"
@@ -9,32 +9,29 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRootCommand(t *testing.T) {
-	cmd := RootCommand()
+func TestCommand(t *testing.T) {
+	cmd := Command()
 	assert.NotNil(t, cmd)
-	assert.Len(t, cmd.Commands(), 3)
+	cmd.SetArgs([]string{"request.object.metadata.name | truncate(@, `9`)"})
 	err := cmd.Execute()
 	assert.NoError(t, err)
 }
 
-func TestRootCommandWithInvalidArg(t *testing.T) {
-	cmd := RootCommand()
+func TestCommandWithInvalidArg(t *testing.T) {
+	cmd := Command()
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetErr(b)
-	cmd.SetArgs([]string{"foo"})
 	err := cmd.Execute()
 	assert.Error(t, err)
 	out, err := io.ReadAll(b)
 	assert.NoError(t, err)
-	expected := `
-Error: unknown command "foo" for "kyverno-json"
-Run 'kyverno-json --help' for usage.`
+	expected := "Error: SyntaxError: Incomplete expression\n\n^"
 	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(string(out)))
 }
 
-func TestRootCommandWithInvalidFlag(t *testing.T) {
-	cmd := RootCommand()
+func TestCommandWithInvalidFlag(t *testing.T) {
+	cmd := Command()
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetErr(b)
@@ -47,8 +44,8 @@ func TestRootCommandWithInvalidFlag(t *testing.T) {
 	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(string(out)))
 }
 
-func TestRootCommandHelp(t *testing.T) {
-	cmd := RootCommand()
+func TestCommandHelp(t *testing.T) {
+	cmd := Command()
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetOut(b)

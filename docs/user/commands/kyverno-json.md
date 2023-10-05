@@ -20,5 +20,6 @@ kyverno-json [flags]
 
 * [kyverno-json completion](kyverno-json_completion.md)	 - Generate the autocompletion script for the specified shell
 * [kyverno-json docs](kyverno-json_docs.md)	 - Generates reference documentation.
+* [kyverno-json jp](kyverno-json_jp.md)	 - Provides a command-line interface to JMESPath, enhanced with custom functions.
 * [kyverno-json scan](kyverno-json_scan.md)	 - scan
 

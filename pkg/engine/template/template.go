@@ -6,21 +6,14 @@ import (
 	"strings"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
-	jpfunctions "github.com/jmespath-community/go-jmespath/pkg/functions"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
-	"github.com/kyverno/kyverno-json/pkg/engine/template/functions"
 )
 
 var (
 	variable = regexp.MustCompile(`{{(.*?)}}`)
 	parser   = parsing.NewParser()
-	caller   = interpreter.NewFunctionCaller(func() []jpfunctions.FunctionEntry {
-		var funcs []jpfunctions.FunctionEntry
-		funcs = append(funcs, jpfunctions.GetDefaultFunctions()...)
-		funcs = append(funcs, functions.GetFunctions()...)
-		return funcs
-	}()...)
+	caller   = interpreter.NewFunctionCaller(GetFunctions()...)
 )
 
 func String(in string, value interface{}, bindings binding.Bindings) string {

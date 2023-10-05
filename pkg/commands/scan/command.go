@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Command(root *cobra.Command) *cobra.Command {
+func Command() *cobra.Command {
 	var command options
 	cmd := &cobra.Command{
 		Use:          "scan",
