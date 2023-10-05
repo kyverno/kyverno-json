@@ -20,6 +20,7 @@ type options struct {
 	payload       string
 	preprocessors []string
 	policies      []string
+	trace         bool
 }
 
 func (c *options) run(cmd *cobra.Command, _ []string) error {

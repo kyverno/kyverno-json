@@ -33,12 +33,14 @@ func Command(parent *cobra.Command) *cobra.Command {
 		Args:         cobra.NoArgs,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			root := cmd
-			for {
-				if !root.HasParent() {
-					break
+			root := parent
+			if root != nil {
+				for {
+					if !root.HasParent() {
+						break
+					}
+					root = root.Parent()
 				}
-				root = root.Parent()
 			}
 			if err := options.validate(root); err != nil {
 				return err

@@ -76,6 +76,10 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			return response
 		}).
 		Predicate(func(ctx context.Context, r request) bool {
+			if r.rule.Exclude == nil {
+				tracing.Tracef(ctx, "No exclude statement, will never exclude")
+				return true
+			}
 			errs, err := assert.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
 			if err != nil {
 				tracing.Tracef(ctx, "An error occurred while matching exclude: %s", err)
