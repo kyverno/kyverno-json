@@ -19,7 +19,7 @@ func RootCommand() *cobra.Command {
 	}
 	cmd.AddCommand(
 		docs.Command(cmd),
-		jp.Command(),
+		jp.Command(cmd),
 		scan.Command(),
 	)
 	return cmd

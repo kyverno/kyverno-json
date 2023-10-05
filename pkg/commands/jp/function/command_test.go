@@ -10,14 +10,14 @@ import (
 )
 
 func TestCommand(t *testing.T) {
-	cmd := Command()
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	err := cmd.Execute()
 	assert.NoError(t, err)
 }
 
 func TestCommandWithOneArg(t *testing.T) {
-	cmd := Command()
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	cmd.SetArgs([]string{"truncate"})
 	err := cmd.Execute()
@@ -25,7 +25,7 @@ func TestCommandWithOneArg(t *testing.T) {
 }
 
 func TestCommandWithArgs(t *testing.T) {
-	cmd := Command()
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	cmd.SetArgs([]string{"truncate", "to_upper"})
 	err := cmd.Execute()
@@ -33,7 +33,7 @@ func TestCommandWithArgs(t *testing.T) {
 }
 
 func TestCommandWithInvalidFlag(t *testing.T) {
-	cmd := Command()
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetErr(b)
@@ -47,7 +47,7 @@ func TestCommandWithInvalidFlag(t *testing.T) {
 }
 
 func TestCommandHelp(t *testing.T) {
-	cmd := Command()
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetOut(b)

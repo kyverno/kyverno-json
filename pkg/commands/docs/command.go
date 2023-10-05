@@ -3,19 +3,43 @@ package docs
 import (
 	"log"
 
-	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/command"
+	"github.com/kyverno/kyverno-json/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func Command(root *cobra.Command) *cobra.Command {
+func Command(parent *cobra.Command) *cobra.Command {
 	var options options
+	doc := command.New(
+		parent,
+		command.WithDescription(
+			"Generates reference documentation.",
+			"The docs command generates CLI reference documentation.",
+			"It can be used to generate simple markdown files or markdown to be used for the website.",
+		),
+		command.WithExample(
+			"Generate simple markdown documentation",
+			"docs -o . --autogenTag=false",
+		),
+		command.WithExample(
+			"Generate website documentation",
+			"docs -o . --website",
+		),
+	)
 	cmd := &cobra.Command{
 		Use:          "docs",
-		Short:        command.FormatDescription(true, websiteUrl, false, description...),
-		Long:         command.FormatDescription(false, websiteUrl, false, description...),
+		Short:        command.Description(doc, true),
+		Long:         command.Description(doc, false),
+		Example:      command.Examples(doc),
 		Args:         cobra.NoArgs,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
+			root := cmd
+			for {
+				if !root.HasParent() {
+					break
+				}
+				root = root.Parent()
+			}
 			if err := options.validate(root); err != nil {
 				return err
 			}

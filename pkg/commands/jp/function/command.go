@@ -8,16 +8,24 @@ import (
 	"strings"
 
 	jpfunctions "github.com/jmespath-community/go-jmespath/pkg/functions"
+	"github.com/kyverno/kyverno-json/pkg/command"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
 
-func Command() *cobra.Command {
+func Command(parent *cobra.Command) *cobra.Command {
+	doc := command.New(
+		parent,
+		command.WithDescription("Provides function informations."),
+		command.WithExample("List functions", "function"),
+		command.WithExample("Get function infos", "function truncate"),
+	)
 	return &cobra.Command{
 		Use:          "function [function_name]...",
-		Short:        "Provides function informations.",
-		Long:         "Provides function informations.",
+		Short:        command.Description(doc, true),
+		Long:         command.Description(doc, false),
+		Example:      command.Examples(doc),
 		SilenceUsage: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			printFunctions(cmd.OutOrStdout(), args...)
