@@ -1,6 +1,7 @@
 package query
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -146,7 +147,7 @@ func loadInput(cmd *cobra.Command, file string) (interface{}, error) {
 }
 
 func evaluate(input interface{}, query string) (interface{}, error) {
-	result, err := template.Execute(query, input, nil)
+	result, err := template.Execute(context.Background(), query, input, nil)
 	if err != nil {
 		if syntaxError, ok := err.(parsing.SyntaxError); ok {
 			return nil, fmt.Errorf("%s\n%s", syntaxError, syntaxError.HighlightLocation())

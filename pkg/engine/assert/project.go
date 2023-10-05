@@ -1,6 +1,7 @@
 package assert
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 
@@ -16,11 +17,11 @@ type projection struct {
 	result      interface{}
 }
 
-func project(key interface{}, value interface{}, bindings binding.Bindings) (*projection, error) {
-	expression := parseExpression(key)
+func project(ctx context.Context, key interface{}, value interface{}, bindings binding.Bindings) (*projection, error) {
+	expression := parseExpression(ctx, key)
 	if expression != nil {
 		if expression.engine != "" {
-			projected, err := template.Execute(expression.statement, value, bindings)
+			projected, err := template.Execute(ctx, expression.statement, value, bindings)
 			if err != nil {
 				return nil, err
 			}

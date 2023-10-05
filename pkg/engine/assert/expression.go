@@ -1,6 +1,7 @@
 package assert
 
 import (
+	"context"
 	"reflect"
 	"regexp"
 
@@ -22,7 +23,7 @@ type expression struct {
 	engine      string
 }
 
-func parseExpressionRegex(in string) *expression {
+func parseExpressionRegex(ctx context.Context, in string) *expression {
 	expression := &expression{}
 	// 1. match foreach
 	if match := foreachRegex.FindStringSubmatch(in); match != nil {
@@ -56,9 +57,9 @@ func parseExpressionRegex(in string) *expression {
 	return expression
 }
 
-func parseExpression(value interface{}) *expression {
+func parseExpression(ctx context.Context, value interface{}) *expression {
 	if reflectutils.GetKind(value) != reflect.String {
 		return nil
 	}
-	return parseExpressionRegex(reflect.ValueOf(value).String())
+	return parseExpressionRegex(ctx, reflect.ValueOf(value).String())
 }

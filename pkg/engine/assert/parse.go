@@ -1,6 +1,7 @@
 package assert
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 
@@ -12,20 +13,20 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func Parse(assertion interface{}) Assertion {
+func Parse(ctx context.Context, assertion interface{}) Assertion {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
 		node := sliceNode{}
 		valueOf := reflect.ValueOf(assertion)
 		for i := 0; i < valueOf.Len(); i++ {
-			node = append(node, Parse(valueOf.Index(i).Interface()))
+			node = append(node, Parse(ctx, valueOf.Index(i).Interface()))
 		}
 		return node
 	case reflect.Map:
 		node := mapNode{}
 		iter := reflect.ValueOf(assertion).MapRange()
 		for iter.Next() {
-			node[iter.Key().Interface()] = Parse(iter.Value().Interface())
+			node[iter.Key().Interface()] = Parse(ctx, iter.Value().Interface())
 		}
 		return node
 	default:
@@ -37,10 +38,10 @@ func Parse(assertion interface{}) Assertion {
 // it is responsible for projecting the analysed resource and passing the result to the descendant
 type mapNode map[interface{}]Assertion
 
-func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
+func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for k, v := range n {
-		projection, err := project(k, value, bindings)
+		projection, err := project(ctx, k, value, bindings)
 		if err != nil {
 			return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
 		} else {
@@ -56,7 +57,7 @@ func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.
 						if projection.foreachName != "" {
 							bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(i))
 						}
-						if _errs, err := v.assert(path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
+						if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
 							return nil, err
 						} else {
 							errs = append(errs, _errs...)
@@ -70,7 +71,7 @@ func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.
 						if projection.foreachName != "" {
 							bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(key))
 						}
-						if _errs, err := v.assert(path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings); err != nil {
+						if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings); err != nil {
 							return nil, err
 						} else {
 							errs = append(errs, _errs...)
@@ -80,7 +81,7 @@ func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.
 					return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projection.result, "expected a slice or a map")
 				}
 			} else {
-				if _errs, err := v.assert(path.Child(fmt.Sprint(k)), projection.result, bindings); err != nil {
+				if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)), projection.result, bindings); err != nil {
 					return nil, err
 				} else {
 					errs = append(errs, _errs...)
@@ -96,7 +97,7 @@ func (n mapNode) assert(path *field.Path, value interface{}, bindings jpbinding.
 // if lengths match all descendants are evaluated with their corresponding items.
 type sliceNode []Assertion
 
-func (n sliceNode) assert(path *field.Path, value interface{}, bindings binding.Bindings) (field.ErrorList, error) {
+func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings) (field.ErrorList, error) {
 	var errs field.ErrorList
 	if reflectutils.GetKind(value) != reflect.Slice {
 		return nil, field.TypeInvalid(path, value, "expected a slice")
@@ -106,7 +107,7 @@ func (n sliceNode) assert(path *field.Path, value interface{}, bindings binding.
 			errs = append(errs, field.Invalid(path, value, "lengths of slices don't match"))
 		} else {
 			for i := range n {
-				if _errs, err := n[i].assert(path.Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
+				if _errs, err := n[i].assert(ctx, path.Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
 					return nil, err
 				} else {
 					errs = append(errs, _errs...)
@@ -124,9 +125,9 @@ type scalarNode struct {
 	rhs interface{}
 }
 
-func (n *scalarNode) assert(path *field.Path, value interface{}, bindings binding.Bindings) (field.ErrorList, error) {
+func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings) (field.ErrorList, error) {
 	rhs := n.rhs
-	expression := parseExpression(rhs)
+	expression := parseExpression(ctx, rhs)
 	// we only project if the expression uses the engine syntax
 	// this is to avoid the case where the value is a map and the RHS is a string
 	if expression != nil && expression.engine != "" {
@@ -136,14 +137,14 @@ func (n *scalarNode) assert(path *field.Path, value interface{}, bindings bindin
 		if expression.binding != "" {
 			return nil, field.Invalid(path, rhs, "binding is not supported on the RHS")
 		}
-		projected, err := template.Execute(expression.statement, value, bindings)
+		projected, err := template.Execute(ctx, expression.statement, value, bindings)
 		if err != nil {
 			return nil, field.InternalError(path, err)
 		}
 		rhs = projected
 	}
 	var errs field.ErrorList
-	if match, err := match.Match(rhs, value); err != nil {
+	if match, err := match.Match(ctx, rhs, value); err != nil {
 		return nil, field.InternalError(path, err)
 	} else if !match {
 		errs = append(errs, field.Invalid(path, value, expectValueMessage(rhs)))

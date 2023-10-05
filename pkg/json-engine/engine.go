@@ -1,6 +1,7 @@
 package jsonengine
 
 import (
+	"context"
 	"errors"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
@@ -55,33 +56,33 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 		return requests
 	}
 	inner := builder.
-		Function(func(r request) JsonEngineResponse {
+		Function(func(ctx context.Context, r request) JsonEngineResponse {
 			response := JsonEngineResponse{
 				Policy:   r.policy,
 				Rule:     r.rule,
 				Resource: r.value,
 			}
-			errs, err := assert.Match(nil, r.rule.Validation.Assert, r.value, r.bindings)
+			errs, err := assert.Match(ctx, nil, r.rule.Validation.Assert, r.value, r.bindings)
 			if err != nil {
 				response.Failure = err
 			} else if err := errs.ToAggregate(); err != nil {
 				if r.rule.Validation.Message != "" {
-					response.Error = errors.New(template.String(r.rule.Validation.Message, r.value, r.bindings))
+					response.Error = errors.New(template.String(ctx, r.rule.Validation.Message, r.value, r.bindings))
 				} else {
 					response.Error = err
 				}
 			}
 			return response
 		}).
-		Predicate(func(r request) bool {
-			errs, err := assert.Match(nil, r.rule.Exclude, r.value, r.bindings)
+		Predicate(func(ctx context.Context, r request) bool {
+			errs, err := assert.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
 			return err == nil && len(errs) != 0
 		}).
-		Predicate(func(r request) bool {
+		Predicate(func(ctx context.Context, r request) bool {
 			if r.rule.Match == nil {
 				return true
 			}
-			errs, err := assert.Match(nil, r.rule.Match, r.value, r.bindings)
+			errs, err := assert.Match(ctx, nil, r.rule.Match, r.value, r.bindings)
 			return err == nil && len(errs) == 0
 		})
 	// TODO: we can't use the builder package for loops :(
