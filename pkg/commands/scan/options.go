@@ -9,6 +9,8 @@ import (
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/payload"
 	"github.com/kyverno/kyverno-json/pkg/policy"
+	"github.com/kyverno/kyverno-json/pkg/tracing"
+	"github.com/kyverno/kyverno-json/pkg/tracing/tracer"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -21,6 +23,8 @@ type options struct {
 }
 
 func (c *options) run(cmd *cobra.Command, _ []string) error {
+	var tracer tracer.Tracer
+	ctx := tracing.WithTracer(context.Background(), &tracer)
 	out := cmd.OutOrStdout()
 	fmt.Fprintln(out, "Loading policies ...")
 	policies, err := policy.Load(c.policies...)
@@ -37,7 +41,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "Pre processing ...")
 	for _, preprocessor := range c.preprocessors {
-		result, err := template.Execute(context.Background(), preprocessor, payload, nil)
+		result, err := template.Execute(ctx, preprocessor, payload, nil)
 		if err != nil {
 			return err
 		}
@@ -54,7 +58,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
 	e := jsonengine.New()
-	responses := e.Run(context.Background(), jsonengine.JsonEngineRequest{
+	responses := e.Run(ctx, jsonengine.JsonEngineRequest{
 		Resources: resources,
 		Policies:  policies,
 	})

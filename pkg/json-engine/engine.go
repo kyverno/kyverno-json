@@ -12,6 +12,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/loop"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/tracing"
 )
 
 type JsonEngineRequest struct {
@@ -76,14 +77,33 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 		}).
 		Predicate(func(ctx context.Context, r request) bool {
 			errs, err := assert.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
-			return err == nil && len(errs) != 0
+			if err != nil {
+				tracing.Tracef(ctx, "An error occurred while matching exclude: %s", err)
+				return false
+			} else if len(errs) == 0 {
+				tracing.Trace(ctx, "Exclude statement matched the resource")
+				return false
+			} else {
+				tracing.Tracef(ctx, "Exclude statement didn't match the resource: %s", errs.ToAggregate())
+				return true
+			}
 		}).
 		Predicate(func(ctx context.Context, r request) bool {
 			if r.rule.Match == nil {
+				tracing.Tracef(ctx, "No match statement, will always match")
 				return true
 			}
 			errs, err := assert.Match(ctx, nil, r.rule.Match, r.value, r.bindings)
-			return err == nil && len(errs) == 0
+			if err != nil {
+				tracing.Tracef(ctx, "An error occurred while matching: %s", err)
+				return false
+			} else if len(errs) == 0 {
+				tracing.Trace(ctx, "Match statement matched the resource")
+				return true
+			} else {
+				tracing.Tracef(ctx, "Match statement didn't match the resource: %s", errs.ToAggregate())
+				return false
+			}
 		})
 	// TODO: we can't use the builder package for loops :(
 	return loop.New(inner, looper)
