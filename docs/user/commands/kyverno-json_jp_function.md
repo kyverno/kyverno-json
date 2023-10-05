@@ -6,8 +6,20 @@ Provides function informations.
 
 Provides function informations.
 
+
 ```
 kyverno-json jp function [function_name]... [flags]
+```
+
+### Examples
+
+```
+  # List functions
+  jp function
+
+  # Get function infos
+  jp function truncate
+
 ```
 
 ### Options
