@@ -2,6 +2,7 @@ package function
 
 import (
 	"cmp"
+	"context"
 	"fmt"
 	"io"
 	"slices"
@@ -58,7 +59,7 @@ func functionString(f jpfunctions.FunctionEntry) string {
 }
 
 func printFunctions(out io.Writer, names ...string) {
-	funcs := template.GetFunctions()
+	funcs := template.GetFunctions(context.Background())
 	slices.SortFunc(funcs, func(a, b jpfunctions.FunctionEntry) int {
 		return cmp.Compare(functionString(a), functionString(b))
 	})

@@ -1,6 +1,8 @@
 package loop
 
 import (
+	"context"
+
 	"github.com/kyverno/kyverno-json/pkg/engine"
 )
 
@@ -9,10 +11,10 @@ type loop[TPARENT any, TCHILD any, TRESPONSE any] struct {
 	looper func(TPARENT) []TCHILD
 }
 
-func (b *loop[TPARENT, TCHILD, TRESPONSE]) Run(parent TPARENT) []TRESPONSE {
+func (b *loop[TPARENT, TCHILD, TRESPONSE]) Run(ctx context.Context, parent TPARENT) []TRESPONSE {
 	var responses []TRESPONSE
 	for _, child := range b.looper(parent) {
-		responses = append(responses, b.inner.Run(child)...)
+		responses = append(responses, b.inner.Run(ctx, child)...)
 	}
 	return responses
 }

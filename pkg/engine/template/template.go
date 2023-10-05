@@ -1,6 +1,7 @@
 package template
 
 import (
+	"context"
 	"fmt"
 	"regexp"
 	"strings"
@@ -13,14 +14,14 @@ import (
 var (
 	variable = regexp.MustCompile(`{{(.*?)}}`)
 	parser   = parsing.NewParser()
-	caller   = interpreter.NewFunctionCaller(GetFunctions()...)
+	caller   = interpreter.NewFunctionCaller(GetFunctions(context.Background())...)
 )
 
-func String(in string, value interface{}, bindings binding.Bindings) string {
+func String(ctx context.Context, in string, value interface{}, bindings binding.Bindings) string {
 	groups := variable.FindAllStringSubmatch(in, -1)
 	for _, group := range groups {
 		statement := strings.TrimSpace(group[1])
-		result, err := Execute(statement, value, bindings)
+		result, err := Execute(ctx, statement, value, bindings)
 		if err != nil {
 			in = strings.ReplaceAll(in, group[0], fmt.Sprintf("ERR (%s - %s)", statement, err))
 		} else if result == nil {
@@ -34,7 +35,7 @@ func String(in string, value interface{}, bindings binding.Bindings) string {
 	return in
 }
 
-func Execute(statement string, value interface{}, bindings binding.Bindings) (interface{}, error) {
+func Execute(ctx context.Context, statement string, value interface{}, bindings binding.Bindings) (interface{}, error) {
 	interpreter := interpreter.NewInterpreter(nil, caller, bindings)
 	compiled, err := parser.Parse(statement)
 	if err != nil {
