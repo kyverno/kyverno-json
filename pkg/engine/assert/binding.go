@@ -1,6 +1,8 @@
 package assert
 
 import (
+	"context"
+
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
@@ -19,7 +21,7 @@ func NewContextBindings(bindings binding.Bindings, value interface{}, entries ..
 func NewContextBinding(path *field.Path, bindings binding.Bindings, value interface{}, entry v1alpha1.ContextEntry) binding.Binding {
 	return template.NewLazyBinding(
 		func() (interface{}, error) {
-			expression := parseExpression(entry.Variable.Value)
+			expression := parseExpression(context.TODO(), entry.Variable.Value)
 			if expression != nil && expression.engine != "" {
 				if expression.foreach {
 					return nil, field.Invalid(path.Child("variable"), entry.Variable.Value, "foreach is not supported in context")
@@ -27,7 +29,7 @@ func NewContextBinding(path *field.Path, bindings binding.Bindings, value interf
 				if expression.binding != "" {
 					return nil, field.Invalid(path.Child("variable"), entry.Variable.Value, "binding is not supported in context")
 				}
-				projected, err := template.Execute(expression.statement, value, bindings)
+				projected, err := template.Execute(context.Background(), expression.statement, value, bindings)
 				if err != nil {
 					return nil, field.InternalError(path.Child("variable"), err)
 				}

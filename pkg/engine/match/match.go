@@ -1,13 +1,14 @@
 package match
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
-func Match(expected, actual interface{}) (bool, error) {
+func Match(ctx context.Context, expected, actual interface{}) (bool, error) {
 	if expected != nil {
 		switch reflectutils.GetKind(expected) {
 		case reflect.Slice:
@@ -18,7 +19,7 @@ func Match(expected, actual interface{}) (bool, error) {
 				return false, nil
 			}
 			for i := 0; i < reflect.ValueOf(expected).Len(); i++ {
-				if inner, err := Match(reflect.ValueOf(expected).Index(i).Interface(), reflect.ValueOf(actual).Index(i).Interface()); err != nil {
+				if inner, err := Match(ctx, reflect.ValueOf(expected).Index(i).Interface(), reflect.ValueOf(actual).Index(i).Interface()); err != nil {
 					return false, err
 				} else if !inner {
 					return false, nil
@@ -35,7 +36,7 @@ func Match(expected, actual interface{}) (bool, error) {
 				if !actualValue.IsValid() {
 					return false, nil
 				}
-				if inner, err := Match(iter.Value().Interface(), actualValue.Interface()); err != nil {
+				if inner, err := Match(ctx, iter.Value().Interface(), actualValue.Interface()); err != nil {
 					return false, err
 				} else if !inner {
 					return false, nil

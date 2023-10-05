@@ -1,6 +1,8 @@
 package builder
 
 import (
+	"context"
+
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/constant"
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/function"
@@ -19,10 +21,10 @@ func Constant[TREQUEST any, TRESPONSE any](responses ...TRESPONSE) Engine[TREQUE
 	return new(constant.New[TREQUEST](responses...))
 }
 
-func (inner Engine[TREQUEST, TRESPONSE]) Predicate(condition func(TREQUEST) bool) Engine[TREQUEST, TRESPONSE] {
+func (inner Engine[TREQUEST, TRESPONSE]) Predicate(condition func(context.Context, TREQUEST) bool) Engine[TREQUEST, TRESPONSE] {
 	return new(predicate.New(inner, condition))
 }
 
-func Function[TREQUEST any, TRESPONSE any](f func(TREQUEST) TRESPONSE) Engine[TREQUEST, TRESPONSE] {
+func Function[TREQUEST any, TRESPONSE any](f func(context.Context, TREQUEST) TRESPONSE) Engine[TREQUEST, TRESPONSE] {
 	return new(function.New(f))
 }

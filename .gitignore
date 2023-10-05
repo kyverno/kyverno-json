@@ -1,4 +1,4 @@
 .tools
 .gopath
 kyverno-json
-site
+website/site
