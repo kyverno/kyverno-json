@@ -2279,8 +2279,8 @@ sigs.k8s.io/controller-runtime v0.16.2 h1:mwXAVuEk3EQf478PQwQ48zGOXvW27UJc8NHktQ
 sigs.k8s.io/controller-runtime v0.16.2/go.mod h1:vpMu3LpI5sYWtujJOa2uPK61nB5rbwlN7BAB8aSLvGU=
 sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd h1:EDPBXCAspyGV4jQlpZSudPeMmr1bNJefnuqLsRAsHZo=
 sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd/go.mod h1:B8JuhiUyNFVKdsE8h686QcCxMaH6HrOAZj4vswFpcB0=
-sigs.k8s.io/kubectl-validate v0.0.0-20230927155409-3b3ca3ad91d0 h1:knODEtWA6f8kIafp5N07YlWQwMqrvkj5gJ9r4XcH9nI=
-sigs.k8s.io/kubectl-validate v0.0.0-20230927155409-3b3ca3ad91d0/go.mod h1:iEeHEOp73Wpn2QIDFNJcfDqebHyF7Qjilf+88WoKcWw=
+sigs.k8s.io/kubectl-validate v0.0.1 h1:wKIpCBQwJI559/prMMe0j1cIQSf5IkAQF4IjljNz5jw=
+sigs.k8s.io/kubectl-validate v0.0.1/go.mod h1:iEeHEOp73Wpn2QIDFNJcfDqebHyF7Qjilf+88WoKcWw=
 sigs.k8s.io/release-utils v0.7.4 h1:17LmJrydpUloTCtaoWj95uKlcrUp4h2A9Sa+ZL+lV9w=
 sigs.k8s.io/release-utils v0.7.4/go.mod h1:JEt2QPHItd5Pg2UKLAU8PEaSlF4bUjCZimpxFDgymVU=
 sigs.k8s.io/structured-merge-diff/v4 v4.0.2/go.mod h1:bJZC9H9iH24zzfZ/41RGcq60oK1F7G282QMXDPYydCw=

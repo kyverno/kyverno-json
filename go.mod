@@ -10,7 +10,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.28.2
-	sigs.k8s.io/kubectl-validate v0.0.0-20230927155409-3b3ca3ad91d0
+	sigs.k8s.io/kubectl-validate v0.0.1
 )
 
 require (
