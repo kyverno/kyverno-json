@@ -1,4 +1,4 @@
-.DEFAULT_GOAL: build
+.DEFAULT_GOAL := build
 
 #########
 # TOOLS #
@@ -43,6 +43,33 @@ install-tools: $(TOOLS) ## Install tools
 clean-tools: ## Remove installed tools
 	@echo Clean tools... >&2
 	@rm -rf $(TOOLS_DIR)
+
+#########
+# BUILD #
+#########
+
+CMD_DIR        := cmd
+CLI_DIR        := $(CMD_DIR)/cli
+CLI_BIN        := kyverno-json
+CGO_ENABLED    ?= 0
+GOOS           ?= $(shell go env GOOS)
+LD_FLAGS       ?= "-s -w"
+
+.PHONY: fmt
+fmt: ## Run go fmt
+	@echo Go fmt... >&2
+	@go fmt ./...
+
+.PHONY: vet
+vet: ## Run go vet
+	@echo Go vet... >&2
+	@go vet ./...
+
+$(CLI_BIN): fmt vet
+	@echo Build cli binary... >&2
+	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
+
+build: $(CLI_BIN) ## Build
 
 ###########
 # CODEGEN #
@@ -104,7 +131,7 @@ codegen-api-docs-html: $(REFERENCE_DOCS) ## Generate html API docs
 codegen-api-docs: codegen-api-docs-md codegen-api-docs-html ## Generate API docs
 
 .PHONY: codegen-cli-docs
-codegen-cli-docs: build ## Generate CLI docs
+codegen-cli-docs: $(CLI_BIN) ## Generate CLI docs
 	@echo Generate cli docs... >&2
 	@rm -rf docs/user/commands && mkdir -p docs/user/commands
 	@./kyverno-json docs -o docs/user/commands --autogenTag=false
@@ -140,33 +167,12 @@ verify-codegen: codegen-all ## Verify all generated code and docs are up to date
 	@echo 'To correct this, locally run "make codegen-all", commit the changes, and re-run tests.' >&2
 	@git diff --quiet --exit-code -- .
 
-#########
-# BUILD #
-#########
-
-LD_FLAGS       ?= "-s -w"
-
-.PHONY: fmt
-fmt: ## Run go fmt
-	@echo Go fmt... >&2
-	@go fmt ./...
-
-.PHONY: vet
-vet: ## Run go vet
-	@echo Go vet... >&2
-	@go vet ./...
-
-.PHONY: build
-build: fmt vet codegen-crds codegen-deepcopy codegen-register ## Build
-	@echo Building... >&2
-	@go build -ldflags=$(LD_FLAGS) .
-
 ########
 # TEST #
 ########
 
 .PHONY: tests
-tests: build ## Run tests
+tests: $(CLI_BIN) ## Run tests
 	@echo Running tests... >&2
 	@go test ./...
 
