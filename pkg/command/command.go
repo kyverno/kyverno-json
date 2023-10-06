@@ -2,37 +2,24 @@ package command
 
 import (
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
 type Command struct {
-	parent       *cobra.Command
+	parents      []string
 	experimental bool
 	description  []string
 	websiteUrl   string
 	examples     []Example
 }
 
-func new(parent *cobra.Command, experimental bool, options ...option) Command {
-	cmd := Command{
-		parent:       parent,
-		experimental: experimental,
-	}
+func New(options ...option) Command {
+	var cmd Command
 	for _, opt := range options {
 		if opt != nil {
 			opt(&cmd)
 		}
 	}
 	return cmd
-}
-
-func New(parent *cobra.Command, options ...option) Command {
-	return new(parent, false, options...)
-}
-
-func NewExperimental(parent *cobra.Command, options ...option) Command {
-	return new(parent, true, options...)
 }
 
 func Description(c Command, short bool) string {
@@ -59,8 +46,8 @@ func Examples(c Command) string {
 		return ""
 	}
 	var useLine string
-	if c.parent != nil {
-		useLine = c.parent.UseLine() + " "
+	if len(c.parents) != 0 {
+		useLine = strings.Join(c.parents, " ") + " "
 	}
 	var lines []string
 	for _, example := range c.examples {

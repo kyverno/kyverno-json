@@ -8,9 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Command(parent *cobra.Command) *cobra.Command {
+func Command(parents ...string) *cobra.Command {
 	doc := command.New(
-		parent,
+		command.WithParents(parents...),
 		command.WithDescription("Provides a command-line interface to JMESPath, enhanced with custom functions."),
 		command.WithExample("List functions", "jp function"),
 		command.WithExample("Evaluate query", "jp query -i object.yaml 'request.object.metadata.name | truncate(@, `9`)'"),
@@ -28,9 +28,9 @@ func Command(parent *cobra.Command) *cobra.Command {
 		},
 	}
 	cmd.AddCommand(
-		function.Command(cmd),
-		parse.Command(),
-		query.Command(),
+		function.Command(append(parents, "jp")...),
+		parse.Command(append(parents, "jp")...),
+		query.Command(append(parents, "jp")...),
 	)
 	return cmd
 }

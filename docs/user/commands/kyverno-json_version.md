@@ -27,5 +27,5 @@ kyverno-json version [flags]
 
 ### SEE ALSO
 
-* [kyverno-json](kyverno-json.md)	 - kyverno-json
+* [kyverno-json](kyverno-json.md)	 - kyverno-json is a CLI tool to apply policies to json resources.
 

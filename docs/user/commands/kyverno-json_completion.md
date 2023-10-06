@@ -16,7 +16,7 @@ See each sub-command's help for details on how to use the generated script.
 
 ### SEE ALSO
 
-* [kyverno-json](kyverno-json.md)	 - kyverno-json
+* [kyverno-json](kyverno-json.md)	 - kyverno-json is a CLI tool to apply policies to json resources.
 * [kyverno-json completion bash](kyverno-json_completion_bash.md)	 - Generate the autocompletion script for bash
 * [kyverno-json completion fish](kyverno-json_completion_fish.md)	 - Generate the autocompletion script for fish
 * [kyverno-json completion powershell](kyverno-json_completion_powershell.md)	 - Generate the autocompletion script for powershell

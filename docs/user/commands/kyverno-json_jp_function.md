@@ -15,10 +15,10 @@ kyverno-json jp function [function_name]... [flags]
 
 ```
   # List functions
-  jp function
+  kyverno-json jp function
 
   # Get function infos
-  jp function truncate
+  kyverno-json jp function truncate
 
 ```
 

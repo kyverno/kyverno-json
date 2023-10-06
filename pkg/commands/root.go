@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"github.com/kyverno/kyverno-json/pkg/command"
 	"github.com/kyverno/kyverno-json/pkg/commands/docs"
 	"github.com/kyverno/kyverno-json/pkg/commands/jp"
 	"github.com/kyverno/kyverno-json/pkg/commands/scan"
@@ -9,20 +10,25 @@ import (
 )
 
 func RootCommand() *cobra.Command {
+	doc := command.New(
+		command.WithDescription(
+			"kyverno-json is a CLI tool to apply policies to json resources.",
+		),
+	)
 	cmd := &cobra.Command{
 		Use:          "kyverno-json",
-		Short:        "kyverno-json",
-		Long:         "kyverno-json is a CLI tool to apply policies to json resources",
+		Short:        command.Description(doc, true),
+		Long:         command.Description(doc, false),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return cmd.Help()
 		},
 	}
 	cmd.AddCommand(
-		docs.Command(cmd),
-		jp.Command(cmd),
+		docs.Command("kyverno-json"),
+		jp.Command("kyverno-json"),
 		scan.Command(),
-		version.Command(cmd),
+		version.Command("kyverno-json"),
 	)
 	return cmd
 }

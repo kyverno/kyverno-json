@@ -22,3 +22,15 @@ func WithExample(title, command string) option {
 		})
 	}
 }
+
+func WithExperimental(experimental bool) option {
+	return func(d *Command) {
+		d.experimental = experimental
+	}
+}
+
+func WithParents(parents ...string) option {
+	return func(d *Command) {
+		d.parents = parents
+	}
+}

@@ -6,27 +6,18 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCommandWithNilRoot(t *testing.T) {
-	cmd := Command(nil)
-	assert.NotNil(t, cmd)
-	cmd.SetArgs([]string{"-o", "foo"})
-	err := cmd.Execute()
-	assert.Error(t, err)
-}
-
 func TestCommandWithoutArgs(t *testing.T) {
-	cmd := Command(&cobra.Command{})
+	cmd := Command()
 	assert.NotNil(t, cmd)
 	err := cmd.Execute()
 	assert.Error(t, err)
 }
 
 func TestCommandWithInvalidArg(t *testing.T) {
-	cmd := Command(&cobra.Command{})
+	cmd := Command()
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetErr(b)
@@ -40,7 +31,7 @@ func TestCommandWithInvalidArg(t *testing.T) {
 }
 
 func TestCommandWithInvalidFlag(t *testing.T) {
-	cmd := Command(&cobra.Command{})
+	cmd := Command()
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetErr(b)
@@ -54,7 +45,7 @@ func TestCommandWithInvalidFlag(t *testing.T) {
 }
 
 func TestCommandHelp(t *testing.T) {
-	cmd := Command(&cobra.Command{})
+	cmd := Command()
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetOut(b)

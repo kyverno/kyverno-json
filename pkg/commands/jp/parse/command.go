@@ -7,15 +7,25 @@ import (
 	"path/filepath"
 
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
+	"github.com/kyverno/kyverno-json/pkg/command"
 	"github.com/spf13/cobra"
 )
 
-func Command() *cobra.Command {
+func Command(parents ...string) *cobra.Command {
+	doc := command.New(
+		command.WithParents(parents...),
+		command.WithDescription("Parses jmespath expression and prints corresponding AST."),
+		command.WithExample("Parse expression", "parse 'request.object.metadata.name | truncate(@, `9`)'"),
+		command.WithExample("Parse expression from a file", "parse -f my-file"),
+		command.WithExample("Parse expression from stdin", "parse"),
+		command.WithExample("Parse multiple expressionxs", "parse -f my-file1 -f my-file-2 'request.object.metadata.name | truncate(@, `9`)'"),
+	)
 	var files []string
 	cmd := &cobra.Command{
 		Use:          "parse [-f file|expression]...",
-		Short:        "Parses jmespath expression and shows corresponding AST.",
-		Long:         "Parses jmespath expression and shows corresponding AST.",
+		Short:        command.Description(doc, true),
+		Long:         command.Description(doc, false),
+		Example:      command.Examples(doc),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			expressions, err := loadExpressions(cmd, args, files)
