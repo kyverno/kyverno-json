@@ -1,10 +1,11 @@
 ## kyverno-json
 
-kyverno-json
+kyverno-json is a CLI tool to apply policies to json resources.
 
 ### Synopsis
 
-kyverno-json is a CLI tool to apply policies to json resources
+kyverno-json is a CLI tool to apply policies to json resources.
+
 
 ```
 kyverno-json [flags]

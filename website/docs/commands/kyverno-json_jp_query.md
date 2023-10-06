@@ -6,8 +6,23 @@ Provides a command-line interface to JMESPath, enhanced with Kyverno specific cu
 
 Provides a command-line interface to JMESPath, enhanced with Kyverno specific custom functions.
 
+
 ```
 kyverno-json jp query [-i input] [-q query|query]... [flags]
+```
+
+### Examples
+
+```
+  # Evaluate query
+  kyverno-json jp query -i object.yaml 'request.object.metadata.name | truncate(@, `9`)'
+
+  # Evaluate query
+  kyverno-json jp query -i object.yaml -q query-file
+
+  # Evaluate multiple queries
+  kyverno-json jp query -i object.yaml -q query-file-1 -q query-file-2 'request.object.metadata.name | truncate(@, `9`)'
+
 ```
 
 ### Options

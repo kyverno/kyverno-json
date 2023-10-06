@@ -33,8 +33,8 @@ kyverno-json jp [flags]
 
 ### SEE ALSO
 
-* [kyverno-json](kyverno-json.md)	 - kyverno-json
+* [kyverno-json](kyverno-json.md)	 - kyverno-json is a CLI tool to apply policies to json resources.
 * [kyverno-json jp function](kyverno-json_jp_function.md)	 - Provides function informations.
-* [kyverno-json jp parse](kyverno-json_jp_parse.md)	 - Parses jmespath expression and shows corresponding AST.
+* [kyverno-json jp parse](kyverno-json_jp_parse.md)	 - Parses jmespath expression and prints corresponding AST.
 * [kyverno-json jp query](kyverno-json_jp_query.md)	 - Provides a command-line interface to JMESPath, enhanced with Kyverno specific custom functions.
 

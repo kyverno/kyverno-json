@@ -15,9 +15,9 @@ import (
 	"k8s.io/apimachinery/pkg/util/sets"
 )
 
-func Command(parent *cobra.Command) *cobra.Command {
+func Command(parents ...string) *cobra.Command {
 	doc := command.New(
-		parent,
+		command.WithParents(parents...),
 		command.WithDescription("Provides function informations."),
 		command.WithExample("List functions", "function"),
 		command.WithExample("Get function infos", "function truncate"),

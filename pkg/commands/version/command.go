@@ -8,9 +8,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Command(parent *cobra.Command) *cobra.Command {
+func Command(parents ...string) *cobra.Command {
 	doc := command.New(
-		parent,
+		command.WithParents(parents...),
 		command.WithDescription("Prints the version informations."),
 		command.WithExample("Print version infos", "version"),
 	)

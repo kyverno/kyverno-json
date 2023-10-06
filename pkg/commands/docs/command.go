@@ -7,10 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Command(parent *cobra.Command) *cobra.Command {
+func Command(parents ...string) *cobra.Command {
 	var options options
 	doc := command.New(
-		parent,
+		command.WithParents(parents...),
 		command.WithDescription(
 			"Generates reference documentation.",
 			"The docs command generates CLI reference documentation.",
@@ -33,15 +33,7 @@ func Command(parent *cobra.Command) *cobra.Command {
 		Args:         cobra.NoArgs,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			root := parent
-			if root != nil {
-				for {
-					if !root.HasParent() {
-						break
-					}
-					root = root.Parent()
-				}
-			}
+			root := cmd.Root()
 			if err := options.validate(root); err != nil {
 				return err
 			}

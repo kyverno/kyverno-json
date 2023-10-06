@@ -10,19 +10,28 @@ import (
 	"path/filepath"
 
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
+	"github.com/kyverno/kyverno-json/pkg/command"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/yaml"
 )
 
-func Command() *cobra.Command {
+func Command(parents ...string) *cobra.Command {
+	doc := command.New(
+		command.WithParents(parents...),
+		command.WithDescription("Provides a command-line interface to JMESPath, enhanced with Kyverno specific custom functions."),
+		command.WithExample("Evaluate query", "query -i object.yaml 'request.object.metadata.name | truncate(@, `9`)'"),
+		command.WithExample("Evaluate query", "query -i object.yaml -q query-file"),
+		command.WithExample("Evaluate multiple queries", "query -i object.yaml -q query-file-1 -q query-file-2 'request.object.metadata.name | truncate(@, `9`)'"),
+	)
 	var compact, unquoted bool
 	var input string
 	var queries []string
 	cmd := &cobra.Command{
 		Use:          "query [-i input] [-q query|query]...",
-		Short:        "Provides a command-line interface to JMESPath, enhanced with Kyverno specific custom functions.",
-		Long:         "Provides a command-line interface to JMESPath, enhanced with Kyverno specific custom functions.",
+		Short:        command.Description(doc, true),
+		Long:         command.Description(doc, false),
+		Example:      command.Examples(doc),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			queries, err := loadQueries(cmd, args, queries)
