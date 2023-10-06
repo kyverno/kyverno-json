@@ -1,4 +1,4 @@
-package commands
+package version
 
 import (
 	"bytes"
@@ -6,19 +6,29 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/kyverno/kyverno-json/pkg/version"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRootCommand(t *testing.T) {
-	cmd := RootCommand()
+func TestCommand(t *testing.T) {
+	version.BuildVersion = "test"
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
-	assert.Len(t, cmd.Commands(), 4)
+	b := bytes.NewBufferString("")
+	cmd.SetOut(b)
 	err := cmd.Execute()
 	assert.NoError(t, err)
+	out, err := io.ReadAll(b)
+	assert.NoError(t, err)
+	expected := `
+Version: test
+Time: ---
+Git commit ID: ---`
+	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(string(out)))
 }
 
-func TestRootCommandWithInvalidArg(t *testing.T) {
-	cmd := RootCommand()
+func TestCommandWithInvalidArg(t *testing.T) {
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetErr(b)
@@ -27,14 +37,12 @@ func TestRootCommandWithInvalidArg(t *testing.T) {
 	assert.Error(t, err)
 	out, err := io.ReadAll(b)
 	assert.NoError(t, err)
-	expected := `
-Error: unknown command "foo" for "kyverno-json"
-Run 'kyverno-json --help' for usage.`
+	expected := `Error: unknown command "foo" for "version"`
 	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(string(out)))
 }
 
-func TestRootCommandWithInvalidFlag(t *testing.T) {
-	cmd := RootCommand()
+func TestCommandWithInvalidFlag(t *testing.T) {
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetErr(b)
@@ -47,8 +55,8 @@ func TestRootCommandWithInvalidFlag(t *testing.T) {
 	assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(string(out)))
 }
 
-func TestRootCommandHelp(t *testing.T) {
-	cmd := RootCommand()
+func TestCommandHelp(t *testing.T) {
+	cmd := Command(nil)
 	assert.NotNil(t, cmd)
 	b := bytes.NewBufferString("")
 	cmd.SetOut(b)

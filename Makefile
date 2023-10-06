@@ -53,7 +53,11 @@ CLI_DIR        := $(CMD_DIR)/cli
 CLI_BIN        := kyverno-json
 CGO_ENABLED    ?= 0
 GOOS           ?= $(shell go env GOOS)
-LD_FLAGS       ?= "-s -w"
+ifdef VERSION
+LD_FLAGS       := "-s -w -X $(PACKAGE)/pkg/version.BuildVersion=$(VERSION)"
+else
+LD_FLAGS       := "-s -w"
+endif
 
 .PHONY: fmt
 fmt: ## Run go fmt
