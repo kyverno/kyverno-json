@@ -4,6 +4,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/commands/docs"
 	"github.com/kyverno/kyverno-json/pkg/commands/jp"
 	"github.com/kyverno/kyverno-json/pkg/commands/scan"
+	"github.com/kyverno/kyverno-json/pkg/commands/version"
 	"github.com/spf13/cobra"
 )
 
@@ -21,6 +22,7 @@ func RootCommand() *cobra.Command {
 		docs.Command(cmd),
 		jp.Command(cmd),
 		scan.Command(),
+		version.Command(cmd),
 	)
 	return cmd
 }
