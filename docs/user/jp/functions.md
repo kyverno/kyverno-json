@@ -52,5 +52,6 @@
 |---|---|
 | at | `at(array, any)` |
 | concat | `concat(string, string)` |
+| json_parse | `json_parse(string)` |
 | wildcard | `wildcard(string, string)` |
 
