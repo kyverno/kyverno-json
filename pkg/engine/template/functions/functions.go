@@ -21,6 +21,12 @@ func GetFunctions() []functions.FunctionEntry {
 		},
 		Handler: jpfConcat,
 	}, {
+		Name: "json_parse",
+		Arguments: []functions.ArgSpec{
+			{Types: []functions.JpType{functions.JpString}},
+		},
+		Handler: jpfJsonParse,
+	}, {
 		Name: "wildcard",
 		Arguments: []functions.ArgSpec{
 			{Types: []functions.JpType{functions.JpString}},
