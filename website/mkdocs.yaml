@@ -99,7 +99,8 @@ nav:
     - jp/functions.md
 - Policy catalog:
   - catalog/index.md
-- Playground: https://playground.kyverno.io/
+- Playground:
+  - playground.md
 - Blog:
   - blog/index.md
 
