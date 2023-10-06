@@ -1,0 +1,116 @@
+# site
+site_name: kyverno-json
+site_url: https://github.io/kyverno/kyverno-json
+site_description: Generic policy gouvernance for arbitrary JSON payloads
+
+# repo
+repo_name: kyverno/kyverno-json
+repo_url: https://github.com/kyverno/kyverno-json
+
+# edit
+edit_uri: edit/main/docs/
+
+# copyright
+copyright: Made with ❤️ by Kyverno contributors.
+
+# strictness
+strict: true
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+  language: en
+  logo: static/logo.png
+  favicon: static/favicon.ico
+  include_search_page: false
+  search_index_only: true
+  palette:
+  - media: "(prefers-color-scheme: light)" # Light mode
+    scheme: default
+    toggle:
+      icon: material/lightbulb-outline
+      name: Switch to light mode
+  - media: "(prefers-color-scheme: dark)" # Dark mode
+    scheme: slate
+    primary: light blue
+    accent: indigo
+    toggle:
+      icon: material/lightbulb
+      name: Switch to dark mode
+  features:
+  - announce.dismiss
+  - search.suggest
+  - search.highlight
+  - search.share
+  - content.code.copy
+  - content.action.edit
+  - navigation.footer
+  - navigation.instant
+  - navigation.tracking
+  - navigation.tabs
+
+plugins:
+- search
+# - redirects:
+#     redirect_maps:
+#       discord.md: https://discord.gg/RGEBtg8vQ6
+#       github.md: https://github.com/goreleaser
+#       linkedin.md: https://www.linkedin.com/company/goreleaser/
+#       mastodon.md: https://fosstodon.org/@goreleaser
+#       twitter.md: https://twitter.com/goreleaser
+#       d.md: https://discord.gg/RGEBtg8vQ6
+#       g.md: https://github.com/goreleaser
+#       l.md: https://www.linkedin.com/company/goreleaser/
+#       m.md: https://fosstodon.org/@goreleaser
+#       t.md: https://twitter.com/goreleaser
+#       "customization/build.md": customization/builds.md
+- minify:
+    minify_html: true
+- include-markdown
+- tags
+- blog:
+    post_url_format: "{slug}"
+
+nav:
+- Home: index.md
+- Getting Started:
+  - intro.md
+  - install.md
+  - quick-start.md
+- Writing policies:
+  - policies/index.md
+  - APIs:
+    - v1alpha1: apis/kyverno-json.v1alpha1.md
+  - Command Line Usage:
+    - commands/kyverno-json.md
+    - commands/kyverno-json_completion.md
+    - commands/kyverno-json_completion_bash.md
+    - commands/kyverno-json_completion_fish.md
+    - commands/kyverno-json_completion_powershell.md
+    - commands/kyverno-json_completion_zsh.md
+    - commands/kyverno-json_docs.md
+    - commands/kyverno-json_jp.md
+    - commands/kyverno-json_jp_function.md
+    - commands/kyverno-json_jp_parse.md
+    - commands/kyverno-json_jp_query.md
+    - commands/kyverno-json_scan.md
+  - JMESPath functions:
+    - jp/functions.md
+- Policy catalog:
+  - catalog/index.md
+- Playground: https://playground.kyverno.io/
+- Blog:
+  - blog/index.md
+
+markdown_extensions:
+- admonition
+- codehilite
+- meta
+- toc:
+    permalink: true
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.superfences
+- pymdownx.tasklist:
+    custom_checkbox: true
+- footnotes
