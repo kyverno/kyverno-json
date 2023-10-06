@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kyverno/kyverno/pkg/version"
+	"github.com/kyverno/kyverno-json/pkg/version"
 	"github.com/stretchr/testify/assert"
 )
 

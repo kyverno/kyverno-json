@@ -22,4 +22,5 @@ kyverno-json [flags]
 * [kyverno-json docs](kyverno-json_docs.md)	 - Generates reference documentation.
 * [kyverno-json jp](kyverno-json_jp.md)	 - Provides a command-line interface to JMESPath, enhanced with custom functions.
 * [kyverno-json scan](kyverno-json_scan.md)	 - scan
+* [kyverno-json version](kyverno-json_version.md)	 - Prints the version informations.
 

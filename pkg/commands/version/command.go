@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/kyverno/kyverno-json/pkg/command"
-	"github.com/kyverno/kyverno/pkg/version"
+	"github.com/kyverno/kyverno-json/pkg/version"
 	"github.com/spf13/cobra"
 )
 

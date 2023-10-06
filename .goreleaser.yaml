@@ -13,7 +13,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w
+      - -s -w -X github.com/kyverno/kyverno-json/pkg/version.BuildVersion={{ .Version }}
 
 signs:
   - cmd: cosign
