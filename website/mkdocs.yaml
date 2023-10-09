@@ -107,6 +107,8 @@ nav:
     - v1alpha1: apis/kyverno-json.v1alpha1.md
 - Policy catalog:
   - catalog/index.md
+  - catalog/aws/policy-1.md
+  - catalog/ecs/policy-1.md
 - Playground:
   - playground.md
 - Blog:
