@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("# jp docs")
+	fmt.Println("# Functions")
 	fmt.Println()
 	fmt.Println("## built-in functions")
 	fmt.Println()
