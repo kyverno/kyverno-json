@@ -9,17 +9,17 @@ spec:
         assert:
           all:
           - foo:
-              /(bar)/: 4
+              \(bar)\: 4
           - foo:
-              /(bar)/@test:
+              \(bar)\@test:
                 ($test): 4
           - foo:
-              /(bar)@test/: 6
+              \(bar)@test\: 6
           - foo:
-              /(bar)@test/@test:
+              \(bar)@test\@test:
                 ($test): 6
           - foo:
-              /~foos/:
+              \~foos\:
               - 1
               - 2
               - 3
