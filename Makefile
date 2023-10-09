@@ -48,8 +48,6 @@ clean-tools: ## Remove installed tools
 # BUILD #
 #########
 
-CMD_DIR        := cmd
-CLI_DIR        := $(CMD_DIR)/cli
 CLI_BIN        := kyverno-json
 CGO_ENABLED    ?= 0
 GOOS           ?= $(shell go env GOOS)
@@ -71,7 +69,7 @@ vet: ## Run go vet
 
 $(CLI_BIN): fmt vet
 	@echo Build cli binary... >&2
-	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
+	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) .
 
 build: $(CLI_BIN) ## Build
 
