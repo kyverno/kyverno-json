@@ -24,6 +24,17 @@ theme:
   favicon: static/favicon.ico
   include_search_page: false
   search_index_only: true
+  features:
+  - announce.dismiss
+  - search.suggest
+  - search.highlight
+  - search.share
+  - content.code.copy
+  - content.action.edit
+  - navigation.footer
+  - navigation.instant
+  - navigation.tracking
+  - navigation.tabs
   palette:
   - media: "(prefers-color-scheme: light)" # Light mode
     scheme: default
@@ -37,17 +48,6 @@ theme:
     toggle:
       icon: material/lightbulb
       name: Switch to dark mode
-  features:
-  - announce.dismiss
-  - search.suggest
-  - search.highlight
-  - search.share
-  - content.code.copy
-  - content.action.edit
-  - navigation.footer
-  - navigation.instant
-  - navigation.tracking
-  - navigation.tabs
 
 plugins:
 - search
@@ -67,7 +67,8 @@ plugins:
 - minify:
     minify_html: true
 - include-markdown
-- tags
+- tags:
+    enabled: true
 - blog:
     post_url_format: "{slug}"
 
