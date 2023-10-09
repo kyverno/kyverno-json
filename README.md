@@ -232,7 +232,7 @@ When used with a map, the named binding receives the key of the element being pr
 
 Sometimes it can be useful to refer to a parent node in the assertion tree.
 
-This is possible to add an explicit at every node in the tree by appending the `@binding_name` to the key.
+This is possible to add an explicit binding at every node in the tree by appending the `@binding_name` to the key.
 
 Given the input document:
 
