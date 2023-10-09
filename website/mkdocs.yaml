@@ -79,6 +79,13 @@ nav:
   - quick-start.md
 - Writing policies:
   - policies/index.md
+  - Basics:
+    - policies/api-version.md
+    - policies/match.md
+    - policies/assertion-trees.md
+    - policies/modifiers.md
+    - policies/explicit-bindings.md
+    - policies/escaping.md
   - Command Line Usage:
     - commands/kyverno-json.md
     - commands/kyverno-json_completion.md
