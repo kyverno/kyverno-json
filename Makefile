@@ -152,7 +152,7 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@echo Generate mkdocs website... >&2
 	@pip3 install mkdocs
 	@pip3 install --upgrade pip
-	@pip3 install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin
+	@pip3 install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin mkdocs-awesome-pages-plugin
 	@rm -rf ./website/docs/apis && mkdir -p ./website/docs/apis && cp docs/user/apis/md/* ./website/docs/apis
 	@rm -rf ./website/docs/commands && mkdir -p ./website/docs/commands && cp docs/user/commands/* ./website/docs/commands
 	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp

@@ -1,11 +1,12 @@
----
-tags:
-- aws
----
 apiVersion: json.kyverno.io/v1alpha1
 kind: Policy
 metadata:
   name: test
+  labels:
+    s3.aws.catalog.kyverno.io: ''
+  annotations:
+    title.catalog.kyverno.io: Policy 1
+    description.catalog.kyverno.io: Policy 1
 spec:
   rules:
     - name: foo-bar

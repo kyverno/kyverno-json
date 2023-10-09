@@ -1,0 +1,5 @@
+nav:
+- Getting Started:
+  - index.md
+  - install.md
+  - quick-start.md

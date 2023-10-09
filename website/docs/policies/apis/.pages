@@ -1,0 +1,3 @@
+nav:
+- APIs:
+  - v1alpha1: kyverno-json.v1alpha1.md
