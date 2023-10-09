@@ -1,4 +1,4 @@
-# jp docs
+# Functions
 
 ## built-in functions
 

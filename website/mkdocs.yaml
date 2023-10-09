@@ -79,8 +79,6 @@ nav:
   - quick-start.md
 - Writing policies:
   - policies/index.md
-  - APIs:
-    - v1alpha1: apis/kyverno-json.v1alpha1.md
   - Command Line Usage:
     - commands/kyverno-json.md
     - commands/kyverno-json_completion.md
@@ -95,8 +93,11 @@ nav:
     - commands/kyverno-json_jp_query.md
     - commands/kyverno-json_scan.md
     - commands/kyverno-json_version.md
-  - JMESPath functions:
-    - jp/functions.md
+  - JMESPath:
+    - Overview: jp.md
+    - Functions: jp/functions.md
+  - APIs:
+    - v1alpha1: apis/kyverno-json.v1alpha1.md
 - Policy catalog:
   - catalog/index.md
 - Playground:
