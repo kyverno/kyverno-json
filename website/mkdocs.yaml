@@ -8,7 +8,7 @@ repo_name: kyverno/kyverno-json
 repo_url: https://github.com/kyverno/kyverno-json
 
 # edit
-edit_uri: edit/main/docs/
+edit_uri: edit/main/website/docs/
 
 # copyright
 copyright: Made with ❤️ by Kyverno contributors.
