@@ -3,7 +3,7 @@
 {{ super() }}
 <style>
 	:root {
-		--goreleaser-primary-color: #3b5672;
+		--kyverno-primary-color: #72533b;
 	}
 	.md-header {
 		position: initial
@@ -16,11 +16,11 @@
 	}
 	[data-md-color-scheme=slate] .tx-container {
 		padding-top: 1rem;
-		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1123 258'><path d='M1124,2c0,0 0,256 0,256l-1125,0l0,-48c0,0 16,5 55,5c116,0 197,-92 325,-92c121,0 114,46 254,46c140,0 214,-167 572,-166Z' style='fill: hsla(232, 15%, 21%, 1)'/></svg>") no-repeat bottom, linear-gradient(to bottom, var(--md-primary-fg-color), var(--goreleaser-primary-color) 99%, #fff 99%)
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1123 258'><path d='M1124,2c0,0 0,256 0,256l-1125,0l0,-48c0,0 16,5 55,5c116,0 197,-92 325,-92c121,0 114,46 254,46c140,0 214,-167 572,-166Z' style='fill: hsla(232, 15%, 21%, 1)'/></svg>") no-repeat bottom, linear-gradient(to bottom, var(--md-primary-fg-color), var(--kyverno-primary-color) 99%, #fff 99%)
 	}
 	.tx-container {
 		padding-top: 1rem;
-		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1123 258'><path d='M1124,2c0,0 0,256 0,256l-1125,0l0,-48c0,0 16,5 55,5c116,0 197,-92 325,-92c121,0 114,46 254,46c140,0 214,-167 572,-166Z' style='fill: white' /></svg>") no-repeat bottom, linear-gradient(to bottom, var(--md-primary-fg-color), var(--goreleaser-primary-color) 99%, #fff 99%)
+		background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1123 258'><path d='M1124,2c0,0 0,256 0,256l-1125,0l0,-48c0,0 16,5 55,5c116,0 197,-92 325,-92c121,0 114,46 254,46c140,0 214,-167 572,-166Z' style='fill: white' /></svg>") no-repeat bottom, linear-gradient(to bottom, var(--md-primary-fg-color), var(--kyverno-primary-color) 99%, #fff 99%)
 	}
 	.tx-hero {
 		margin: 0 .8rem;
@@ -44,7 +44,7 @@
 	}
 	.tx-hero .md-button--primary {
 		background-color: var(--md-primary-bg-color);
-		color: var(--goreleaser-primary-color);
+		color: var(--kyverno-primary-color);
 		border-color: var(--md-primary-bg-color)
 	}
 	.tx-hero .md-button:focus,
@@ -128,7 +128,6 @@
 		</div>
 	</div>
 </section>
-<a style="display: none;" rel="me" href="https://fosstodon.org/@goreleaser"></a>
 {% endblock %}
 {% block content %}{% endblock %}
 {% block footer %}{% endblock %}
