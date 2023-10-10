@@ -1,0 +1,78 @@
+{
+  "description": "VolumeAttachmentStatus is the status of a VolumeAttachment request.",
+  "type": "object",
+  "required": [
+    "attached"
+  ],
+  "properties": {
+    "attachError": {
+      "description": "VolumeError captures an error encountered during a volume operation.",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "message": {
+          "description": "message represents the error encountered during Attach or Detach operation. This string may be logged, so it should not contain sensitive information.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "time": {
+          "description": "Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "attached": {
+      "description": "attached indicates the volume is successfully attached. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.",
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "attachmentMetadata": {
+      "description": "attachmentMetadata is populated with any information returned by the attach operation, upon successful attach, that must be passed into subsequent WaitForAttach or Mount calls. This field must only be set by the entity completing the attach operation, i.e. the external-attacher.",
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "detachError": {
+      "description": "VolumeError captures an error encountered during a volume operation.",
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "message": {
+          "description": "message represents the error encountered during Attach or Detach operation. This string may be logged, so it should not contain sensitive information.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "time": {
+          "description": "Time is a wrapper around time.Time which supports correct marshaling to YAML and JSON.  Wrappers are provided for many of the factory methods that the time package offers.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/schema#"
+}
