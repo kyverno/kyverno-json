@@ -77,7 +77,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "binding",
-		in:   "test@foo",
+		in:   "test->foo",
 		want: &expression{
 			foreach:     false,
 			foreachName: "",
@@ -86,7 +86,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "binding",
-		in:   "(test)@foo",
+		in:   "(test)->foo",
 		want: &expression{
 			foreach:     false,
 			foreachName: "",
@@ -96,7 +96,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "foreach and binding",
-		in:   "~.test@foo",
+		in:   "~.test->foo",
 		want: &expression{
 			foreach:     true,
 			foreachName: "",
@@ -105,7 +105,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "foreach and binding",
-		in:   "~.(test)@foo",
+		in:   "~.(test)->foo",
 		want: &expression{
 			foreach:     true,
 			foreachName: "",
@@ -115,11 +115,11 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   `\~(test)@foo\`,
+		in:   `\~(test)->foo\`,
 		want: &expression{
 			foreach:     false,
 			foreachName: "",
-			statement:   "~(test)@foo",
+			statement:   "~(test)->foo",
 			binding:     "",
 		},
 	}, {
@@ -160,7 +160,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   `~index.\(test)\@name`,
+		in:   `~index.\(test)\->name`,
 		want: &expression{
 			foreach:     true,
 			foreachName: "index",

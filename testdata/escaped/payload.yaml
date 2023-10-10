@@ -1,6 +1,6 @@
 foo:
   (bar): 4
-  (bar)@test: 6
+  (bar)->test: 6
   ~foos:
   - 1
   - 2

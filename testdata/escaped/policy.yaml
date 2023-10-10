@@ -13,14 +13,14 @@ spec:
                 \(bar)\: 4
           - check:
               foo:
-                \(bar)\@test:
+                \(bar)\->test:
                   ($test): 4
           - check:
               foo:
-                \(bar)@test\: 6
+                \(bar)->test\: 6
           - check:
               foo:
-                \(bar)@test\@test:
+                \(bar)->test\->test:
                   ($test): 6
           - check:
               foo:
