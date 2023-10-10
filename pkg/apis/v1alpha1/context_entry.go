@@ -9,7 +9,4 @@ type ContextEntry struct {
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
 	Variable Any `json:"variable,omitempty"`
-
-	// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image details.
-	ImageRegistry *ImageRegistry `json:"imageRegistry,omitempty"`
 }
