@@ -52,7 +52,11 @@ auto_generated: true
 
 **Appears in:**
 
+- [Assertion](#json-kyverno-io-v1alpha1-Assertion)
+
 - [ContextEntry](#json-kyverno-io-v1alpha1-ContextEntry)
+
+- [Match](#json-kyverno-io-v1alpha1-Match)
 
 
 
@@ -70,17 +74,67 @@ auto_generated: true
 </tbody>
 </table>
 
-## `Assertions`     {#json-kyverno-io-v1alpha1-Assertions}
+## `Assert`     {#json-kyverno-io-v1alpha1-Assert}
     
-(Alias of `[]github.com/kyverno/kyverno-json/pkg/apis/v1alpha1.Any`)
 
 **Appears in:**
 
-- [Match](#json-kyverno-io-v1alpha1-Match)
+- [Validation](#json-kyverno-io-v1alpha1-Validation)
 
 
 
+<table class="table">
+<thead><tr><th width="30%">Field</th><th>Description</th></tr></thead>
+<tbody>
+    
+  
+<tr><td><code>any</code> <B>[Required]</B><br/>
+<a href="#json-kyverno-io-v1alpha1-Assertion"><code>[]Assertion</code></a>
+</td>
+<td>
+   <p>Any allows specifying resources which will be ORed.</p>
+</td>
+</tr>
+<tr><td><code>all</code> <B>[Required]</B><br/>
+<a href="#json-kyverno-io-v1alpha1-Assertion"><code>[]Assertion</code></a>
+</td>
+<td>
+   <p>All allows specifying resources which will be ANDed.</p>
+</td>
+</tr>
+</tbody>
+</table>
 
+## `Assertion`     {#json-kyverno-io-v1alpha1-Assertion}
+    
+
+**Appears in:**
+
+- [Assert](#json-kyverno-io-v1alpha1-Assert)
+
+
+
+<table class="table">
+<thead><tr><th width="30%">Field</th><th>Description</th></tr></thead>
+<tbody>
+    
+  
+<tr><td><code>message</code> <B>[Required]</B><br/>
+<code>string</code>
+</td>
+<td>
+   <p>Message is the variable associated message.</p>
+</td>
+</tr>
+<tr><td><code>check</code> <B>[Required]</B><br/>
+<a href="#json-kyverno-io-v1alpha1-Any"><code>Any</code></a>
+</td>
+<td>
+   <p>Check is the assertion check definition.</p>
+</td>
+</tr>
+</tbody>
+</table>
 
 ## `ContextEntry`     {#json-kyverno-io-v1alpha1-ContextEntry}
     
@@ -122,8 +176,6 @@ auto_generated: true
 
 - [Rule](#json-kyverno-io-v1alpha1-Rule)
 
-- [Validation](#json-kyverno-io-v1alpha1-Validation)
-
 
 
 <table class="table">
@@ -132,14 +184,14 @@ auto_generated: true
     
   
 <tr><td><code>any</code> <B>[Required]</B><br/>
-<a href="#json-kyverno-io-v1alpha1-Assertions"><code>Assertions</code></a>
+<a href="#json-kyverno-io-v1alpha1-Any"><code>[]Any</code></a>
 </td>
 <td>
    <p>Any allows specifying resources which will be ORed.</p>
 </td>
 </tr>
 <tr><td><code>all</code> <B>[Required]</B><br/>
-<a href="#json-kyverno-io-v1alpha1-Assertions"><code>Assertions</code></a>
+<a href="#json-kyverno-io-v1alpha1-Any"><code>[]Any</code></a>
 </td>
 <td>
    <p>All allows specifying resources which will be ANDed.</p>
@@ -245,15 +297,8 @@ and admission review request information like the name or role.</p>
 <tbody>
     
   
-<tr><td><code>message</code> <B>[Required]</B><br/>
-<code>string</code>
-</td>
-<td>
-   <p>Message specifies a custom message to be displayed on failure.</p>
-</td>
-</tr>
 <tr><td><code>assert</code> <B>[Required]</B><br/>
-<a href="#json-kyverno-io-v1alpha1-Match"><code>Match</code></a>
+<a href="#json-kyverno-io-v1alpha1-Assert"><code>Assert</code></a>
 </td>
 <td>
    <p>Assert specifies an overlay-style pattern used to check resources.</p>

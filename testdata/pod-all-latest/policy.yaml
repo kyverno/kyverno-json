@@ -17,8 +17,9 @@ spec:
       validate:
         assert:
           all:
-          - ~.(spec.containers[*].image):
-              # an image tag is required
-              (contains(@, ':')): true
-              # using a mutable image tag e.g. 'latest' is not allowed
-              (ends_with(@, $tag)): true
+          - check:
+              ~.(spec.containers[*].image):
+                # an image tag is required
+                (contains(@, ':')): true
+                # using a mutable image tag e.g. 'latest' is not allowed
+                (ends_with(@, $tag)): true
