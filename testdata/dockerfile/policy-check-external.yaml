@@ -4,17 +4,15 @@ metadata:
   name: check-dockerfile
 spec:
   rules:
-    - name: no-http
+    - name: no-external
       validate:
-        message: "HTTP calls are not allowed"
         assert:
           all:
-          - ~.(Stages[].Commands[].Args[].Value):
-              (contains(@, 'https://') || contains(@, 'http://')): false
-    - name: no-curl-wget
-      validate:
-        message: "curl / wget are not allowed"
-        assert:
-          all:
-          - ~.(Stages[].Commands[].CmdLine[]):
-              (contains(@, 'wget') || contains(@, 'curl')): false
+          - message: "HTTP calls are not allowed"
+            check:
+              ~.(Stages[].Commands[].Args[].Value):
+                (contains(@, 'https://') || contains(@, 'http://')): false
+          - message: "curl / wget are not allowed"
+            check:
+              ~.(Stages[].Commands[].CmdLine[]):
+                (contains(@, 'wget') || contains(@, 'curl')): false
