@@ -144,8 +144,13 @@ codegen-jp-docs: ## Generate JP docs
 	@rm -rf docs/user/jp && mkdir -p docs/user/jp
 	@go run ./hack/docs/jp/main.go > docs/user/jp/functions.md
 
+.PHONY: codegen-catalog
+codegen-catalog: ## Generate policy catalog
+	@echo Generate policy catalog... >&2
+	@go run ./hack/docs/catalog/main.go
+
 .PHONY: codegen-docs
-codegen-docs: codegen-api-docs-md codegen-cli-docs codegen-jp-docs ## Generate docs
+codegen-docs: codegen-api-docs-md codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
 
 .PHONY: codegen-mkdocs
 codegen-mkdocs: codegen-docs ## Generate mkdocs website
