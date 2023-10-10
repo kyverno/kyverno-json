@@ -14,5 +14,6 @@ spec:
       validate:
         assert:
           all:
-          - tags:
-              (wildcard('?*', Team)): false
+          - check:
+              tags:
+                (wildcard('?*', Team)): false

@@ -2,7 +2,6 @@ package jsonengine
 
 import (
 	"context"
-	"errors"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
@@ -11,7 +10,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/loop"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"go.uber.org/multierr"
 )
 
 type JsonEngineRequest struct {
@@ -62,19 +61,22 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 				Rule:     r.rule,
 				Resource: r.value,
 			}
-			errs, err := assert.Match(ctx, nil, r.rule.Validation.Assert, r.value, r.bindings)
+			errs, err := assert.MatchAssert(ctx, nil, r.rule.Validation.Assert, r.value, r.bindings)
 			if err != nil {
 				response.Failure = err
-			} else if err := errs.ToAggregate(); err != nil {
-				if r.rule.Validation.Message != "" {
-					response.Error = errors.New(template.String(ctx, r.rule.Validation.Message, r.value, r.bindings))
-				} else {
-					response.Error = err
-				}
+			} else if err := multierr.Combine(errs...); err != nil {
+				// if r.rule.Validation.Message != "" {
+				// 	response.Error = errors.New(template.String(ctx, r.rule.Validation.Message, r.value, r.bindings))
+				// } else {
+				response.Error = err
+				// }
 			}
 			return response
 		}).
 		Predicate(func(ctx context.Context, r request) bool {
+			if r.rule.Exclude == nil {
+				return true
+			}
 			errs, err := assert.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
 			return err == nil && len(errs) != 0
 		}).
