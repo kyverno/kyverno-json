@@ -330,7 +330,7 @@ foo:
 ```
 
 Here the `(bar)` key conflict with the projection syntax used.
-To workaround this issue, you can escape a projection by surrounding it with `/` characters like this:
+To workaround this issue, you can escape a projection by surrounding it with `\` characters like this:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
@@ -344,17 +344,17 @@ spec:
         assert:
           all:
           - foo:
-              /(bar)/: 10
+              \(bar)\: 10
 ```
 
-In this case, the leading and trailing `/` characters will be erased and the projection won't be applied.
+In this case, the leading and trailing `\` characters will be erased and the projection won't be applied.
 
 Note that it's still possible to use the `~` modifier or to create a named binding with and escaped projection.
 
 Keys like this are perfectly valid:
-- `~index./baz/`
-- `/baz/@foo`
-- `~index./baz/@foo`
+- `~index.\baz\`
+- `\baz\@foo`
+- `~index.\baz\@foo`
 
 ## SDK
 

@@ -115,7 +115,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   "/~(test)@foo/",
+		in:   `\~(test)@foo\`,
 		want: &expression{
 			foreach:     false,
 			foreachName: "",
@@ -124,7 +124,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   "/test/",
+		in:   `\test\`,
 		want: &expression{
 			foreach:     false,
 			foreachName: "",
@@ -133,7 +133,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   "/(test)/",
+		in:   `\(test)\`,
 		want: &expression{
 			foreach:     false,
 			foreachName: "",
@@ -142,7 +142,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   "//test//",
+		in:   `\/test/\`,
 		want: &expression{
 			foreach:     false,
 			foreachName: "",
@@ -151,7 +151,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   "~index./(test)/",
+		in:   `~index.\(test)\`,
 		want: &expression{
 			foreach:     true,
 			foreachName: "index",
@@ -160,7 +160,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 		},
 	}, {
 		name: "escape",
-		in:   "~index./(test)/@name",
+		in:   `~index.\(test)\@name`,
 		want: &expression{
 			foreach:     true,
 			foreachName: "index",
