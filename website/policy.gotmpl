@@ -1,0 +1,21 @@
+{{- with .Tags -}}
+---
+tags:
+{{- range . }}
+- {{ . }}
+{{- end }}
+---
+{{- end }}
+# {{ .Title }}
+
+## Description
+
+{{ .Description }}
+
+## Manifest
+
+[Original policy](https://github.com/kyverno/kyverno-json/{{ .Path }})
+
+```yaml
+{{ .Manifest }}
+```
