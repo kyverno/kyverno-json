@@ -12,7 +12,10 @@ DEEPCOPY_GEN                       := $(TOOLS_DIR)/deepcopy-gen
 CODE_GEN_VERSION                   := v0.28.0
 REFERENCE_DOCS                     := $(TOOLS_DIR)/genref
 REFERENCE_DOCS_VERSION             := latest
-TOOLS                              := $(CONTROLLER_GEN) $(REGISTER_GEN) $(DEEPCOPY_GEN) $(REFERENCE_DOCS)
+KIND                               := $(TOOLS_DIR)/kind
+KIND_VERSION                       := v0.20.0
+TOOLS                              := $(CONTROLLER_GEN) $(REGISTER_GEN) $(DEEPCOPY_GEN) $(REFERENCE_DOCS) $(KIND)
+PIP                                ?= "pip"
 ifeq ($(GOOS), darwin)
 SED                                := gsed
 else
@@ -35,6 +38,10 @@ $(DEEPCOPY_GEN):
 $(REFERENCE_DOCS):
 	@echo Install genref... >&2
 	@GOBIN=$(TOOLS_DIR) go install github.com/kubernetes-sigs/reference-docs/genref@$(REFERENCE_DOCS_VERSION)
+
+$(KIND):
+	@echo Install kind... >&2
+	@GOBIN=$(TOOLS_DIR) go install sigs.k8s.io/kind@$(KIND_VERSION)
 
 .PHONY: install-tools
 install-tools: $(TOOLS) ## Install tools
@@ -83,6 +90,7 @@ GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
 CRDS_PATH                   := ${PWD}/config/crds
+KIND_IMAGE                  ?= kindest/node:v1.28.0
 
 $(GOPATH_SHIM):
 	@echo Create gopath shim... >&2
@@ -163,8 +171,31 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
 
+
+.PHONY: codegen-schema-openapi
+codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
+	@echo Generate openapi schema... >&2
+	@rm -rf ./schemas
+	@mkdir -p ./schemas/openapi/v2
+	@mkdir -p ./schemas/openapi/v3/apis/json.kyverno.io
+	@$(KIND) create cluster --name schema --image $(KIND_IMAGE)
+	@kubectl create -f ./config/crds
+	@sleep 15
+	@kubectl get --raw /openapi/v2 > ./schemas/openapi/v2/schema.json
+	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
+	@$(KIND) delete cluster --name schema
+
+.PHONY: codegen-schema-json
+codegen-schema-json: codegen-schema-openapi ## Generate json schemas
+	@$(PIP) install openapi2jsonschema
+	@rm -rf ./schemas/json
+	@openapi2jsonschema ./schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./schemas/json
+
+.PHONY: codegen-schema-all
+codegen-schema-all: codegen-schema-openapi codegen-schema-json ## Generate openapi and json schemas
+
 .PHONY: codegen-all
-codegen-all: codegen-crds codegen-deepcopy codegen-register codegen-docs codegen-mkdocs ## Rebuild all generated code and docs
+codegen-all: codegen-crds codegen-deepcopy codegen-register codegen-docs codegen-mkdocs codegen-schema-all ## Rebuild all generated code and docs
 
 .PHONY: verify-codegen
 verify-codegen: codegen-all ## Verify all generated code and docs are up to date
