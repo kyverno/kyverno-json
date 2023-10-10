@@ -67,6 +67,12 @@ func Test_Execute(t *testing.T) {
 		policies: []string{"../../../testdata/escaped/policy.yaml"},
 		out:      "../../../testdata/escaped/out.txt",
 		wantErr:  false,
+	}, {
+		name:     "dockerfile",
+		payload:  "../../../testdata/dockerfile/input.json",
+		policies: []string{"../../../testdata/dockerfile/policy-check-external.yaml"},
+		out:      "../../../testdata/dockerfile/out.txt",
+		wantErr:  false,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
