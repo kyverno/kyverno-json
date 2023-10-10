@@ -38,8 +38,9 @@ nav:
   - catalog/index.md
   - tags.md
   - All:
-    - catalog/policies/aws/policy-1.md
-    - catalog/policies/ecs/policy-1.md
+{{- range .Policies }}
+    - {{ .NavPath }}
+{{- end }}
 - Playground:
   - playground.md
 - Blog:
