@@ -8,6 +8,7 @@ require (
 	github.com/kyverno/kyverno v1.11.0-beta.4
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
+	go.uber.org/multierr v1.11.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.28.2
 	sigs.k8s.io/kubectl-validate v0.0.0-20230927155409-3b3ca3ad91d0
@@ -257,7 +258,6 @@ require (
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.step.sm/crypto v0.35.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	go4.org/intern v0.0.0-20230525184215-6c62f75575cb // indirect
 	go4.org/unsafe/assume-no-moving-gc v0.0.0-20230525183740-e7c30c78aeb2 // indirect

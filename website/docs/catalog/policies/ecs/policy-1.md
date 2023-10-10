@@ -21,6 +21,7 @@ spec:
     validate:
       assert:
         all:
-        - foo:
-            /(bar)/: 10
+        - check:
+            foo:
+              /(bar)/: 10
 ```

@@ -400,7 +400,26 @@
                           "null"
                         ],
                         "items": {
-                          "x-kubernetes-preserve-unknown-fields": true
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "required": [
+                            "check"
+                          ],
+                          "properties": {
+                            "check": {
+                              "description": "Check is the assertion check definition.",
+                              "x-kubernetes-preserve-unknown-fields": true
+                            },
+                            "message": {
+                              "description": "Message is the variable associated message.",
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
                         }
                       },
                       "any": {
@@ -410,17 +429,29 @@
                           "null"
                         ],
                         "items": {
-                          "x-kubernetes-preserve-unknown-fields": true
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "required": [
+                            "check"
+                          ],
+                          "properties": {
+                            "check": {
+                              "description": "Check is the assertion check definition.",
+                              "x-kubernetes-preserve-unknown-fields": true
+                            },
+                            "message": {
+                              "description": "Message is the variable associated message.",
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            }
+                          }
                         }
                       }
                     }
-                  },
-                  "message": {
-                    "description": "Message specifies a custom message to be displayed on failure.",
-                    "type": [
-                      "string",
-                      "null"
-                    ]
                   }
                 }
               }

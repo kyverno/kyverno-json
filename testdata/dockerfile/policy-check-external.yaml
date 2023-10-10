@@ -1,0 +1,20 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: Policy
+metadata:
+  name: check-dockerfile
+spec:
+  rules:
+    - name: no-http
+      validate:
+        message: "HTTP calls are not allowed"
+        assert:
+          all:
+          - ~.(Stages[].Commands[].Args[].Value):
+              (contains(@, 'https://') || contains(@, 'http://')): false
+    - name: no-curl-wget
+      validate:
+        message: "curl / wget are not allowed"
+        assert:
+          all:
+          - ~.(Stages[].Commands[].CmdLine[]):
+              (contains(@, 'wget') || contains(@, 'curl')): false

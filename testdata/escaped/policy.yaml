@@ -8,18 +8,23 @@ spec:
       validate:
         assert:
           all:
-          - foo:
-              \(bar)\: 4
-          - foo:
-              \(bar)\->test:
-                ($test): 4
-          - foo:
-              \(bar)->test\: 6
-          - foo:
-              \(bar)->test\->test:
-                ($test): 6
-          - foo:
-              \~foos\:
-              - 1
-              - 2
-              - 3
+          - check:
+              foo:
+                \(bar)\: 4
+          - check:
+              foo:
+                \(bar)\->test:
+                  ($test): 4
+          - check:
+              foo:
+                \(bar)->test\: 6
+          - check:
+              foo:
+                \(bar)->test\->test:
+                  ($test): 6
+          - check:
+              foo:
+                \~foos\:
+                - 1
+                - 2
+                - 3
