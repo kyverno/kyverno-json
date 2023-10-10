@@ -13,8 +13,9 @@ spec:
         variable:
           Team: Kyverno
       validate:
-        message: Bucket `{{ name }}` ({{ address }}) does not have the required tags {{ to_string($tags) }}
         assert:
           all:
-          - values:
-              tags: ($tags)
+          - message: Bucket `{{ name }}` ({{ address }}) does not have the required tags {{ to_string($tags) }}
+            check:
+              values:
+                tags: ($tags)

@@ -16572,21 +16572,43 @@
                             "description": "All allows specifying resources which will be ANDed.",
                             "type": "array",
                             "items": {
-                              "x-kubernetes-preserve-unknown-fields": true
+                              "type": "object",
+                              "required": [
+                                "check"
+                              ],
+                              "properties": {
+                                "check": {
+                                  "description": "Check is the assertion check definition.",
+                                  "x-kubernetes-preserve-unknown-fields": true
+                                },
+                                "message": {
+                                  "description": "Message is the variable associated message.",
+                                  "type": "string"
+                                }
+                              }
                             }
                           },
                           "any": {
                             "description": "Any allows specifying resources which will be ORed.",
                             "type": "array",
                             "items": {
-                              "x-kubernetes-preserve-unknown-fields": true
+                              "type": "object",
+                              "required": [
+                                "check"
+                              ],
+                              "properties": {
+                                "check": {
+                                  "description": "Check is the assertion check definition.",
+                                  "x-kubernetes-preserve-unknown-fields": true
+                                },
+                                "message": {
+                                  "description": "Message is the variable associated message.",
+                                  "type": "string"
+                                }
+                              }
                             }
                           }
                         }
-                      },
-                      "message": {
-                        "description": "Message specifies a custom message to be displayed on failure.",
-                        "type": "string"
                       }
                     }
                   }
