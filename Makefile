@@ -98,8 +98,11 @@ build: $(CLI_BIN) ## Build
 
 .PHONY: build-wasm
 build-wasm: fmt vet ## Build the wasm binary
-	@GOOS=js GOARCH=wasm go build -o ./.bin/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
-	@gzip --best -f ./.bin/main.wasm
+	@GOOS=js GOARCH=wasm go build -o ./playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
+
+.PHONY: serve
+serve: build-wasm ## Serve static files.
+	python3 -m http.server -d playground/ 8080
 
 ###########
 # CODEGEN #

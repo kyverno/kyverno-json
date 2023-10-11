@@ -60,8 +60,8 @@ func (c *options) Run(_ *cobra.Command, _ []string) error {
 			client: client,
 		},
 	}
-	// register API routes
-	if err := server.AddAPIRoutes(config); err != nil {
+	// register api routes
+	if err := server.AddApiRoutes(config); err != nil {
 		return err
 	}
 	// run server

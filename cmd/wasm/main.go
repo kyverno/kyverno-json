@@ -17,43 +17,38 @@
 package main
 
 import (
-	"errors"
-	"fmt"
-	"syscall/js"
+	"context"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/undistro/cel-playground/eval"
-	"gopkg.in/yaml.v3"
+	server "github.com/kyverno/kyverno-json/pkg/server/wasm"
 )
 
 func main() {
-	evalFunc := js.FuncOf(evalWrapper)
-	js.Global().Set("eval", evalFunc)
-	defer evalFunc.Release()
-	<-make(chan bool)
-}
-
-// evalWrapper wraps the eval function with `syscall/js` parameters
-func evalWrapper(_ js.Value, args []js.Value) any {
-	if len(args) < 2 {
-		return response("", errors.New("invalid arguments"))
-	}
-	exp := args[0].String()
-	is := args[1].String()
-
-	var input map[string]any
-	if err := yaml.Unmarshal([]byte(is), &input); err != nil {
-		return response("", fmt.Errorf("failed to decode input: %w", err))
-	}
-	output, err := eval.Eval(exp, input)
+	// initialise gin framework
+	// gin.SetMode(c.ginFlags.mode)
+	// tonic.SetBindHook(tonic.DefaultBindingHookMaxBodyBytes(int64(c.ginFlags.maxBodySize)))
+	// create server
+	server, err := server.New(true, true)
 	if err != nil {
-		return response("", err)
+		panic(err)
 	}
-	return response(output, nil)
-}
-
-func response(out string, err error) any {
-	if err != nil {
-		out = err.Error()
+	// register playground routes
+	if err := server.AddPlaygroundRoutes(); err != nil {
+		panic(err)
 	}
-	return map[string]any{"output": out, "isError": err != nil}
+	// run server
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+	shutdown := server.Run(ctx)
+	<-ctx.Done()
+	stop()
+	if shutdown != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := shutdown(ctx); err != nil {
+			panic(err)
+		}
+	}
 }
