@@ -14,6 +14,7 @@ kyverno-json scan [flags]
 
 ```
   -h, --help                  help for scan
+      --labels strings        Labels selectors for policies
       --payload string        Path to payload (json or yaml file)
       --policy strings        Path to kyverno-json policies
       --pre-process strings   JmesPath expression used to pre process payload
