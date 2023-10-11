@@ -17,6 +17,7 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
+        description: Policy is the resource that contains the policy definition.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -31,6 +32,7 @@ spec:
           metadata:
             type: object
           spec:
+            description: Policy spec.
             properties:
               rules:
                 description: Rules is a list of Rule instances. A Policy contains

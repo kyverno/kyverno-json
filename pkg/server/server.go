@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -15,7 +16,7 @@ const apiPrefix = "/api"
 type Shutdown = func(context.Context) error
 
 type Server interface {
-	AddAPIRoutes(api.APIConfiguration) error
+	AddAPIRoutes(api.Configuration) error
 	Run(context.Context, string, int) Shutdown
 }
 
@@ -40,15 +41,16 @@ func New(enableLogger bool, enableCors bool) (Server, error) {
 	return server{router}, nil
 }
 
-func (s server) AddAPIRoutes(config api.APIConfiguration) error {
+func (s server) AddAPIRoutes(config api.Configuration) error {
 	return api.AddRoutes(s.Group(apiPrefix), config)
 }
 
 func (s server) Run(_ context.Context, host string, port int) Shutdown {
 	address := fmt.Sprintf("%v:%v", host, port)
 	srv := &http.Server{
-		Addr:    address,
-		Handler: s.Engine.Handler(),
+		Addr:              address,
+		Handler:           s.Engine.Handler(),
+		ReadHeaderTimeout: 3 * time.Second,
 	}
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

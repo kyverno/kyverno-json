@@ -22,6 +22,7 @@
         "null"
       ],
       "items": {
+        "description": "Policy is the resource that contains the policy definition.",
         "type": [
           "object",
           "null"
@@ -295,6 +296,7 @@
             }
           },
           "spec": {
+            "description": "Policy spec.",
             "type": "object",
             "properties": {
               "rules": {

@@ -7,16 +7,19 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kyverno/kyverno-json/pkg/client/clientset/versioned"
 	"github.com/kyverno/kyverno-json/pkg/server"
 	"github.com/kyverno/kyverno-json/pkg/server/api"
+	restutils "github.com/kyverno/kyverno-json/pkg/utils/rest"
 	"github.com/loopfz/gadgeto/tonic"
 	"github.com/spf13/cobra"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 type options struct {
-	serverFlags serverFlags
-	ginFlags    ginFlags
-	// engineFlags engineFlags
+	serverFlags  serverFlags
+	ginFlags     ginFlags
+	clusterFlags clusterFlags
 }
 
 type serverFlags struct {
@@ -31,72 +34,36 @@ type ginFlags struct {
 	maxBodySize int
 }
 
-// type uiFlags struct {
-// 	sponsor string
-// }
-
-// type engineFlags struct {
-// 	builtInCrds []string
-// 	localCrds   []string
-// }
-
-// type clusterFlags struct {
-// 	cluster             bool
-// 	kubeConfigOverrides clientcmd.ConfigOverrides
-// }
+type clusterFlags struct {
+	kubeConfigOverrides clientcmd.ConfigOverrides
+}
 
 func (c *options) Run(_ *cobra.Command, _ []string) error {
 	// initialise gin framework
 	gin.SetMode(c.ginFlags.mode)
 	tonic.SetBindHook(tonic.DefaultBindingHookMaxBodyBytes(int64(c.ginFlags.maxBodySize)))
-	// tonic.SetErrorHook(func(c *gin.Context, err error) (int, interface{}) {
-	// 	switch e := err.(type) {
-	// 	case engine.PolicyViolationError:
-	// 		return http.StatusBadRequest, gin.H{
-	// 			"violations": e.Violations,
-	// 			"error":      e.Error(),
-	// 			"reason":     "POLICY_VALIDATION",
-	// 		}
-	// 	default:
-	// 		return http.StatusBadRequest, gin.H{
-	// 			"error":  e.Error(),
-	// 			"reason": "ERROR",
-	// 		}
-	// 	}
-	// })
 	// create server
 	server, err := server.New(c.ginFlags.log, c.ginFlags.cors)
 	if err != nil {
 		return err
 	}
-	apiConfig := api.APIConfiguration{
-		EngineConfiguration: api.EngineConfiguration{
-			// BuiltInCrds: c.engineFlags.builtInCrds,
-			// LocalCrds:   c.engineFlags.localCrds,
-		},
-	}
-	// register API routes (with/without cluster support)
-	// if c.clusterFlags.cluster {
-	// 	// create rest config
-	// 	restConfig, err := utils.RestConfig(c.clusterFlags.kubeConfigOverrides)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	// create cluster
-	// 	cluster, err := cluster.New(restConfig)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	// register API routes
-	// 	if err := server.AddAPIRoutes(cluster, apiConfig); err != nil {
-	// 		return err
-	// 	}
-	// } else {
-	// register API routes
-	if err := server.AddAPIRoutes(apiConfig); err != nil {
+	restConfig, err := restutils.RestConfig(c.clusterFlags.kubeConfigOverrides)
+	if err != nil {
 		return err
 	}
-	// }
+	client, err := versioned.NewForConfig(restConfig)
+	if err != nil {
+		return err
+	}
+	config := api.Configuration{
+		PolicyProvider: &provider{
+			client: client,
+		},
+	}
+	// register API routes
+	if err := server.AddAPIRoutes(config); err != nil {
+		return err
+	}
 	// run server
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()

@@ -1,77 +1,61 @@
 package scan
 
 import (
+	"context"
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/loopfz/gadgeto/tonic"
 )
 
-// import (
-// 	"context"
-// 	"fmt"
-// 	"net/http"
-
-// 	"github.com/Masterminds/semver/v3"
-// 	"github.com/gin-gonic/gin"
-// 	kyvernov1 "github.com/kyverno/kyverno/api/kyverno/v1"
-// 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/loader"
-// 	engineapi "github.com/kyverno/kyverno/pkg/engine/api"
-// 	"github.com/loopfz/gadgeto/tonic"
-// 	"sigs.k8s.io/kubectl-validate/pkg/openapiclient"
-
-// 	"github.com/kyverno/playground/backend/data"
-// 	"github.com/kyverno/playground/backend/pkg/cluster"
-// 	"github.com/kyverno/playground/backend/pkg/engine"
-// 	"github.com/kyverno/playground/backend/pkg/engine/models"
-// )
-
-func newHandler(config APIConfiguration) (gin.HandlerFunc, error) {
-	return tonic.Handler(func(ctx *gin.Context, in *Request) (*EngineResponse, error) {
-		return &EngineResponse{
-			// Policies:  policies,
-			// Resources: resources,
-			// Results:   results,
-		}, nil
+func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
+	return tonic.Handler(func(ctx *gin.Context, in *Request) (*Response, error) {
+		// check input
+		if in == nil {
+			return nil, errors.New("input is null")
+		}
+		if in.Payload == nil {
+			return nil, errors.New("input payload is null")
+		}
+		payload := in.Payload
+		// apply pre processors
+		for _, preprocessor := range in.Preprocessors {
+			result, err := template.Execute(context.Background(), preprocessor, payload, nil)
+			if err != nil {
+				return nil, fmt.Errorf("failed to execute prepocessor (%s) - %w", preprocessor, err)
+			}
+			if result == nil {
+				return nil, fmt.Errorf("prepocessor resulted in `null` payload (%s)", preprocessor)
+			}
+			payload = result
+		}
+		// load resources
+		var resources []interface{}
+		if slice, ok := payload.([]interface{}); ok {
+			resources = slice
+		} else {
+			resources = append(resources, payload)
+		}
+		// load policies
+		policies, err := policyProvider.Get()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get policies (%w)", err)
+		}
+		var pols []*v1alpha1.Policy
+		for i := range policies {
+			pols = append(pols, &policies[i])
+		}
+		// run engine
+		e := jsonengine.New()
+		results := e.Run(context.Background(), jsonengine.JsonEngineRequest{
+			Resources: resources,
+			Policies:  pols,
+		})
+		return makeResponse(results...), nil
 	}, http.StatusOK), nil
 }
-
-// func parseKubeVersion(kubeVersion string) (string, error) {
-// 	if kubeVersion == "" {
-// 		return "1.28", nil
-// 	}
-// 	version, err := semver.NewVersion(kubeVersion)
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	return fmt.Sprint(version.Major(), ".", version.Minor()), nil
-// }
-
-// func validateParams(params *models.Parameters, cmResolver engineapi.ConfigmapResolver, policies []kyvernov1.PolicyInterface) error {
-// 	if params == nil {
-// 		return nil
-// 	}
-
-// 	for _, policy := range policies {
-// 		for _, rule := range policy.GetSpec().Rules {
-// 			for _, variable := range rule.Context {
-// 				if variable.APICall == nil && variable.ConfigMap == nil {
-// 					continue
-// 				}
-// 				if _, ok := params.Variables[variable.Name]; ok {
-// 					continue
-// 				}
-// 				if variable.ConfigMap != nil {
-// 					_, err := cmResolver.Get(context.Background(), variable.ConfigMap.Namespace, variable.ConfigMap.Name)
-// 					if err == nil {
-// 						continue
-// 					}
-// 				}
-
-// 				return fmt.Errorf("Variable %s is not defined in the context", variable.Name)
-// 			}
-// 		}
-// 	}
-
-// 	return nil
-// }

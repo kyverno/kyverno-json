@@ -3,6 +3,7 @@ package serve
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 func Command(parents ...string) *cobra.Command {
@@ -23,13 +24,7 @@ func Command(parents ...string) *cobra.Command {
 	cmd.Flags().BoolVar(&command.ginFlags.log, "gin-log", true, "enable gin logger")
 	cmd.Flags().BoolVar(&command.ginFlags.cors, "gin-cors", true, "enable gin cors")
 	cmd.Flags().IntVar(&command.ginFlags.maxBodySize, "gin-max-body-size", 2*1024*1024, "gin max body size")
-	// // ui flags
-	// res.Flags().StringVar(&command.uiFlags.sponsor, "ui-sponsor", "", "sponsor text")
-	// // engine flags
-	// res.Flags().StringSliceVar(&command.engineFlags.builtInCrds, "engine-builtin-crds", nil, "list of enabled builtin custom resource definitions")
-	// res.Flags().StringSliceVar(&command.engineFlags.localCrds, "engine-local-crds", nil, "list of folders containing custom resource definitions")
 	// // cluster flags
-	// res.Flags().BoolVar(&command.clusterFlags.cluster, "cluster", false, "enable cluster connected mode")
-	// clientcmd.BindOverrideFlags(&command.clusterFlags.kubeConfigOverrides, res.Flags(), clientcmd.RecommendedConfigOverrideFlags("kube-"))
+	clientcmd.BindOverrideFlags(&command.clusterFlags.kubeConfigOverrides, cmd.Flags(), clientcmd.RecommendedConfigOverrideFlags("kube-"))
 	return cmd
 }

@@ -4,13 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type APIConfiguration struct {
-	BuiltInCrds []string
-	LocalCrds   []string
-}
-
-func AddRoutes(group *gin.RouterGroup, config APIConfiguration) error {
-	handler, err := newHandler(config)
+func AddRoutes(group *gin.RouterGroup, policyProvider PolicyProvider) error {
+	handler, err := newHandler(policyProvider)
 	if err != nil {
 		return err
 	}
