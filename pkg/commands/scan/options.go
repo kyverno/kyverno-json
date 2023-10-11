@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
+	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/payload"
@@ -12,12 +14,14 @@ import (
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
 type options struct {
 	payload       string
 	preprocessors []string
 	policies      []string
+	selectors     []string
 }
 
 func (c *options) run(cmd *cobra.Command, _ []string) error {
@@ -26,6 +30,23 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	policies, err := policy.Load(c.policies...)
 	if err != nil {
 		return err
+	}
+	selector := labels.Everything()
+	if len(c.selectors) != 0 {
+		parsed, err := labels.Parse(strings.Join(c.selectors, ","))
+		if err != nil {
+			return err
+		}
+		selector = parsed
+	}
+	{
+		var filteredPolicies []*v1alpha1.Policy
+		for _, policy := range policies {
+			if selector.Matches(labels.Set(policy.Labels)) {
+				filteredPolicies = append(filteredPolicies, policy)
+			}
+		}
+		policies = filteredPolicies
 	}
 	fmt.Fprintln(out, "Loading payload ...")
 	payload, err := payload.Load(c.payload)
