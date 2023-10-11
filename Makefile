@@ -171,7 +171,6 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
 
-
 .PHONY: codegen-schema-openapi
 codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 	@echo Generate openapi schema... >&2
