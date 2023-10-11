@@ -16459,6 +16459,7 @@
       }
     },
     "io.kyverno.json.v1alpha1.Policy": {
+      "description": "Policy is the resource that contains the policy definition.",
       "type": "object",
       "required": [
         "spec"
@@ -16483,6 +16484,7 @@
           "$ref": "#/definitions/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta"
         },
         "spec": {
+          "description": "Policy spec.",
           "type": "object",
           "properties": {
             "rules": {

@@ -11,15 +11,35 @@ auto_generated: true
 
 
 - [Policy](#json-kyverno-io-v1alpha1-Policy)
+- [PolicyList](#json-kyverno-io-v1alpha1-PolicyList)
   
 ## `Policy`     {#json-kyverno-io-v1alpha1-Policy}
+
+**Appears in:**
+    
+- [PolicyList](#json-kyverno-io-v1alpha1-PolicyList)
+
+<p>Policy is the resource that contains the policy definition.</p>
+
 
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `apiVersion` | `string` | :white_check_mark: | `json.kyverno.io/v1alpha1` |
 | `kind` | `string` | :white_check_mark: | `Policy` |
-| `metadata` | [`meta/v1.ObjectMeta`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#objectmeta-v1-meta) | :white_check_mark: | *No description provided.* |
-| `spec` | [`PolicySpec`](#json-kyverno-io-v1alpha1-PolicySpec) | :white_check_mark: | *No description provided.* |
+| `metadata` | [`meta/v1.ObjectMeta`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#objectmeta-v1-meta) |  | <p>Standard object's metadata.</p> |
+| `spec` | [`PolicySpec`](#json-kyverno-io-v1alpha1-PolicySpec) | :white_check_mark: | <p>Policy spec.</p> |
+
+## `PolicyList`     {#json-kyverno-io-v1alpha1-PolicyList}
+
+<p>PolicyList is a list of Policy instances.</p>
+
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `apiVersion` | `string` | :white_check_mark: | `json.kyverno.io/v1alpha1` |
+| `kind` | `string` | :white_check_mark: | `PolicyList` |
+| `metadata` | [`meta/v1.ListMeta`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#listmeta-v1-meta) | :white_check_mark: | *No description provided.* |
+| `items` | [`[]Policy`](#json-kyverno-io-v1alpha1-Policy) | :white_check_mark: | *No description provided.* |
 
 ## `Any`     {#json-kyverno-io-v1alpha1-Any}
 
