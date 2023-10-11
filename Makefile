@@ -93,7 +93,13 @@ $(CLI_BIN): fmt vet
 	@echo Build cli binary... >&2
 	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) .
 
+.PHONY: build
 build: $(CLI_BIN) ## Build
+
+.PHONY: build-wasm
+build-wasm: fmt vet ## Build the wasm binary
+	@GOOS=js GOARCH=wasm go build -o ./.bin/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
+	@gzip --best -f ./.bin/main.wasm
 
 ###########
 # CODEGEN #
