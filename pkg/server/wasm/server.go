@@ -1,15 +1,15 @@
-package server
+//go:build js && wasm
+
+package wasm
 
 import (
 	"context"
-	"fmt"
-	"net/http"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kyverno/kyverno-json/pkg/server/api"
 	"github.com/kyverno/kyverno-json/pkg/server/playground"
+	wasmhttp "github.com/nlepage/go-wasm-http-server"
 )
 
 const (
@@ -22,7 +22,7 @@ type Shutdown = func(context.Context) error
 type Server interface {
 	AddApiRoutes(api.Configuration) error
 	AddPlaygroundRoutes() error
-	Run(context.Context, string, int) Shutdown
+	Run(context.Context) Shutdown
 }
 
 type server struct {
@@ -54,17 +54,7 @@ func (s server) AddPlaygroundRoutes() error {
 	return playground.AddRoutes(s.Group(playgroundPrefix))
 }
 
-func (s server) Run(_ context.Context, host string, port int) Shutdown {
-	address := fmt.Sprintf("%v:%v", host, port)
-	srv := &http.Server{
-		Addr:              address,
-		Handler:           s.Engine.Handler(),
-		ReadHeaderTimeout: 3 * time.Second,
-	}
-	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			panic(err)
-		}
-	}()
-	return srv.Shutdown
+func (s server) Run(_ context.Context) Shutdown {
+	wasmhttp.Serve(s.Engine.Handler())
+	return nil
 }
