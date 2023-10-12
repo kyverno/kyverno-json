@@ -1,6 +1,20 @@
 
 # policy-1
 
+## Install
+
+### In cluster
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/ecs/policy-1.yaml
+```
+
+### Download locally
+
+```bash
+curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/ecs/policy-1.yaml
+```
+
 ## Description
 
 None
