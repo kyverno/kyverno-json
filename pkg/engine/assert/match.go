@@ -19,46 +19,48 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 		return nil, field.Invalid(path, match, "an empty assert is not valid")
 	} else {
 		if len(match.Any) != 0 {
-			var errs []error
+			var fails []error
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				_errs, err := validate(ctx, path.Index(i).Child("check"), assertion.Check.Value, actual, bindings)
+				checkFails, err := validate(ctx, path.Index(i).Child("check"), assertion.Check.Value, actual, bindings)
 				if err != nil {
-					return errs, err
+					return fails, err
 				}
-				if len(_errs) == 0 {
-					errs = nil
+				if len(checkFails) == 0 {
+					fails = nil
 					break
 				}
 				if assertion.Message != "" {
-					errs = append(errs, errors.New(template.String(ctx, assertion.Message, actual, bindings)))
+					msg := template.String(ctx, assertion.Message, actual, bindings)
+					msg += ": " + checkFails.ToAggregate().Error()
+					fails = append(fails, errors.New(msg))
 				} else {
-					for _, err := range _errs {
-						errs = append(errs, err)
-					}
+					fails = append(fails, checkFails.ToAggregate())
 				}
 			}
-			if errs != nil {
-				return errs, nil
+			if fails != nil {
+				return fails, nil
 			}
 		}
 		if len(match.All) != 0 {
-			var errs []error
+			var fails []error
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				_errs, err := validate(ctx, path.Index(i).Child("check"), assertion.Check.Value, actual, bindings)
+				checkFails, err := validate(ctx, path.Index(i).Child("check"), assertion.Check.Value, actual, bindings)
 				if err != nil {
-					return errs, err
+					return fails, err
 				}
-				if assertion.Message != "" {
-					errs = append(errs, errors.New(template.String(ctx, assertion.Message, actual, bindings)))
-				} else {
-					for _, err := range _errs {
-						errs = append(errs, err)
+				if len(checkFails) > 0 {
+					if assertion.Message != "" {
+						msg := template.String(ctx, assertion.Message, actual, bindings)
+						msg += ": " + checkFails.ToAggregate().Error()
+						fails = append(fails, errors.New(msg))
+					} else {
+						fails = append(fails, checkFails.ToAggregate())
 					}
 				}
 			}
-			return errs, nil
+			return fails, nil
 		}
 		return nil, nil
 	}

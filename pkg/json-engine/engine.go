@@ -65,11 +65,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			if err != nil {
 				response.Failure = err
 			} else if err := multierr.Combine(errs...); err != nil {
-				// if r.rule.Validation.Message != "" {
-				// 	response.Error = errors.New(template.String(ctx, r.rule.Validation.Message, r.value, r.bindings))
-				// } else {
 				response.Error = err
-				// }
 			}
 			return response
 		}).

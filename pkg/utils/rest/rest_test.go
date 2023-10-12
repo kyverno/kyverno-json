@@ -14,7 +14,7 @@ func TestRestConfig(t *testing.T) {
 		wantErr    bool
 	}{{
 		name:       "empty",
-		kubeConfig: "../../../testdata/.kube/config",
+		kubeConfig: "../../../test/.kube/config",
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
