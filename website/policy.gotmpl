@@ -8,6 +8,20 @@ tags:
 {{- end }}
 # {{ .Title }}
 
+## Install
+
+### In cluster
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno-json/main/{{ .Path }}
+```
+
+### Download locally
+
+```bash
+curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/{{ .Path }}
+```
+
 ## Description
 
 {{ .Description }}
