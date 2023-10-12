@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
@@ -97,7 +96,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}
 // if lengths match all descendants are evaluated with their corresponding items.
 type sliceNode []Assertion
 
-func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings) (field.ErrorList, error) {
+func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
 	var errs field.ErrorList
 	if reflectutils.GetKind(value) != reflect.Slice {
 		return nil, field.TypeInvalid(path, value, "expected a slice")
@@ -125,7 +124,7 @@ type scalarNode struct {
 	rhs interface{}
 }
 
-func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings) (field.ErrorList, error) {
+func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
 	rhs := n.rhs
 	expression := parseExpression(ctx, rhs)
 	// we only project if the expression uses the engine syntax
