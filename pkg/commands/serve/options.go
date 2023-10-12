@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kyverno/kyverno-json/pkg/client/clientset/versioned"
 	"github.com/kyverno/kyverno-json/pkg/server"
-	"github.com/kyverno/kyverno-json/pkg/server/api"
+	"github.com/kyverno/kyverno-json/pkg/server/scan"
 	restutils "github.com/kyverno/kyverno-json/pkg/utils/rest"
 	"github.com/loopfz/gadgeto/tonic"
 	"github.com/spf13/cobra"
@@ -42,8 +42,8 @@ func (c *options) Run(_ *cobra.Command, _ []string) error {
 	// initialise gin framework
 	gin.SetMode(c.ginFlags.mode)
 	tonic.SetBindHook(tonic.DefaultBindingHookMaxBodyBytes(int64(c.ginFlags.maxBodySize)))
-	// create server
-	server, err := server.New(c.ginFlags.log, c.ginFlags.cors)
+	// create router
+	router, err := server.New(c.ginFlags.log, c.ginFlags.cors)
 	if err != nil {
 		return err
 	}
@@ -55,19 +55,17 @@ func (c *options) Run(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	config := api.Configuration{
-		PolicyProvider: &provider{
-			client: client,
-		},
+	provider := &provider{
+		client: client,
 	}
 	// register api routes
-	if err := server.AddApiRoutes(config); err != nil {
+	if err := scan.AddRoutes(router.Group(server.ApiPrefix), provider); err != nil {
 		return err
 	}
 	// run server
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
-	shutdown := server.Run(ctx, c.serverFlags.host, c.serverFlags.port)
+	shutdown := server.Run(ctx, router, c.serverFlags.host, c.serverFlags.port)
 	<-ctx.Done()
 	stop()
 	if shutdown != nil {

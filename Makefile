@@ -98,11 +98,13 @@ build: $(CLI_BIN) ## Build
 
 .PHONY: build-wasm
 build-wasm: fmt vet ## Build the wasm binary
+	@echo Build wasm binary... >&2
 	@GOOS=js GOARCH=wasm go build -o ./playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
 
 .PHONY: serve
 serve: build-wasm ## Serve static files.
-	python3 -m http.server -d playground/ 8080
+	@echo Serve playground... >&2
+	@python3 -m http.server -d playground/ 8080
 
 ###########
 # CODEGEN #
@@ -224,7 +226,7 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 
 .PHONY: codegen-schema-openapi
 codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
-	@echo Generate openapi schema... >&2
+	@echo Generate openapi schemas... >&2
 	@rm -rf ./schemas
 	@mkdir -p ./schemas/openapi/v2
 	@mkdir -p ./schemas/openapi/v3/apis/json.kyverno.io
@@ -237,6 +239,7 @@ codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 
 .PHONY: codegen-schema-json
 codegen-schema-json: codegen-schema-openapi ## Generate json schemas
+	@echo Generate json schemas... >&2
 	@$(PIP) install openapi2jsonschema
 	@rm -rf ./schemas/json
 	@openapi2jsonschema ./schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./schemas/json
@@ -244,8 +247,13 @@ codegen-schema-json: codegen-schema-openapi ## Generate json schemas
 .PHONY: codegen-schema-all
 codegen-schema-all: codegen-schema-openapi codegen-schema-json ## Generate openapi and json schemas
 
+.PHONY: codegen-playground
+codegen-playground: build-wasm ## Generate playground
+	@echo Generate playground... >&2
+	cp -r ./playground/* ./pkg/server/ui/dist
+
 .PHONY: codegen
-codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schema-all ## Rebuild all generated code and docs
+codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schema-all codegen-playground ## Rebuild all generated code and docs
 
 .PHONY: verify-codegen
 verify-codegen: codegen ## Verify all generated code and docs are up to date
