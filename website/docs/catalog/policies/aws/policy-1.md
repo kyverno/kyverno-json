@@ -3,11 +3,25 @@ tags:
 - aws
 - aws/s3
 ---
-# policy-1
+# Policy 1
+
+## Install
+
+### In cluster
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/aws/policy-1.yaml
+```
+
+### Download locally
+
+```bash
+curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/aws/policy-1.yaml
+```
 
 ## Description
 
-None
+Policy 1
 
 ## Manifest
 
@@ -18,8 +32,8 @@ apiVersion: json.kyverno.io/v1alpha1
 kind: Policy
 metadata:
   annotations:
-    description.catalog.kyverno.io: Policy 1
-    title.catalog.kyverno.io: Policy 1
+    description.policy.kyverno.io: Policy 1
+    title.policy.kyverno.io: Policy 1
   creationTimestamp: null
   labels:
     s3.aws.tags.kyverno.io: ""
