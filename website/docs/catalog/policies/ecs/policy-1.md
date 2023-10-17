@@ -25,17 +25,16 @@ None
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   creationTimestamp: null
   name: test
 spec:
   rules:
-  - name: foo-bar
-    validate:
-      assert:
-        all:
-        - check:
-            foo:
-              /(bar)/: 10
+  - assert:
+      all:
+      - check:
+          foo:
+            /(bar)/: 10
+    name: foo-bar
 ```

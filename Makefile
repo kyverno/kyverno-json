@@ -176,20 +176,11 @@ codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@rm -rf pkg/data/crds && mkdir -p pkg/data/crds
 	@cp config/crds/* pkg/data/crds
 
-.PHONY: codegen-api-docs-md
-codegen-api-docs-md: $(REFERENCE_DOCS) ## Generate markdown API docs
-	@echo Generate md api docs... >&2
-	@rm -rf ./docs/user/apis/md
-	@cd ./docs/user/apis/_config && $(REFERENCE_DOCS) -c config.yaml -f markdown -o ../md
-
-.PHONY: codegen-api-docs-html
-codegen-api-docs-html: $(REFERENCE_DOCS) ## Generate html API docs
-	@echo Generate html api docs... >&2
-	@rm -rf ./docs/user/apis/html
-	@cd ./docs/user/apis/_config && $(REFERENCE_DOCS) -c config.yaml -f html -o ../html
-
 .PHONY: codegen-api-docs
-codegen-api-docs: codegen-api-docs-md codegen-api-docs-html ## Generate API docs
+codegen-api-docs: $(REFERENCE_DOCS) ## Generate API docs
+	@echo Generate md api docs... >&2
+	@rm -rf ./website/docs/apis
+	@cd ./website/apis && $(REFERENCE_DOCS) -c config.yaml -f markdown -o ../docs/apis
 
 .PHONY: codegen-cli-docs
 codegen-cli-docs: $(CLI_BIN) ## Generate CLI docs
@@ -209,7 +200,7 @@ codegen-catalog: ## Generate policy catalog
 	@go run ./hack/docs/catalog/main.go
 
 .PHONY: codegen-docs
-codegen-docs: codegen-api-docs-md codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
+codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
 
 .PHONY: codegen-mkdocs
 codegen-mkdocs: codegen-docs ## Generate mkdocs website
@@ -217,7 +208,6 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@pip install mkdocs
 	@pip install --upgrade pip
 	@pip install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin
-	@rm -rf ./website/docs/apis && mkdir -p ./website/docs/apis && cp docs/user/apis/md/* ./website/docs/apis
 	@rm -rf ./website/docs/commands && mkdir -p ./website/docs/commands && cp docs/user/commands/* ./website/docs/commands
 	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
