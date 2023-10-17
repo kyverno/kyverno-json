@@ -10,36 +10,36 @@ auto_generated: true
 ## Resource Types 
 
 
-- [Policy](#json-kyverno-io-v1alpha1-Policy)
-- [PolicyList](#json-kyverno-io-v1alpha1-PolicyList)
+- [ValidationPolicy](#json-kyverno-io-v1alpha1-ValidationPolicy)
+- [ValidationPolicyList](#json-kyverno-io-v1alpha1-ValidationPolicyList)
   
-## `Policy`     {#json-kyverno-io-v1alpha1-Policy}
+## `ValidationPolicy`     {#json-kyverno-io-v1alpha1-ValidationPolicy}
 
 **Appears in:**
     
-- [PolicyList](#json-kyverno-io-v1alpha1-PolicyList)
+- [ValidationPolicyList](#json-kyverno-io-v1alpha1-ValidationPolicyList)
 
-<p>Policy is the resource that contains the policy definition.</p>
+<p>ValidationPolicy is the resource that contains the policy definition.</p>
 
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
 | `apiVersion` | `string` | :white_check_mark: | | `json.kyverno.io/v1alpha1` |
-| `kind` | `string` | :white_check_mark: | | `Policy` |
+| `kind` | `string` | :white_check_mark: | | `ValidationPolicy` |
 | `metadata` | [`meta/v1.ObjectMeta`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#objectmeta-v1-meta) |  |  | <p>Standard object's metadata.</p> |
 | `spec` | [`PolicySpec`](#json-kyverno-io-v1alpha1-PolicySpec) | :white_check_mark: |  | <p>Policy spec.</p> |
 
-## `PolicyList`     {#json-kyverno-io-v1alpha1-PolicyList}
+## `ValidationPolicyList`     {#json-kyverno-io-v1alpha1-ValidationPolicyList}
 
-<p>PolicyList is a list of Policy instances.</p>
+<p>ValidationPolicyList is a list of Policy instances.</p>
 
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
 | `apiVersion` | `string` | :white_check_mark: | | `json.kyverno.io/v1alpha1` |
-| `kind` | `string` | :white_check_mark: | | `PolicyList` |
+| `kind` | `string` | :white_check_mark: | | `ValidationPolicyList` |
 | `metadata` | [`meta/v1.ListMeta`](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.28/#listmeta-v1-meta) | :white_check_mark: |  | *No description provided.* |
-| `items` | [`[]Policy`](#json-kyverno-io-v1alpha1-Policy) | :white_check_mark: |  | *No description provided.* |
+| `items` | [`[]ValidationPolicy`](#json-kyverno-io-v1alpha1-ValidationPolicy) | :white_check_mark: |  | *No description provided.* |
 
 ## `Any`     {#json-kyverno-io-v1alpha1-Any}
 
@@ -57,7 +57,7 @@ auto_generated: true
 
 **Appears in:**
     
-- [Validation](#json-kyverno-io-v1alpha1-Validation)
+- [ValidationRule](#json-kyverno-io-v1alpha1-ValidationRule)
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
@@ -79,7 +79,7 @@ auto_generated: true
 
 **Appears in:**
     
-- [Rule](#json-kyverno-io-v1alpha1-Rule)
+- [ValidationRule](#json-kyverno-io-v1alpha1-ValidationRule)
 
 <p>ContextEntry adds variables and data sources to a rule Context.</p>
 
@@ -93,7 +93,7 @@ auto_generated: true
 
 **Appears in:**
     
-- [Rule](#json-kyverno-io-v1alpha1-Rule)
+- [ValidationRule](#json-kyverno-io-v1alpha1-ValidationRule)
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
@@ -104,13 +104,13 @@ auto_generated: true
 
 **Appears in:**
     
-- [Policy](#json-kyverno-io-v1alpha1-Policy)
+- [ValidationPolicy](#json-kyverno-io-v1alpha1-ValidationPolicy)
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `rules` | [`[]Rule`](#json-kyverno-io-v1alpha1-Rule) | :white_check_mark: |  | <p>Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.</p> |
+| `rules` | [`[]ValidationRule`](#json-kyverno-io-v1alpha1-ValidationRule) | :white_check_mark: |  | <p>Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.</p> |
 
-## `Rule`     {#json-kyverno-io-v1alpha1-Rule}
+## `ValidationRule`     {#json-kyverno-io-v1alpha1-ValidationRule}
 
 **Appears in:**
     
@@ -122,19 +122,6 @@ auto_generated: true
 | `context` | [`[]ContextEntry`](#json-kyverno-io-v1alpha1-ContextEntry) | :white_check_mark: |  | <p>Context defines variables and data sources that can be used during rule execution.</p> |
 | `match` | [`Match`](#json-kyverno-io-v1alpha1-Match) | :white_check_mark: |  | <p>Match defines when this policy rule should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.</p> |
 | `exclude` | [`Match`](#json-kyverno-io-v1alpha1-Match) | :white_check_mark: |  | <p>Exclude defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.</p> |
-| `validate` | [`Validation`](#json-kyverno-io-v1alpha1-Validation) | :white_check_mark: |  | <p>Validation is used to validate matching resources.</p> |
-
-## `Validation`     {#json-kyverno-io-v1alpha1-Validation}
-
-**Appears in:**
-    
-- [Rule](#json-kyverno-io-v1alpha1-Rule)
-
-<p>Validation defines checks to be performed on matching resources.</p>
-
-
-| Field | Type | Required | Inline | Description |
-|---|---|---|---|---|
-| `assert` | [`Assert`](#json-kyverno-io-v1alpha1-Assert) | :white_check_mark: |  | <p>Assert specifies an overlay-style pattern used to check resources.</p> |
+| `assert` | [`Assert`](#json-kyverno-io-v1alpha1-Assert) | :white_check_mark: |  | <p>Assert is used to validate matching resources.</p> |
 
   

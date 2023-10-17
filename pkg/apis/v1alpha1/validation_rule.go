@@ -1,6 +1,6 @@
 package v1alpha1
 
-type Rule struct {
+type ValidationRule struct {
 	// Name is a label to identify the rule, It must be unique within the policy.
 	// +kubebuilder:validation:MaxLength=63
 	Name string `json:"name"`
@@ -19,6 +19,6 @@ type Rule struct {
 	// and admission review request information like the name or role.
 	Exclude *Match `json:"exclude,omitempty"`
 
-	// Validation is used to validate matching resources.
-	Validation *Validation `json:"validate,omitempty"`
+	// Assert is used to validate matching resources.
+	Assert *Assert `json:"assert,omitempty"`
 }
