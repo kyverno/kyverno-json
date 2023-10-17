@@ -46,7 +46,7 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to get policies (%w)", err)
 		}
-		var pols []*v1alpha1.Policy
+		var pols []*v1alpha1.ValidationPolicy
 		for i := range policies {
 			pols = append(pols, &policies[i])
 		}

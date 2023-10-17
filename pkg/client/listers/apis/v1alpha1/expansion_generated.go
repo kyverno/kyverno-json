@@ -18,6 +18,6 @@ limitations under the License.
 
 package v1alpha1
 
-// PolicyListerExpansion allows custom methods to be added to
-// PolicyLister.
-type PolicyListerExpansion interface{}
+// ValidationPolicyListerExpansion allows custom methods to be added to
+// ValidationPolicyLister.
+type ValidationPolicyListerExpansion interface{}

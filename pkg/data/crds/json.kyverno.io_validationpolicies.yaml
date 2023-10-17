@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.12.0
-  name: policies.json.kyverno.io
+  name: validationpolicies.json.kyverno.io
 spec:
   group: json.kyverno.io
   names:
-    kind: Policy
-    listKind: PolicyList
-    plural: policies
-    singular: policy
+    kind: ValidationPolicy
+    listKind: ValidationPolicyList
+    plural: validationpolicies
+    singular: validationpolicy
   scope: Cluster
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Policy is the resource that contains the policy definition.
+        description: ValidationPolicy is the resource that contains the policy definition.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -39,6 +39,42 @@ spec:
                   multiple rules and each rule can validate, mutate, or generate resources.
                 items:
                   properties:
+                    assert:
+                      description: Assert is used to validate matching resources.
+                      properties:
+                        all:
+                          description: All allows specifying resources which will
+                            be ANDed.
+                          items:
+                            properties:
+                              check:
+                                description: Check is the assertion check definition.
+                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
+                              message:
+                                description: Message is the variable associated message.
+                                type: string
+                            required:
+                            - check
+                            type: object
+                          type: array
+                        any:
+                          description: Any allows specifying resources which will
+                            be ORed.
+                          items:
+                            properties:
+                              check:
+                                description: Check is the assertion check definition.
+                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
+                              message:
+                                description: Message is the variable associated message.
+                                type: string
+                            required:
+                            - check
+                            type: object
+                          type: array
+                      type: object
                     context:
                       description: Context defines variables and data sources that
                         can be used during rule execution.
@@ -105,49 +141,6 @@ spec:
                         unique within the policy.
                       maxLength: 63
                       type: string
-                    validate:
-                      description: Validation is used to validate matching resources.
-                      properties:
-                        assert:
-                          description: Assert specifies an overlay-style pattern used
-                            to check resources.
-                          properties:
-                            all:
-                              description: All allows specifying resources which will
-                                be ANDed.
-                              items:
-                                properties:
-                                  check:
-                                    description: Check is the assertion check definition.
-                                    type: object
-                                    x-kubernetes-preserve-unknown-fields: true
-                                  message:
-                                    description: Message is the variable associated
-                                      message.
-                                    type: string
-                                required:
-                                - check
-                                type: object
-                              type: array
-                            any:
-                              description: Any allows specifying resources which will
-                                be ORed.
-                              items:
-                                properties:
-                                  check:
-                                    description: Check is the assertion check definition.
-                                    type: object
-                                    x-kubernetes-preserve-unknown-fields: true
-                                  message:
-                                    description: Message is the variable associated
-                                      message.
-                                    type: string
-                                required:
-                                - check
-                                type: object
-                              type: array
-                          type: object
-                      type: object
                   required:
                   - name
                   type: object
