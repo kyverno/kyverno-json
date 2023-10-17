@@ -1492,10 +1492,10 @@
       "$ref": "_definitions.json#/definitions/io.k8s.kube-aggregator.pkg.apis.apiregistration.v1.ServiceReference"
     },
     {
-      "$ref": "_definitions.json#/definitions/io.kyverno.json.v1alpha1.Policy"
+      "$ref": "_definitions.json#/definitions/io.kyverno.json.v1alpha1.ValidationPolicy"
     },
     {
-      "$ref": "_definitions.json#/definitions/io.kyverno.json.v1alpha1.PolicyList"
+      "$ref": "_definitions.json#/definitions/io.kyverno.json.v1alpha1.ValidationPolicyList"
     }
   ]
 }
