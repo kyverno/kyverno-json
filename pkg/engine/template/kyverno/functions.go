@@ -73,6 +73,14 @@ var (
 	imageNormalize         = "image_normalize"
 )
 
+func GetBareFunctions() []gojmespath.FunctionEntry {
+	var funcs []gojmespath.FunctionEntry
+	for _, f := range GetFunctions() {
+		funcs = append(funcs, f.FunctionEntry)
+	}
+	return funcs
+}
+
 func GetFunctions() []FunctionEntry {
 	return []FunctionEntry{{
 		FunctionEntry: gojmespath.FunctionEntry{

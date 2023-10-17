@@ -6,6 +6,7 @@ import (
 
 	jpfunctions "github.com/jmespath-community/go-jmespath/pkg/functions"
 	"github.com/kyverno/kyverno-json/pkg/engine/template/functions"
+	kyvernofunctions "github.com/kyverno/kyverno-json/pkg/engine/template/kyverno"
 )
 
 func main() {
@@ -18,6 +19,10 @@ func main() {
 	fmt.Println("## custom functions")
 	fmt.Println()
 	printFunctions(functions.GetFunctions()...)
+	fmt.Println()
+	fmt.Println("## kyverno functions")
+	fmt.Println()
+	printFunctions(kyvernofunctions.GetBareFunctions()...)
 	fmt.Println()
 }
 
