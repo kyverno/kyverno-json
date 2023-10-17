@@ -1,5 +1,5 @@
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   name: required-s3-tags
 spec:
@@ -11,9 +11,8 @@ spec:
       exclude:
         any:
         - (wildcard('bypass-*', name)): true
-      validate:
-        assert:
-          all:
-          - check:
-              tags:
-                (wildcard('?*', Team)): false
+      assert:
+        all:
+        - check:
+            tags:
+              (wildcard('?*', Team)): false
