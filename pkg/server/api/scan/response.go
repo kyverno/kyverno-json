@@ -10,11 +10,11 @@ type Response struct {
 }
 
 type Result struct {
-	Policy   *v1alpha1.Policy `json:"policy"`
-	Rule     v1alpha1.Rule    `json:"rule"`
-	Resource interface{}      `json:"resource"`
-	Failure  error            `json:"failure"`
-	Error    error            `json:"error"`
+	Policy   *v1alpha1.ValidationPolicy `json:"policy"`
+	Rule     v1alpha1.ValidationRule    `json:"rule"`
+	Resource interface{}                `json:"resource"`
+	Failure  error                      `json:"failure"`
+	Error    error                      `json:"error"`
 }
 
 func makeResponse(responses ...jsonengine.JsonEngineResponse) *Response {

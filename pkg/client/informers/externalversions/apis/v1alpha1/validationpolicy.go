@@ -32,58 +32,58 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// PolicyInformer provides access to a shared informer and lister for
-// Policies.
-type PolicyInformer interface {
+// ValidationPolicyInformer provides access to a shared informer and lister for
+// ValidationPolicies.
+type ValidationPolicyInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.PolicyLister
+	Lister() v1alpha1.ValidationPolicyLister
 }
 
-type policyInformer struct {
+type validationPolicyInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 }
 
-// NewPolicyInformer constructs a new informer for Policy type.
+// NewValidationPolicyInformer constructs a new informer for ValidationPolicy type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewPolicyInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredPolicyInformer(client, resyncPeriod, indexers, nil)
+func NewValidationPolicyInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredValidationPolicyInformer(client, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredPolicyInformer constructs a new informer for Policy type.
+// NewFilteredValidationPolicyInformer constructs a new informer for ValidationPolicy type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredPolicyInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredValidationPolicyInformer(client versioned.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.JsonV1alpha1().Policies().List(context.TODO(), options)
+				return client.JsonV1alpha1().ValidationPolicies().List(context.TODO(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.JsonV1alpha1().Policies().Watch(context.TODO(), options)
+				return client.JsonV1alpha1().ValidationPolicies().Watch(context.TODO(), options)
 			},
 		},
-		&apisv1alpha1.Policy{},
+		&apisv1alpha1.ValidationPolicy{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *policyInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredPolicyInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *validationPolicyInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredValidationPolicyInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *policyInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apisv1alpha1.Policy{}, f.defaultInformer)
+func (f *validationPolicyInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&apisv1alpha1.ValidationPolicy{}, f.defaultInformer)
 }
 
-func (f *policyInformer) Lister() v1alpha1.PolicyLister {
-	return v1alpha1.NewPolicyLister(f.Informer().GetIndexer())
+func (f *validationPolicyInformer) Lister() v1alpha1.ValidationPolicyLister {
+	return v1alpha1.NewValidationPolicyLister(f.Informer().GetIndexer())
 }

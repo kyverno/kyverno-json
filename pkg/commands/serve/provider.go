@@ -13,8 +13,8 @@ type provider struct {
 }
 
 // TODO: use an informer/lister
-func (p *provider) Get() ([]v1alpha1.Policy, error) {
-	list, err := p.client.JsonV1alpha1().Policies().List(context.Background(), metav1.ListOptions{})
+func (p *provider) Get() ([]v1alpha1.ValidationPolicy, error) {
+	list, err := p.client.JsonV1alpha1().ValidationPolicies().List(context.Background(), metav1.ListOptions{})
 	if err != nil {
 		return nil, err
 	}
