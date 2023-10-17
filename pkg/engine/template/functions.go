@@ -12,9 +12,6 @@ func GetFunctions(ctx context.Context) []jpfunctions.FunctionEntry {
 	var funcs []jpfunctions.FunctionEntry
 	funcs = append(funcs, jpfunctions.GetDefaultFunctions()...)
 	funcs = append(funcs, functions.GetFunctions()...)
-	funcs = append(funcs, functions.GetFunctions()...)
-	for _, function := range kyvernofunctions.GetFunctions() {
-		funcs = append(funcs, function.FunctionEntry)
-	}
+	funcs = append(funcs, kyvernofunctions.GetBareFunctions()...)
 	return funcs
 }
