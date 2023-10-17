@@ -200,7 +200,7 @@ codegen-catalog: ## Generate policy catalog
 	@go run ./hack/docs/catalog/main.go
 
 .PHONY: codegen-docs
-codegen-docs: codegen-api-docs-md codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
+codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
 
 .PHONY: codegen-mkdocs
 codegen-mkdocs: codegen-docs ## Generate mkdocs website
@@ -208,7 +208,6 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@pip install mkdocs
 	@pip install --upgrade pip
 	@pip install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin
-	@rm -rf ./website/docs/apis && mkdir -p ./website/docs/apis && cp docs/user/apis/md/* ./website/docs/apis
 	@rm -rf ./website/docs/commands && mkdir -p ./website/docs/commands && cp docs/user/commands/* ./website/docs/commands
 	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
