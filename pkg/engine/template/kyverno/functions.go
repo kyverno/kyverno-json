@@ -70,7 +70,6 @@ var (
 	objectFromLists        = "object_from_lists"
 	random                 = "random"
 	x509_decode            = "x509_decode"
-	imageNormalize         = "image_normalize"
 )
 
 func GetBareFunctions() []gojmespath.FunctionEntry {
