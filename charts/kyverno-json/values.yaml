@@ -1,0 +1,162 @@
+# -- Name override
+nameOverride: ""
+
+# -- Full name override
+fullnameOverride: ""
+
+crds:
+  # -- Whether to have Helm install the CRDs, if the CRDs are not installed by Helm, they must be added before policies can be created
+  install: true
+  # -- Additional CRDs annotations
+  annotations: {}
+    # argocd.argoproj.io/sync-options: Replace=true
+    # strategy.spinnaker.io/replace: 'true'
+  # -- Additional CRDs labels
+  labels: {}
+
+# -- Number of pod replicas
+replicaCount: 1
+
+image:
+  # -- Image registry
+  registry: ghcr.io
+  # -- Image repository
+  repository: kyverno/kyverno-json
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+  # -- Image tag (will default to app version if not set)
+  tag: ~
+
+# -- Image pull secrets
+imagePullSecrets: []
+
+# -- Priority class name
+priorityClassName: ""
+
+serviceAccount:
+  # -- Create service account
+  create: true
+
+  # -- Service account annotations
+  annotations: {}
+
+  # -- Service account name (required if `serviceAccount.create` is `false`)
+  name: ""
+
+# -- Pod annotations
+podAnnotations: {}
+
+# -- Pod security context
+podSecurityContext:
+  fsGroup: 2000
+
+# -- Container security context
+# @default -- See [values.yaml](values.yaml)
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  privileged: false
+  allowPrivilegeEscalation: false
+  seccompProfile:
+    type: RuntimeDefault
+
+service:
+  # -- Service type
+  type: ClusterIP
+
+  # -- Service port
+  port: 8080
+
+# # -- Liveness probe
+# livenessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+
+# # -- Readiness probe
+# readinessProbe:
+#   httpGet:
+#     path: /
+#     port: http
+
+ingress:
+  # -- Enable ingress
+  enabled: false
+
+  # -- Ingress class name
+  className: ""
+
+  # -- Ingress annotations
+  annotations: {}
+
+  # -- Ingress hosts
+  hosts: []
+    # - host: chart-example.local
+    #   paths:
+    #     - path: /
+    #       pathType: ImplementationSpecific
+
+  # -- Ingress tls
+  tls: []
+
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+resources:
+  # -- Container resource limits
+  limits:
+    # cpu: 100m
+    # memory: 128Mi
+
+  # -- Container resource requests
+  requests:
+    # cpu: 100m
+    # memory: 128Mi
+
+autoscaling:
+  # -- Enable autoscaling
+  enabled: false
+
+  # -- Min number of replicas
+  minReplicas: 1
+
+  # -- Max number of replicas
+  maxReplicas: 100
+
+  # -- Target CPU utilisation
+  targetCPUUtilizationPercentage: 80
+
+  # -- Target Memory utilisation
+  targetMemoryUtilizationPercentage: ~
+
+# -- Node selector
+nodeSelector: {}
+
+# -- Tolerations
+tolerations: []
+
+# -- Affinity
+affinity: {}
+
+config:
+  gin:
+    # -- Gin mode (`release` or `debug`)
+    mode: release
+    # -- Gin cors middleware
+    cors: false
+    # -- Gin logger middleware
+    logger: false
+    # -- Gin max body size
+    maxBodySize: 2097152
+  server:
+    # -- Server host
+    host: '0.0.0.0'
+    # -- Server port
+    port: 8080
+  cluster:
+    # TODO: kube config flags

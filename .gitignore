@@ -1,6 +1,6 @@
 .DS_Store
 .tools
 .gopath
-kyverno-json
+/kyverno-json
 website/site
 playground/assets/main.wasm

@@ -1,0 +1,30 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+metadata:
+  name: {{ include "kyverno-json.fullname" . }}
+  labels:
+    {{- include "kyverno-json.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - json.kyverno.io
+    resources:
+      - validationpolicies
+    verbs:
+      - get
+      - list
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "kyverno-json.fullname" . }}
+  labels:
+    {{- include "kyverno-json.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "kyverno-json.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kyverno-json.serviceAccountName" $ }}
+    namespace: {{ $.Release.Namespace }}
