@@ -1,0 +1,16 @@
+apiVersion: v2
+name: kyverno-json
+type: application
+version: 0.1.0
+appVersion: v0.1.0
+icon: https://github.com/kyverno/kyverno-json/blob/main/website/docs/static/kyverno-json-logo.png
+description: Kyverno for JSON
+keywords:
+  - kubernetes
+  - policy agent
+sources:
+  - https://github.com/kyverno/kyverno-json
+maintainers:
+  - name: Nirmata
+    url: https://kyverno.io/
+kubeVersion: ">=1.16.0-0"
