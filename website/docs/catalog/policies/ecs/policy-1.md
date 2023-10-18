@@ -1,6 +1,20 @@
 
 # policy-1
 
+## Install
+
+### In cluster
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/ecs/policy-1.yaml
+```
+
+### Download locally
+
+```bash
+curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/ecs/policy-1.yaml
+```
+
 ## Description
 
 None
@@ -11,17 +25,16 @@ None
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   creationTimestamp: null
   name: test
 spec:
   rules:
-  - name: foo-bar
-    validate:
-      assert:
-        all:
-        - check:
-            foo:
-              /(bar)/: 10
+  - assert:
+      all:
+      - check:
+          foo:
+            /(bar)/: 10
+    name: foo-bar
 ```

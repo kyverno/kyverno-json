@@ -1,0 +1,20 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidationPolicy
+metadata:
+  name: required-s3-tags
+spec:
+  rules:
+    - name: require-team-tag
+      match:
+        any:
+        - type: aws_s3_bucket
+      context:
+      - name: tags
+        variable:
+          Team: Kyverno
+      assert:
+        all:
+        - message: Bucket `{{ name }}` ({{ address }}) does not have the required tags {{ to_string($tags) }}
+          check:
+            values:
+              tags: ($tags)

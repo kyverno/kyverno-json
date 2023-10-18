@@ -1,0 +1,18 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidationPolicy
+metadata:
+  name: required-s3-tags
+spec:
+  rules:
+    - name: require-team-tag
+      match:
+        any:
+        - type: aws_s3_bucket
+      exclude:
+        any:
+        - (wildcard('bypass-*', name)): true
+      assert:
+        all:
+        - check:
+            tags:
+              (wildcard('?*', Team)): false

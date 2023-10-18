@@ -15,12 +15,12 @@ import (
 
 type JsonEngineRequest struct {
 	Resources []interface{}
-	Policies  []*v1alpha1.Policy
+	Policies  []*v1alpha1.ValidationPolicy
 }
 
 type JsonEngineResponse struct {
-	Policy   *v1alpha1.Policy
-	Rule     v1alpha1.Rule
+	Policy   *v1alpha1.ValidationPolicy
+	Rule     v1alpha1.ValidationRule
 	Resource interface{}
 	Failure  error
 	Error    error
@@ -28,8 +28,8 @@ type JsonEngineResponse struct {
 
 func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	type request struct {
-		policy   *v1alpha1.Policy
-		rule     v1alpha1.Rule
+		policy   *v1alpha1.ValidationPolicy
+		rule     v1alpha1.ValidationRule
 		value    interface{}
 		bindings binding.Bindings
 	}
@@ -61,15 +61,11 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 				Rule:     r.rule,
 				Resource: r.value,
 			}
-			errs, err := assert.MatchAssert(ctx, nil, r.rule.Validation.Assert, r.value, r.bindings)
+			errs, err := assert.MatchAssert(ctx, nil, r.rule.Assert, r.value, r.bindings)
 			if err != nil {
 				response.Failure = err
 			} else if err := multierr.Combine(errs...); err != nil {
-				// if r.rule.Validation.Message != "" {
-				// 	response.Error = errors.New(template.String(ctx, r.rule.Validation.Message, r.value, r.bindings))
-				// } else {
 				response.Error = err
-				// }
 			}
 			return response
 		}).

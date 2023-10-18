@@ -16,11 +16,15 @@ copyright: Made with ❤️ by Kyverno contributors.
 # strictness
 strict: true
 
+# style
+extra_css:
+- static/extra.css
+
 theme:
   name: material
   custom_dir: docs/overrides
   language: en
-  logo: static/logo.png
+  logo: static/Kyverno_320x320.png
   favicon: static/favicon.ico
   include_search_page: false
   search_index_only: true
@@ -69,11 +73,15 @@ plugins:
 - include-markdown
 - tags:
     enabled: true
-    tags_file: tags.md
+    tags_file: catalog/index.md
 - blog:
     post_url_format: "{slug}"
 
 markdown_extensions:
+- attr_list
+- pymdownx.emoji:
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
 - admonition
 - codehilite
 - meta

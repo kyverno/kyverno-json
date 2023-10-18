@@ -1,18 +1,17 @@
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   name: test
   labels:
     s3.aws.tags.kyverno.io: ''
   annotations:
-    title.catalog.kyverno.io: Policy 1
-    description.catalog.kyverno.io: Policy 1
+    title.policy.kyverno.io: Policy 1
+    description.policy.kyverno.io: Policy 1
 spec:
   rules:
     - name: foo-bar
-      validate:
-        assert:
-          all:
-          - check:
-              foo:
-                /(bar)/: 10
+      assert:
+        all:
+        - check:
+            foo:
+              /(bar)/: 10

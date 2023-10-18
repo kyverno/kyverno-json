@@ -21,7 +21,7 @@ const (
 
 type pol struct {
 	Path   string
-	Policy *v1alpha1.Policy
+	Policy *v1alpha1.ValidationPolicy
 }
 
 func (p pol) TargetPath() string {

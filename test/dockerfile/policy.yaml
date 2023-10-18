@@ -1,0 +1,25 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidationPolicy
+metadata:
+  name: check-dockerfile
+spec:
+  rules:
+    - name: deny-external-calls
+      assert:
+        all:
+        - message: "HTTP calls are not allowed"
+          check:
+            ~.(Stages[].Commands[].Args[].Value):
+              (contains(@, 'https://') || contains(@, 'http://')): false
+        - message: "HTTP calls are not allowed"
+          check:
+            ~.(Stages[].Commands[].CmdLine[]):
+              (contains(@, 'https://') || contains(@, 'http://')): false
+        - message: "curl is not allowed"
+          check:
+            ~.(Stages[].Commands[].CmdLine[]):
+              (contains(@, 'curl')): false
+        - message: "wget is not allowed"
+          check:
+            ~.(Stages[].Commands[].CmdLine[]):
+              (contains(@, 'wget')): false

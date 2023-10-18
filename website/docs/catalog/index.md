@@ -1,9 +1,9 @@
 # Policy catalog
 
-<p align="center">
-  <img src="../static/WIP.jpg" />
-</p>
+The `kyverno-json` policy catalog contains curated policies to be reused.
 
-The policy catalog is currently under construction, we are actively working on it.
+You can share your policies with the community by opening a pull request [here](https://github.com/kyverno/kyverno-json).
 
-It should be available soon!
+## Policies indexed by tags
+
+[TAGS]

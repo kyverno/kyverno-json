@@ -1,7 +1,0 @@
-markdownDisabled: false
-
-apis:
-  - name: kyverno-json
-    title: kyverno-json (v1alpha1)
-    package: github.com/kyverno/kyverno-json
-    path: pkg/apis/v1alpha1
