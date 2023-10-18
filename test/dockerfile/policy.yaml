@@ -4,7 +4,7 @@ metadata:
   name: check-dockerfile
 spec:
   rules:
-    - name: no-external
+    - name: deny-external-calls
       assert:
         all:
         - message: "HTTP calls are not allowed"
