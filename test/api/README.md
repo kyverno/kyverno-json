@@ -3,7 +3,7 @@
 ## Create a cluster
 
 ```bash
-make kind-cluster
+make kind-create
 ```
 
 ## Install CRDs

@@ -1,5 +1,24 @@
 .DEFAULT_GOAL := build
 
+##########
+# CONFIG #
+##########
+
+ORG                                ?= kyverno
+PACKAGE                            ?= github.com/$(ORG)/kyverno-json
+KIND_IMAGE                         ?= kindest/node:v1.28.0
+KIND_NAME                          ?= kind
+GIT_SHA                            := $(shell git rev-parse HEAD)
+GOOS                               ?= $(shell go env GOOS)
+GOARCH                             ?= $(shell go env GOARCH)
+REGISTRY                           ?= ghcr.io
+REPO                               ?= kyverno-json
+LOCAL_PLATFORM                     := linux/$(GOARCH)
+KO_REGISTRY                        := ko.local
+KO_PLATFORMS                       := all
+KO_TAGS                            := $(GIT_SHA)
+KO_CACHE                           ?= /tmp/ko-cache
+
 #########
 # TOOLS #
 #########
@@ -17,7 +36,11 @@ REFERENCE_DOCS                     := $(TOOLS_DIR)/genref
 REFERENCE_DOCS_VERSION             := latest
 KIND                               := $(TOOLS_DIR)/kind
 KIND_VERSION                       := v0.20.0
-TOOLS                              := $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) $(REGISTER_GEN) $(DEEPCOPY_GEN) $(CONTROLLER_GEN) $(REFERENCE_DOCS) $(KIND)
+HELM                               := $(TOOLS_DIR)/helm
+HELM_VERSION                       := v3.10.1
+KO                                 := $(TOOLS_DIR)/ko
+KO_VERSION                         := v0.14.1
+TOOLS                              := $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) $(REGISTER_GEN) $(DEEPCOPY_GEN) $(CONTROLLER_GEN) $(REFERENCE_DOCS) $(KIND) $(HELM) $(KO)
 PIP                                ?= "pip"
 ifeq ($(GOOS), darwin)
 SED                                := gsed
@@ -58,6 +81,14 @@ $(KIND):
 	@echo Install kind... >&2
 	@GOBIN=$(TOOLS_DIR) go install sigs.k8s.io/kind@$(KIND_VERSION)
 
+$(HELM):
+	@echo Install helm... >&2
+	@GOBIN=$(TOOLS_DIR) go install helm.sh/helm/v3/cmd/helm@$(HELM_VERSION)
+
+$(KO):
+	@echo Install ko... >&2
+	@GOBIN=$(TOOLS_DIR) go install github.com/google/ko@$(KO_VERSION)
+
 .PHONY: install-tools
 install-tools: $(TOOLS) ## Install tools
 
@@ -72,7 +103,6 @@ clean-tools: ## Remove installed tools
 
 CLI_BIN        := kyverno-json
 CGO_ENABLED    ?= 0
-GOOS           ?= $(shell go env GOOS)
 ifdef VERSION
 LD_FLAGS       := "-s -w -X $(PACKAGE)/pkg/version.BuildVersion=$(VERSION)"
 else
@@ -104,17 +134,20 @@ build-wasm: fmt vet ## Build the wasm binary
 serve: build-wasm ## Serve static files.
 	python3 -m http.server -d playground/ 8080
 
+.PHONY: ko-build
+ko-build: $(KO) ## Build image (with ko)
+	@echo Build image with ko... >&2
+	@LDFLAGS=$(LD_FLAGS) KOCACHE=$(KO_CACHE) KO_DOCKER_REPO=$(KO_REGISTRY) \
+		$(KO) build . --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
+
 ###########
 # CODEGEN #
 ###########
 
-ORG                         ?= kyverno
-PACKAGE                     ?= github.com/$(ORG)/kyverno-json
 GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
 CRDS_PATH                   := ${PWD}/config/crds
-KIND_IMAGE                  ?= kindest/node:v1.28.0
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
 OUT_PACKAGE                 := $(PACKAGE)/pkg/client
 CLIENTSET_PACKAGE           := $(OUT_PACKAGE)/clientset
@@ -234,8 +267,29 @@ codegen-schema-json: codegen-schema-openapi ## Generate json schemas
 .PHONY: codegen-schema-all
 codegen-schema-all: codegen-schema-openapi codegen-schema-json ## Generate openapi and json schemas
 
+.PHONY: codegen-helm-crds
+codegen-helm-crds: codegen-crds ## Generate helm CRDs
+	@echo Generate helm crds... >&2
+	@cat $(CRDS_PATH)/* \
+		| $(SED) -e '1i{{- if .Values.crds.install }}' \
+		| $(SED) -e '$$a{{- end }}' \
+		| $(SED) -e '/^  annotations:/a \ \ \ \ {{- end }}' \
+ 		| $(SED) -e '/^  annotations:/a \ \ \ \ {{- toYaml . | nindent 4 }}' \
+		| $(SED) -e '/^  annotations:/a \ \ \ \ {{- with .Values.crds.annotations }}' \
+ 		| $(SED) -e '/^  annotations:/i \ \ labels:' \
+		| $(SED) -e '/^  labels:/a \ \ \ \ {{- end }}' \
+ 		| $(SED) -e '/^  labels:/a \ \ \ \ {{- toYaml . | nindent 4 }}' \
+		| $(SED) -e '/^  labels:/a \ \ \ \ {{- with .Values.crds.labels }}' \
+		| $(SED) -e '/^  labels:/a \ \ \ \ {{- include "kyverno-json.labels" . | nindent 4 }}' \
+ 		> ./charts/kyverno-json/templates/crds.yaml
+
+.PHONY: codegen-helm-docs
+codegen-helm-docs: ## Generate helm docs
+	@echo Generate helm docs... >&2
+	@docker run -v ${PWD}/charts:/work -w /work jnorwood/helm-docs:v1.11.0 -s file
+
 .PHONY: codegen
-codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schema-all ## Rebuild all generated code and docs
+codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schema-all codegen-helm-docs ## Rebuild all generated code and docs
 
 .PHONY: verify-codegen
 verify-codegen: codegen ## Verify all generated code and docs are up to date
@@ -258,10 +312,28 @@ tests: $(CLI_BIN) ## Run tests
 # KIND #
 ########
 
-.PHONY: kind-cluster
-kind-cluster: $(KIND) ## Create kind cluster
+.PHONY: kind-create
+kind-create: $(KIND) ## Create kind cluster
 	@echo Create kind cluster... >&2
-	@$(KIND) create cluster --image $(KIND_IMAGE)
+	@$(KIND) create cluster --name $(KIND_NAME) --image $(KIND_IMAGE)
+
+.PHONY: kind-delete
+kind-delete: $(KIND) ## Delete kind cluster
+	@echo Delete kind cluster... >&2
+	@$(KIND) delete cluster --name $(KIND_NAME)
+
+.PHONY: kind-load
+kind-load: $(KIND) ko-build ## Build image and load in kind cluster
+	@echo Load image... >&2
+	@$(KIND) load docker-image --name $(KIND_NAME) $(KO_REGISTRY)/$(PACKAGE):$(GIT_SHA)
+
+.PHONY: kind-install
+kind-install: $(HELM) kind-load ## Build image, load it in kind cluster and deploy helm chart
+	@echo Install chart... >&2
+	@$(HELM) upgrade --install kyverno-json --namespace kyverno-json --create-namespace --wait ./charts/kyverno-json \
+		--set image.registry=$(KO_REGISTRY) \
+		--set image.repository=$(PACKAGE) \
+		--set image.tag=$(GIT_SHA)
 
 ###########
 # INSTALL #
