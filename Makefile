@@ -128,13 +128,13 @@ build: $(CLI_BIN) ## Build
 
 .PHONY: build-wasm
 build-wasm: fmt vet ## Build the wasm binary
-	@echo Build wasm binary... >&2
+	@echo Build wasm module... >&2
 	@GOOS=js GOARCH=wasm go build -o ./playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
 
-.PHONY: serve
-serve: build-wasm ## Serve static files.
+.PHONY: serve-playground
+serve-playground: $(CLI_BIN) ## Serve playground
 	@echo Serve playground... >&2
-	@python3 -m http.server -d playground/ 8080
+	@./$(CLI_BIN) playground
 
 .PHONY: ko-build
 ko-build: $(KO) ## Build image (with ko)
