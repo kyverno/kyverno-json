@@ -250,21 +250,21 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 .PHONY: codegen-schema-openapi
 codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 	@echo Generate openapi schema... >&2
-	@rm -rf ./schemas
-	@mkdir -p ./schemas/openapi/v2
-	@mkdir -p ./schemas/openapi/v3/apis/json.kyverno.io
+	@rm -rf ./.schemas
+	@mkdir -p ./.schemas/openapi/v2
+	@mkdir -p ./.schemas/openapi/v3/apis/json.kyverno.io
 	@$(KIND) create cluster --name schema --image $(KIND_IMAGE)
 	@kubectl create -f ./config/crds
 	@sleep 15
-	@kubectl get --raw /openapi/v2 > ./schemas/openapi/v2/schema.json
-	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
+	@kubectl get --raw /openapi/v2 > ./.schemas/openapi/v2/schema.json
+	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./.schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
 	@$(KIND) delete cluster --name schema
 
 .PHONY: codegen-schema-json
 codegen-schema-json: codegen-schema-openapi ## Generate json schemas
 	@$(PIP) install openapi2jsonschema
-	@rm -rf ./schemas/json
-	@openapi2jsonschema ./schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./schemas/json
+	@rm -rf ./.schemas/json
+	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
 
 .PHONY: codegen-schema-all
 codegen-schema-all: codegen-schema-openapi codegen-schema-json ## Generate openapi and json schemas
