@@ -1,4 +1,4 @@
-package scan
+package playground
 
 import (
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"

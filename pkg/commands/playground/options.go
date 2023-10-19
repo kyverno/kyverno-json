@@ -1,4 +1,4 @@
-package serve
+package playground
 
 import (
 	"context"
@@ -7,19 +7,15 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kyverno/kyverno-json/pkg/client/clientset/versioned"
 	"github.com/kyverno/kyverno-json/pkg/server"
-	"github.com/kyverno/kyverno-json/pkg/server/scan"
-	restutils "github.com/kyverno/kyverno-json/pkg/utils/rest"
+	"github.com/kyverno/kyverno-json/pkg/server/ui"
 	"github.com/loopfz/gadgeto/tonic"
 	"github.com/spf13/cobra"
-	"k8s.io/client-go/tools/clientcmd"
 )
 
 type options struct {
-	serverFlags  serverFlags
-	ginFlags     ginFlags
-	clusterFlags clusterFlags
+	serverFlags serverFlags
+	ginFlags    ginFlags
 }
 
 type serverFlags struct {
@@ -34,10 +30,6 @@ type ginFlags struct {
 	maxBodySize int
 }
 
-type clusterFlags struct {
-	kubeConfigOverrides clientcmd.ConfigOverrides
-}
-
 func (c *options) Run(_ *cobra.Command, _ []string) error {
 	// initialise gin framework
 	gin.SetMode(c.ginFlags.mode)
@@ -47,19 +39,8 @@ func (c *options) Run(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	restConfig, err := restutils.RestConfig(c.clusterFlags.kubeConfigOverrides)
-	if err != nil {
-		return err
-	}
-	client, err := versioned.NewForConfig(restConfig)
-	if err != nil {
-		return err
-	}
-	provider := &provider{
-		client: client,
-	}
 	// register api routes
-	if err := scan.AddRoutes(router.Group(server.ApiPrefix), provider); err != nil {
+	if err := ui.AddRoutes(router); err != nil {
 		return err
 	}
 	// run server

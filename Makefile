@@ -120,7 +120,7 @@ vet: ## Run go vet
 	@echo Go vet... >&2
 	@go vet ./...
 
-$(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client
+$(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client codegen-playground
 	@echo Build cli binary... >&2
 	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
 
@@ -270,6 +270,11 @@ codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
 .PHONY: codegen-schemas
 codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openapi and json schemas
 
+.PHONY: codegen-playground
+codegen-playground: build-wasm ## Generate playground
+	@echo Generate playground... >&2
+	@cp -r ./website/playground/* ./pkg/server/ui/dist
+
 .PHONY: codegen-helm-crds
 codegen-helm-crds: codegen-crds ## Generate helm CRDs
 	@echo Generate helm crds... >&2
@@ -292,7 +297,7 @@ codegen-helm-docs: ## Generate helm docs
 	@docker run -v ${PWD}/charts:/work -w /work jnorwood/helm-docs:v1.11.0 -s file
 
 .PHONY: codegen
-codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schemas codegen-helm-docs ## Rebuild all generated code and docs
+codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schemas codegen-playground codegen-helm-crds codegen-helm-docs ## Rebuild all generated code and docs
 
 .PHONY: verify-codegen
 verify-codegen: codegen ## Verify all generated code and docs are up to date

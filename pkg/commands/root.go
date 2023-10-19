@@ -4,6 +4,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/command"
 	"github.com/kyverno/kyverno-json/pkg/commands/docs"
 	"github.com/kyverno/kyverno-json/pkg/commands/jp"
+	"github.com/kyverno/kyverno-json/pkg/commands/playground"
 	"github.com/kyverno/kyverno-json/pkg/commands/scan"
 	"github.com/kyverno/kyverno-json/pkg/commands/serve"
 	"github.com/kyverno/kyverno-json/pkg/commands/version"
@@ -28,6 +29,7 @@ func RootCommand() *cobra.Command {
 	cmd.AddCommand(
 		docs.Command("kyverno-json"),
 		jp.Command("kyverno-json"),
+		playground.Command(),
 		scan.Command(),
 		serve.Command("kyverno-json"),
 		version.Command("kyverno-json"),
