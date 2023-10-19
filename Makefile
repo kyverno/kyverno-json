@@ -18,6 +18,8 @@ KO_REGISTRY                        := ko.local
 KO_PLATFORMS                       := all
 KO_TAGS                            := $(GIT_SHA)
 KO_CACHE                           ?= /tmp/ko-cache
+CLI_DIR                            := cmd/cli
+CLI_BIN                            := kyverno-json
 
 #########
 # TOOLS #
@@ -101,7 +103,6 @@ clean-tools: ## Remove installed tools
 # BUILD #
 #########
 
-CLI_BIN        := kyverno-json
 CGO_ENABLED    ?= 0
 ifdef VERSION
 LD_FLAGS       := "-s -w -X $(PACKAGE)/pkg/version.BuildVersion=$(VERSION)"
@@ -119,17 +120,17 @@ vet: ## Run go vet
 	@echo Go vet... >&2
 	@go vet ./...
 
-$(CLI_BIN): fmt vet
+$(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client
 	@echo Build cli binary... >&2
-	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) .
+	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
 
 .PHONY: build
 build: $(CLI_BIN) ## Build
 
 .PHONY: build-wasm
-build-wasm: fmt vet ## Build the wasm binary
+build-wasm: fmt vet codegen-crds codegen-deepcopy codegen-register codegen-client ## Build the wasm binary
 	@echo Build wasm module... >&2
-	@GOOS=js GOARCH=wasm go build -o ./playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
+	@GOOS=js GOARCH=wasm go build -o ./website/playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
 
 .PHONY: serve-playground
 serve-playground: $(CLI_BIN) ## Serve playground
@@ -140,7 +141,7 @@ serve-playground: $(CLI_BIN) ## Serve playground
 ko-build: $(KO) ## Build image (with ko)
 	@echo Build image with ko... >&2
 	@LDFLAGS=$(LD_FLAGS) KOCACHE=$(KO_CACHE) KO_DOCKER_REPO=$(KO_REGISTRY) \
-		$(KO) build . --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
+		$(KO) build ./$(CLI_DIR) --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
 
 ###########
 # CODEGEN #
@@ -149,7 +150,7 @@ ko-build: $(KO) ## Build image (with ko)
 GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
-CRDS_PATH                   := ${PWD}/config/crds
+CRDS_PATH                   := ${PWD}/.crds
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
 OUT_PACKAGE                 := $(PACKAGE)/pkg/client
 CLIENTSET_PACKAGE           := $(OUT_PACKAGE)/clientset
@@ -209,7 +210,7 @@ codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@$(CONTROLLER_GEN) crd paths=./pkg/apis/... crd:crdVersions=v1 output:dir=$(CRDS_PATH)
 	@echo Copy generated CRDs to embed in the CLI... >&2
 	@rm -rf pkg/data/crds && mkdir -p pkg/data/crds
-	@cp config/crds/* pkg/data/crds
+	@cp $(CRDS_PATH)/* pkg/data/crds
 
 .PHONY: codegen-api-docs
 codegen-api-docs: $(REFERENCE_DOCS) ## Generate API docs
@@ -247,28 +248,27 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
 
-.PHONY: codegen-schema-openapi
-codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
-	@echo Generate openapi schemas... >&2
-	@rm -rf ./schemas
-	@mkdir -p ./schemas/openapi/v2
-	@mkdir -p ./schemas/openapi/v3/apis/json.kyverno.io
+.PHONY: codegen-schemas-openapi
+codegen-schemas-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
+	@echo Generate openapi schema... >&2
+	@rm -rf ./.schemas
+	@mkdir -p ./.schemas/openapi/v2
+	@mkdir -p ./.schemas/openapi/v3/apis/json.kyverno.io
 	@$(KIND) create cluster --name schema --image $(KIND_IMAGE)
-	@kubectl create -f ./config/crds
+	@kubectl create -f $(CRDS_PATH)
 	@sleep 15
-	@kubectl get --raw /openapi/v2 > ./schemas/openapi/v2/schema.json
-	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
+	@kubectl get --raw /openapi/v2 > ./.schemas/openapi/v2/schema.json
+	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./.schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
 	@$(KIND) delete cluster --name schema
 
-.PHONY: codegen-schema-json
-codegen-schema-json: codegen-schema-openapi ## Generate json schemas
-	@echo Generate json schemas... >&2
+.PHONY: codegen-schemas-json
+codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
 	@$(PIP) install openapi2jsonschema
-	@rm -rf ./schemas/json
-	@openapi2jsonschema ./schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./schemas/json
+	@rm -rf ./.schemas/json
+	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
 
-.PHONY: codegen-schema-all
-codegen-schema-all: codegen-schema-openapi codegen-schema-json ## Generate openapi and json schemas
+.PHONY: codegen-schemas
+codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openapi and json schemas
 
 .PHONY: codegen-playground
 codegen-playground: build-wasm ## Generate playground
@@ -297,7 +297,7 @@ codegen-helm-docs: ## Generate helm docs
 	@docker run -v ${PWD}/charts:/work -w /work jnorwood/helm-docs:v1.11.0 -s file
 
 .PHONY: codegen
-codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schema-all codegen-playground codegen-helm-crds codegen-helm-docs ## Rebuild all generated code and docs
+codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schemas codegen-playground codegen-helm-crds codegen-helm-docs ## Rebuild all generated code and docs
 
 .PHONY: verify-codegen
 verify-codegen: codegen ## Verify all generated code and docs are up to date
@@ -333,14 +333,14 @@ kind-delete: $(KIND) ## Delete kind cluster
 .PHONY: kind-load
 kind-load: $(KIND) ko-build ## Build image and load in kind cluster
 	@echo Load image... >&2
-	@$(KIND) load docker-image --name $(KIND_NAME) $(KO_REGISTRY)/$(PACKAGE):$(GIT_SHA)
+	@$(KIND) load docker-image --name $(KIND_NAME) $(KO_REGISTRY)/$(PACKAGE)/$(CLI_DIR):$(GIT_SHA)
 
 .PHONY: kind-install
 kind-install: $(HELM) kind-load ## Build image, load it in kind cluster and deploy helm chart
 	@echo Install chart... >&2
 	@$(HELM) upgrade --install kyverno-json --namespace kyverno-json --create-namespace --wait ./charts/kyverno-json \
 		--set image.registry=$(KO_REGISTRY) \
-		--set image.repository=$(PACKAGE) \
+		--set image.repository=$(PACKAGE)/$(CLI_DIR) \
 		--set image.tag=$(GIT_SHA)
 
 ###########
@@ -348,9 +348,9 @@ kind-install: $(HELM) kind-load ## Build image, load it in kind cluster and depl
 ###########
 
 .PHONY: install-crds
-install-crds: ## Install CRDs
+install-crds: codegen-crds ## Install CRDs
 	@echo Install CRDs... >&2
-	@kubectl create -f ./config/crds
+	@kubectl create -f ./$(CRDS_PATH)
 
 ########
 # HELP #

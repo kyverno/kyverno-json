@@ -3,4 +3,4 @@
 .gopath
 /kyverno-json
 website/site
-playground/assets/main.wasm
+website/playground/assets/main.wasm
