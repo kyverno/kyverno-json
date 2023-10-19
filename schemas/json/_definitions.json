@@ -16458,8 +16458,8 @@
         }
       }
     },
-    "io.kyverno.json.v1alpha1.Policy": {
-      "description": "Policy is the resource that contains the policy definition.",
+    "io.kyverno.json.v1alpha1.ValidationPolicy": {
+      "description": "ValidationPolicy is the resource that contains the policy definition.",
       "type": "object",
       "required": [
         "spec"
@@ -16476,7 +16476,7 @@
           "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
           "type": "string",
           "enum": [
-            "Policy"
+            "ValidationPolicy"
           ]
         },
         "metadata": {
@@ -16496,6 +16496,52 @@
                   "name"
                 ],
                 "properties": {
+                  "assert": {
+                    "description": "Assert is used to validate matching resources.",
+                    "type": "object",
+                    "properties": {
+                      "all": {
+                        "description": "All allows specifying resources which will be ANDed.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "check"
+                          ],
+                          "properties": {
+                            "check": {
+                              "description": "Check is the assertion check definition.",
+                              "x-kubernetes-preserve-unknown-fields": true
+                            },
+                            "message": {
+                              "description": "Message is the variable associated message.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "any": {
+                        "description": "Any allows specifying resources which will be ORed.",
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "required": [
+                            "check"
+                          ],
+                          "properties": {
+                            "check": {
+                              "description": "Check is the assertion check definition.",
+                              "x-kubernetes-preserve-unknown-fields": true
+                            },
+                            "message": {
+                              "description": "Message is the variable associated message.",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
                   "context": {
                     "description": "Context defines variables and data sources that can be used during rule execution.",
                     "type": "array",
@@ -16561,58 +16607,6 @@
                     "description": "Name is a label to identify the rule, It must be unique within the policy.",
                     "type": "string",
                     "maxLength": 63
-                  },
-                  "validate": {
-                    "description": "Validation is used to validate matching resources.",
-                    "type": "object",
-                    "properties": {
-                      "assert": {
-                        "description": "Assert specifies an overlay-style pattern used to check resources.",
-                        "type": "object",
-                        "properties": {
-                          "all": {
-                            "description": "All allows specifying resources which will be ANDed.",
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "required": [
-                                "check"
-                              ],
-                              "properties": {
-                                "check": {
-                                  "description": "Check is the assertion check definition.",
-                                  "x-kubernetes-preserve-unknown-fields": true
-                                },
-                                "message": {
-                                  "description": "Message is the variable associated message.",
-                                  "type": "string"
-                                }
-                              }
-                            }
-                          },
-                          "any": {
-                            "description": "Any allows specifying resources which will be ORed.",
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "required": [
-                                "check"
-                              ],
-                              "properties": {
-                                "check": {
-                                  "description": "Check is the assertion check definition.",
-                                  "x-kubernetes-preserve-unknown-fields": true
-                                },
-                                "message": {
-                                  "description": "Message is the variable associated message.",
-                                  "type": "string"
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
                   }
                 }
               }
@@ -16623,13 +16617,13 @@
       "x-kubernetes-group-version-kind": [
         {
           "group": "json.kyverno.io",
-          "kind": "Policy",
+          "kind": "ValidationPolicy",
           "version": "v1alpha1"
         }
       ]
     },
-    "io.kyverno.json.v1alpha1.PolicyList": {
-      "description": "PolicyList is a list of Policy",
+    "io.kyverno.json.v1alpha1.ValidationPolicyList": {
+      "description": "ValidationPolicyList is a list of ValidationPolicy",
       "type": "object",
       "required": [
         "items"
@@ -16643,17 +16637,17 @@
           ]
         },
         "items": {
-          "description": "List of policies. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md",
+          "description": "List of validationpolicies. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/io.kyverno.json.v1alpha1.Policy"
+            "$ref": "#/definitions/io.kyverno.json.v1alpha1.ValidationPolicy"
           }
         },
         "kind": {
           "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
           "type": "string",
           "enum": [
-            "PolicyList"
+            "ValidationPolicyList"
           ]
         },
         "metadata": {
@@ -16664,7 +16658,7 @@
       "x-kubernetes-group-version-kind": [
         {
           "group": "json.kyverno.io",
-          "kind": "PolicyList",
+          "kind": "ValidationPolicyList",
           "version": "v1alpha1"
         }
       ]

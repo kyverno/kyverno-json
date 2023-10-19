@@ -1,5 +1,5 @@
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   name: test
 spec:
@@ -14,12 +14,11 @@ spec:
         any:
         - apiVersion: v1
           kind: Pod
-      validate:
-        assert:
-          all:
-          - check:
-              ~.(spec.containers[*].image):
-                # an image tag is required
-                (contains(@, ':')): true
-                # using a mutable image tag e.g. 'latest' is not allowed
-                (ends_with(@, $tag)): true
+      assert:
+        all:
+        - check:
+            ~.(spec.containers[*].image):
+              # an image tag is required
+              (contains(@, ':')): true
+              # using a mutable image tag e.g. 'latest' is not allowed
+              (ends_with(@, $tag)): true

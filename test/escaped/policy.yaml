@@ -1,30 +1,29 @@
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   name: test
 spec:
   rules:
     - name: foo-bar-4
-      validate:
-        assert:
-          all:
-          - check:
-              foo:
-                \(bar)\: 4
-          - check:
-              foo:
-                \(bar)\->test:
-                  ($test): 4
-          - check:
-              foo:
-                \(bar)->test\: 6
-          - check:
-              foo:
-                \(bar)->test\->test:
-                  ($test): 6
-          - check:
-              foo:
-                \~foos\:
-                - 1
-                - 2
-                - 3
+      assert:
+        all:
+        - check:
+            foo:
+              \(bar)\: 4
+        - check:
+            foo:
+              \(bar)\->test:
+                ($test): 4
+        - check:
+            foo:
+              \(bar)->test\: 6
+        - check:
+            foo:
+              \(bar)->test\->test:
+                ($test): 6
+        - check:
+            foo:
+              \~foos\:
+              - 1
+              - 2
+              - 3

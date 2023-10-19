@@ -55,3 +55,54 @@
 | json_parse | `json_parse(string)` |
 | wildcard | `wildcard(string, string)` |
 
+## kyverno functions
+
+| Name | Signature |
+|---|---|
+| compare | `compare(string, string)` |
+| equal_fold | `equal_fold(string, string)` |
+| replace | `replace(string, string, string, number)` |
+| replace_all | `replace_all(string, string, string)` |
+| to_upper | `to_upper(string)` |
+| to_lower | `to_lower(string)` |
+| trim | `trim(string, string)` |
+| trim_prefix | `trim_prefix(string, string)` |
+| split | `split(string, string)` |
+| regex_replace_all | `regex_replace_all(string, string\|number, string\|number)` |
+| regex_replace_all_literal | `regex_replace_all_literal(string, string\|number, string\|number)` |
+| regex_match | `regex_match(string, string\|number)` |
+| pattern_match | `pattern_match(string, string\|number)` |
+| label_match | `label_match(object, object)` |
+| to_boolean | `to_boolean(string)` |
+| add | `add(any, any)` |
+| sum | `sum(array)` |
+| subtract | `subtract(any, any)` |
+| multiply | `multiply(any, any)` |
+| divide | `divide(any, any)` |
+| modulo | `modulo(any, any)` |
+| round | `round(number, number)` |
+| base64_decode | `base64_decode(string)` |
+| base64_encode | `base64_encode(string)` |
+| time_since | `time_since(string, string, string)` |
+| time_now | `time_now()` |
+| time_now_utc | `time_now_utc()` |
+| path_canonicalize | `path_canonicalize(string)` |
+| truncate | `truncate(string, number)` |
+| semver_compare | `semver_compare(string, string)` |
+| parse_json | `parse_json(string)` |
+| parse_yaml | `parse_yaml(string)` |
+| lookup | `lookup(object\|array, string\|number)` |
+| items | `items(object\|array, string, string)` |
+| object_from_lists | `object_from_lists(array, array)` |
+| random | `random(string)` |
+| x509_decode | `x509_decode(string)` |
+| time_to_cron | `time_to_cron(string)` |
+| time_add | `time_add(string, string)` |
+| time_parse | `time_parse(string, string)` |
+| time_utc | `time_utc(string)` |
+| time_diff | `time_diff(string, string)` |
+| time_before | `time_before(string, string)` |
+| time_after | `time_after(string, string)` |
+| time_between | `time_between(string, string, string)` |
+| time_truncate | `time_truncate(string, string)` |
+

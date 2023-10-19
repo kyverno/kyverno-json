@@ -18,5 +18,6 @@ func Command() *cobra.Command {
 	cmd.Flags().StringSliceVar(&command.preprocessors, "pre-process", nil, "JmesPath expression used to pre process payload")
 	cmd.Flags().StringSliceVar(&command.policies, "policy", nil, "Path to kyverno-json policies")
 	cmd.Flags().StringSliceVar(&command.selectors, "labels", nil, "Labels selectors for policies")
+	cmd.Flags().StringVar(&command.identifier, "identifier", "", "JmesPath expression used to identify a resource")
 	return cmd
 }

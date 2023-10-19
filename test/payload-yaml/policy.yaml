@@ -1,5 +1,5 @@
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   name: required-s3-tags
 spec:
@@ -12,10 +12,9 @@ spec:
       - name: tags
         variable:
           Team: Kyverno
-      validate:
-        assert:
-          all:
-          - message: Bucket `{{ name }}` ({{ address }}) does not have the required tags {{ to_string($tags) }}
-            check:
-              values:
-                tags: ($tags)
+      assert:
+        all:
+        - message: Bucket `{{ name }}` ({{ address }}) does not have the required tags {{ to_string($tags) }}
+          check:
+            values:
+              tags: ($tags)

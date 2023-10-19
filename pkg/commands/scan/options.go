@@ -13,7 +13,6 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/policy"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
 	"github.com/spf13/cobra"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/labels"
 )
 
@@ -22,6 +21,7 @@ type options struct {
 	preprocessors []string
 	policies      []string
 	selectors     []string
+	identifier    string
 }
 
 func (c *options) run(cmd *cobra.Command, _ []string) error {
@@ -40,7 +40,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		selector = parsed
 	}
 	{
-		var filteredPolicies []*v1alpha1.Policy
+		var filteredPolicies []*v1alpha1.ValidationPolicy
 		for _, policy := range policies {
 			if selector.Matches(labels.Set(policy.Labels)) {
 				filteredPolicies = append(filteredPolicies, policy)
@@ -80,7 +80,15 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		Policies:  policies,
 	})
 	for _, response := range responses {
-		resourceName, _, _ := unstructured.NestedString(response.Resource.(map[string]interface{}), "address")
+		resourceName := "(unknown)"
+		if c.identifier != "" {
+			result, err := template.Execute(context.Background(), c.identifier, response.Resource, nil)
+			if err != nil {
+				resourceName = fmt.Sprintf("(error: %s)", err)
+			} else {
+				resourceName = fmt.Sprint(result)
+			}
+		}
 		if response.Failure != nil {
 			fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "ERROR:", response.Failure)
 		} else {

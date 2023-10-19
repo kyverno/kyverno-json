@@ -10,7 +10,7 @@ import (
 func TestCrds(t *testing.T) {
 	data := Crds()
 	{
-		file, err := fs.Stat(data, "crds/json.kyverno.io_policies.yaml")
+		file, err := fs.Stat(data, "crds/json.kyverno.io_validationpolicies.yaml")
 		assert.NoError(t, err)
 		assert.NotNil(t, file)
 		assert.False(t, file.IsDir())

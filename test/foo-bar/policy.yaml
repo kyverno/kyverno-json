@@ -1,13 +1,12 @@
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   name: test
 spec:
   rules:
     - name: foo-bar-4
-      validate:
-        assert:
-          all:
-          - check:
-              foo:
-                bar: 4
+      assert:
+        all:
+        - check:
+            foo:
+              bar: 4
