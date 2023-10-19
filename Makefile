@@ -247,27 +247,27 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
 
-.PHONY: codegen-schema-openapi
-codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
+.PHONY: codegen-schemas-openapi
+codegen-schemas-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 	@echo Generate openapi schema... >&2
 	@rm -rf ./.schemas
 	@mkdir -p ./.schemas/openapi/v2
 	@mkdir -p ./.schemas/openapi/v3/apis/json.kyverno.io
 	@$(KIND) create cluster --name schema --image $(KIND_IMAGE)
-	@kubectl create -f ./$(CRDS_PATH)
+	@kubectl create -f $(CRDS_PATH)
 	@sleep 15
 	@kubectl get --raw /openapi/v2 > ./.schemas/openapi/v2/schema.json
 	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./.schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
 	@$(KIND) delete cluster --name schema
 
-.PHONY: codegen-schema-json
-codegen-schema-json: codegen-schema-openapi ## Generate json schemas
+.PHONY: codegen-schemas-json
+codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
 	@$(PIP) install openapi2jsonschema
 	@rm -rf ./.schemas/json
 	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
 
-.PHONY: codegen-schema-all
-codegen-schema-all: codegen-schema-openapi codegen-schema-json ## Generate openapi and json schemas
+.PHONY: codegen-schemas
+codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openapi and json schemas
 
 .PHONY: codegen-helm-crds
 codegen-helm-crds: codegen-crds ## Generate helm CRDs
@@ -291,7 +291,7 @@ codegen-helm-docs: ## Generate helm docs
 	@docker run -v ${PWD}/charts:/work -w /work jnorwood/helm-docs:v1.11.0 -s file
 
 .PHONY: codegen
-codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schema-all codegen-helm-docs ## Rebuild all generated code and docs
+codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schemas codegen-helm-docs ## Rebuild all generated code and docs
 
 .PHONY: verify-codegen
 verify-codegen: codegen ## Verify all generated code and docs are up to date
