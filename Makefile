@@ -169,19 +169,19 @@ $(PACKAGE_SHIM): $(GOPATH_SHIM)
 codegen-client: $(PACKAGE_SHIM) $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) ## Generate client, informers and listers
 	@echo Generate clientset... >&2
 	@GOPATH=$(GOPATH_SHIM) $(CLIENT_GEN) \
-		--go-header-file ./hack/boilerplate.go.txt \
+		--go-header-file ./.hack/boilerplate.go.txt \
 		--clientset-name versioned \
 		--output-package $(CLIENTSET_PACKAGE) \
 		--input-base "" \
 		--input $(INPUT_DIRS)
 	@echo Generate listers... >&2
 	@GOPATH=$(GOPATH_SHIM) $(LISTER_GEN) \
-		--go-header-file ./hack/boilerplate.go.txt \
+		--go-header-file ./.hack/boilerplate.go.txt \
 		--output-package $(LISTERS_PACKAGE) \
 		--input-dirs $(INPUT_DIRS)
 	@echo Generate informers... >&2
 	@GOPATH=$(GOPATH_SHIM) $(INFORMER_GEN) \
-		--go-header-file ./hack/boilerplate.go.txt \
+		--go-header-file ./.hack/boilerplate.go.txt \
 		--output-package $(INFORMERS_PACKAGE) \
 		--input-dirs $(INPUT_DIRS) \
 		--versioned-clientset-package $(CLIENTSET_PACKAGE)/versioned \
@@ -191,14 +191,14 @@ codegen-client: $(PACKAGE_SHIM) $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) ## G
 codegen-register: $(PACKAGE_SHIM) $(REGISTER_GEN) ## Generate types registrations
 	@echo Generate registration... >&2
 	@GOPATH=$(GOPATH_SHIM) $(REGISTER_GEN) \
-		--go-header-file=./hack/boilerplate.go.txt \
+		--go-header-file=./.hack/boilerplate.go.txt \
 		--input-dirs=$(INPUT_DIRS)
 
 .PHONY: codegen-deepcopy
 codegen-deepcopy: $(PACKAGE_SHIM) $(DEEPCOPY_GEN) ## Generate deep copy functions
 	@echo Generate deep copy functions... >&2
 	@GOPATH=$(GOPATH_SHIM) $(DEEPCOPY_GEN) \
-		--go-header-file=./hack/boilerplate.go.txt \
+		--go-header-file=./.hack/boilerplate.go.txt \
 		--input-dirs=$(INPUT_DIRS) \
 		--output-file-base=zz_generated.deepcopy
 
@@ -227,12 +227,12 @@ codegen-cli-docs: $(CLI_BIN) ## Generate CLI docs
 codegen-jp-docs: ## Generate JP docs
 	@echo Generate jp docs... >&2
 	@rm -rf docs/user/jp && mkdir -p docs/user/jp
-	@go run ./hack/docs/jp/main.go > docs/user/jp/functions.md
+	@go run ./.hack/docs/jp/main.go > docs/user/jp/functions.md
 
 .PHONY: codegen-catalog
 codegen-catalog: ## Generate policy catalog
 	@echo Generate policy catalog... >&2
-	@go run ./hack/docs/catalog/main.go
+	@go run ./.hack/docs/catalog/main.go
 
 .PHONY: codegen-docs
 codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
