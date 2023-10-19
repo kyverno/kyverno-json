@@ -18,6 +18,8 @@ KO_REGISTRY                        := ko.local
 KO_PLATFORMS                       := all
 KO_TAGS                            := $(GIT_SHA)
 KO_CACHE                           ?= /tmp/ko-cache
+CLI_DIR                            := cmd/cli
+CLI_BIN                            := kyverno-json
 
 #########
 # TOOLS #
@@ -101,7 +103,6 @@ clean-tools: ## Remove installed tools
 # BUILD #
 #########
 
-CLI_BIN        := kyverno-json
 CGO_ENABLED    ?= 0
 ifdef VERSION
 LD_FLAGS       := "-s -w -X $(PACKAGE)/pkg/version.BuildVersion=$(VERSION)"
@@ -121,7 +122,7 @@ vet: ## Run go vet
 
 $(CLI_BIN): fmt vet
 	@echo Build cli binary... >&2
-	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) .
+	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
 
 .PHONY: build
 build: $(CLI_BIN) ## Build
@@ -140,7 +141,7 @@ serve-playground: $(CLI_BIN) ## Serve playground
 ko-build: $(KO) ## Build image (with ko)
 	@echo Build image with ko... >&2
 	@LDFLAGS=$(LD_FLAGS) KOCACHE=$(KO_CACHE) KO_DOCKER_REPO=$(KO_REGISTRY) \
-		$(KO) build . --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
+		$(KO) build ./$(CLI_DIR) --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
 
 ###########
 # CODEGEN #
@@ -327,14 +328,14 @@ kind-delete: $(KIND) ## Delete kind cluster
 .PHONY: kind-load
 kind-load: $(KIND) ko-build ## Build image and load in kind cluster
 	@echo Load image... >&2
-	@$(KIND) load docker-image --name $(KIND_NAME) $(KO_REGISTRY)/$(PACKAGE):$(GIT_SHA)
+	@$(KIND) load docker-image --name $(KIND_NAME) $(KO_REGISTRY)/$(PACKAGE)/$(CLI_DIR):$(GIT_SHA)
 
 .PHONY: kind-install
 kind-install: $(HELM) kind-load ## Build image, load it in kind cluster and deploy helm chart
 	@echo Install chart... >&2
 	@$(HELM) upgrade --install kyverno-json --namespace kyverno-json --create-namespace --wait ./charts/kyverno-json \
 		--set image.registry=$(KO_REGISTRY) \
-		--set image.repository=$(PACKAGE) \
+		--set image.repository=$(PACKAGE)/$(CLI_DIR) \
 		--set image.tag=$(GIT_SHA)
 
 ###########
