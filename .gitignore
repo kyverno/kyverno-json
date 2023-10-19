@@ -4,3 +4,4 @@
 /kyverno-json
 website/site
 website/playground/assets/main.wasm
+pkg/server/ui/dist/assets/main.wasm

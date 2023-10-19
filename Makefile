@@ -120,7 +120,7 @@ vet: ## Run go vet
 	@echo Go vet... >&2
 	@go vet ./...
 
-$(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client
+$(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client codegen-playground
 	@echo Build cli binary... >&2
 	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
 
@@ -273,7 +273,7 @@ codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openap
 .PHONY: codegen-playground
 codegen-playground: build-wasm ## Generate playground
 	@echo Generate playground... >&2
-	cp -r ./playground/* ./pkg/server/ui/dist
+	@cp -r ./website/playground/* ./pkg/server/ui/dist
 
 .PHONY: codegen-helm-crds
 codegen-helm-crds: codegen-crds ## Generate helm CRDs
