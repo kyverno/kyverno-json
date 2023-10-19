@@ -273,7 +273,8 @@ codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openap
 .PHONY: codegen-playground
 codegen-playground: build-wasm ## Generate playground
 	@echo Generate playground... >&2
-	@cp -r ./website/playground/* ./pkg/server/ui/dist
+	@rm -rf ./pkg/server/ui/dist && mkdir -p ./pkg/server/ui/dist && cp -r ./website/playground/* ./pkg/server/ui/dist
+	@rm -rf ./website/docs/_playground && mkdir -p ./website/docs/_playground && cp -r ./website/playground/* ./website/docs/_playground
 
 .PHONY: codegen-helm-crds
 codegen-helm-crds: codegen-crds ## Generate helm CRDs
