@@ -120,7 +120,7 @@ vet: ## Run go vet
 	@echo Go vet... >&2
 	@go vet ./...
 
-$(CLI_BIN): fmt vet
+$(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client
 	@echo Build cli binary... >&2
 	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
 
@@ -128,9 +128,9 @@ $(CLI_BIN): fmt vet
 build: $(CLI_BIN) ## Build
 
 .PHONY: build-wasm
-build-wasm: fmt vet ## Build the wasm binary
+build-wasm: fmt vet codegen-crds codegen-deepcopy codegen-register codegen-client ## Build the wasm binary
 	@echo Build wasm module... >&2
-	@GOOS=js GOARCH=wasm go build -o ./playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
+	@GOOS=js GOARCH=wasm go build -o ./website/playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
 
 .PHONY: serve-playground
 serve-playground: $(CLI_BIN) ## Serve playground
