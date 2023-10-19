@@ -1,4 +1,4 @@
-package scan
+package playground
 
 type Request struct {
 	Payload       string   `json:"payload"`

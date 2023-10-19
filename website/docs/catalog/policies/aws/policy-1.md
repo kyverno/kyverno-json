@@ -5,6 +5,10 @@ tags:
 ---
 # Policy 1
 
+## Description
+
+Policy 1
+
 ## Install
 
 ### In cluster
@@ -19,13 +23,10 @@ kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno-json/main/cat
 curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/aws/policy-1.yaml
 ```
 
-## Description
-
-Policy 1
-
 ## Manifest
 
-[Original policy](https://github.com/kyverno/kyverno-json/catalog/aws/policy-1.yaml)
+[Original policy](https://github.com/kyverno/kyverno-json/blob/main/catalog/aws/policy-1.yaml)
+[Raw](https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/aws/policy-1.yaml)
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
