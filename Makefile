@@ -150,7 +150,7 @@ ko-build: $(KO) ## Build image (with ko)
 GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
-CRDS_PATH                   := ${PWD}/config/crds
+CRDS_PATH                   := ${PWD}/.crds
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
 OUT_PACKAGE                 := $(PACKAGE)/pkg/client
 CLIENTSET_PACKAGE           := $(OUT_PACKAGE)/clientset
@@ -210,7 +210,7 @@ codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@$(CONTROLLER_GEN) crd paths=./pkg/apis/... crd:crdVersions=v1 output:dir=$(CRDS_PATH)
 	@echo Copy generated CRDs to embed in the CLI... >&2
 	@rm -rf pkg/data/crds && mkdir -p pkg/data/crds
-	@cp config/crds/* pkg/data/crds
+	@cp $(CRDS_PATH)/* pkg/data/crds
 
 .PHONY: codegen-api-docs
 codegen-api-docs: $(REFERENCE_DOCS) ## Generate API docs
@@ -255,7 +255,7 @@ codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 	@mkdir -p ./.schemas/openapi/v2
 	@mkdir -p ./.schemas/openapi/v3/apis/json.kyverno.io
 	@$(KIND) create cluster --name schema --image $(KIND_IMAGE)
-	@kubectl create -f ./config/crds
+	@kubectl create -f ./$(CRDS_PATH)
 	@sleep 15
 	@kubectl get --raw /openapi/v2 > ./.schemas/openapi/v2/schema.json
 	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./.schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
@@ -343,9 +343,9 @@ kind-install: $(HELM) kind-load ## Build image, load it in kind cluster and depl
 ###########
 
 .PHONY: install-crds
-install-crds: ## Install CRDs
+install-crds: codegen-crds ## Install CRDs
 	@echo Install CRDs... >&2
-	@kubectl create -f ./config/crds
+	@kubectl create -f ./$(CRDS_PATH)
 
 ########
 # HELP #
