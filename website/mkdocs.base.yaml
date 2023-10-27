@@ -74,8 +74,6 @@ plugins:
 - tags:
     enabled: true
     tags_file: catalog/index.md
-- blog:
-    post_url_format: "{slug}"
 
 markdown_extensions:
 - attr_list
