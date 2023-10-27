@@ -6,7 +6,7 @@ The current resource, policy and rule are always available using the following b
 
 | Binding | Usage |
 |---|---|
-| `$resource` | Current resource being analysed |
+| `$payload` | Current payload being analysed |
 | `$policy` | Current policy being executed |
 | `$rule` | Current rule being evaluated |
 
