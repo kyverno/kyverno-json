@@ -22,7 +22,7 @@ require (
 	gotest.tools v2.2.0+incompatible
 	k8s.io/apimachinery v0.28.3
 	k8s.io/client-go v0.28.3
-	sigs.k8s.io/kubectl-validate v0.0.0-20230927155409-3b3ca3ad91d0
+	sigs.k8s.io/kubectl-validate v0.0.2
 	sigs.k8s.io/yaml v1.4.0
 )
 
