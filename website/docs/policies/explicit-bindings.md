@@ -83,4 +83,4 @@ spec:
                 Team: ($expectedTeam)
 ```
 
-Finally, we can always access the current resource, policy and rule being evaluated using the builtin `$resource`, `$policy` and `$rule` bindings. No protection is made to prevent you from overriding those bindings though.
+Finally, we can always access the current payload, policy and rule being evaluated using the builtin `$payload`, `$policy` and `$rule` bindings. No protection is made to prevent you from overriding those bindings though.

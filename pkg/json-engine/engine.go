@@ -37,7 +37,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 		var requests []request
 		bindings := jpbinding.NewBindings()
 		for _, resource := range r.Resources {
-			bindings = bindings.Register("$resource", jpbinding.NewBinding(resource))
+			bindings = bindings.Register("$payload", jpbinding.NewBinding(resource))
 			for _, policy := range r.Policies {
 				bindings = bindings.Register("$policy", jpbinding.NewBinding(policy))
 				for _, rule := range policy.Spec.Rules {
