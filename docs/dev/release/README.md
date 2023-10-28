@@ -18,8 +18,8 @@ git push origin $TAG
 
 ## Release notes
 
-Release notes for the `main` branch lives in [main.md](../../release-notes/main.md).
+Release notes for the `main` branch lives in [main.md](../../.release-notes/main.md).
 
 Make sure it is up to date and rename the file to the version being released.
 
-You can then copy [_template.md](../../release-notes/_template.md) to [main.md](../../release-notes/main.md) for the next release.
+You can then copy [_template.md](../../.release-notes/_template.md) to [main.md](../../.release-notes/main.md) for the next release.
