@@ -220,19 +220,19 @@ codegen-api-docs: $(REFERENCE_DOCS) ## Generate API docs
 .PHONY: codegen-cli-docs
 codegen-cli-docs: $(CLI_BIN) ## Generate CLI docs
 	@echo Generate cli docs... >&2
-	@rm -rf docs/user/commands && mkdir -p docs/user/commands
-	@./kyverno-json docs -o docs/user/commands --autogenTag=false
+	@rm -rf ./website/docs/commands && mkdir -p ./website/docs/commands
+	@./kyverno-json docs -o ./website/docs/commands --autogenTag=false
 
 .PHONY: codegen-jp-docs
 codegen-jp-docs: ## Generate JP docs
 	@echo Generate jp docs... >&2
-	@rm -rf docs/user/jp && mkdir -p docs/user/jp
-	@go run ./.hack/docs/jp/main.go > docs/user/jp/functions.md
+	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp
+	@go run ./website/jp/main.go > ./website/docs/jp/functions.md
 
 .PHONY: codegen-catalog
 codegen-catalog: ## Generate policy catalog
 	@echo Generate policy catalog... >&2
-	@go run ./.hack/docs/catalog/main.go
+	@go run ./website/catalog/main.go
 
 .PHONY: codegen-docs
 codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
@@ -243,8 +243,6 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@pip install mkdocs
 	@pip install --upgrade pip
 	@pip install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin
-	@rm -rf ./website/docs/commands && mkdir -p ./website/docs/commands && cp docs/user/commands/* ./website/docs/commands
-	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
 
 .PHONY: codegen-schemas-openapi
