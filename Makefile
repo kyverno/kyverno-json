@@ -130,7 +130,7 @@ build: $(CLI_BIN) ## Build
 .PHONY: build-wasm
 build-wasm: fmt vet codegen-crds codegen-deepcopy codegen-register codegen-client ## Build the wasm binary
 	@echo Build wasm module... >&2
-	@GOOS=js GOARCH=wasm go build -o ./website/playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
+	@GOOS=js GOARCH=wasm go build -o ./website/playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./wasm/main.go
 
 .PHONY: serve-playground
 serve-playground: $(CLI_BIN) ## Serve playground
