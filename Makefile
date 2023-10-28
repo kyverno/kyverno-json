@@ -129,7 +129,7 @@ build: $(CLI_BIN) ## Build
 .PHONY: build-wasm
 build-wasm: fmt vet codegen-crds codegen-deepcopy codegen-register codegen-client ## Build the wasm binary
 	@echo Build wasm module... >&2
-	@GOOS=js GOARCH=wasm go build -o ./website/playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
+	@GOOS=js GOARCH=wasm go build -o ./website/playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./wasm/main.go
 
 .PHONY: serve-playground
 serve-playground: $(CLI_BIN) ## Serve playground
@@ -140,7 +140,7 @@ serve-playground: $(CLI_BIN) ## Serve playground
 ko-build: $(KO) ## Build image (with ko)
 	@echo Build image with ko... >&2
 	@LDFLAGS=$(LD_FLAGS) KOCACHE=$(KO_CACHE) KO_DOCKER_REPO=$(KO_REGISTRY) \
-		$(KO) build ./$(CLI_DIR) --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
+		$(KO) build . --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
 
 ###########
 # CODEGEN #
@@ -333,14 +333,14 @@ kind-delete: $(KIND) ## Delete kind cluster
 .PHONY: kind-load
 kind-load: $(KIND) ko-build ## Build image and load in kind cluster
 	@echo Load image... >&2
-	@$(KIND) load docker-image --name $(KIND_NAME) $(KO_REGISTRY)/$(PACKAGE)/$(CLI_DIR):$(GIT_SHA)
+	@$(KIND) load docker-image --name $(KIND_NAME) $(KO_REGISTRY)/$(PACKAGE):$(GIT_SHA)
 
 .PHONY: kind-install
 kind-install: $(HELM) kind-load ## Build image, load it in kind cluster and deploy helm chart
 	@echo Install chart... >&2
 	@$(HELM) upgrade --install kyverno-json --namespace kyverno-json --create-namespace --wait ./charts/kyverno-json \
 		--set image.registry=$(KO_REGISTRY) \
-		--set image.repository=$(PACKAGE)/$(CLI_DIR) \
+		--set image.repository=$(PACKAGE) \
 		--set image.tag=$(GIT_SHA)
 
 ###########
