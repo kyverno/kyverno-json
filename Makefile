@@ -18,7 +18,6 @@ KO_REGISTRY                        := ko.local
 KO_PLATFORMS                       := all
 KO_TAGS                            := $(GIT_SHA)
 KO_CACHE                           ?= /tmp/ko-cache
-CLI_DIR                            := cmd/cli
 CLI_BIN                            := kyverno-json
 
 #########
@@ -122,7 +121,7 @@ vet: ## Run go vet
 
 $(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client codegen-playground
 	@echo Build cli binary... >&2
-	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) ./$(CLI_DIR)
+	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) .
 
 .PHONY: build
 build: $(CLI_BIN) ## Build
