@@ -1,5 +1,5 @@
 {
-  "description": "ValidationPolicyList is a list of ValidationPolicy",
+  "description": "ValidatingPolicyList is a list of ValidatingPolicy",
   "type": "object",
   "required": [
     "items"
@@ -16,13 +16,13 @@
       ]
     },
     "items": {
-      "description": "List of validationpolicies. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md",
+      "description": "List of validatingpolicies. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md",
       "type": [
         "array",
         "null"
       ],
       "items": {
-        "description": "ValidationPolicy is the resource that contains the policy definition.",
+        "description": "ValidatingPolicy is the resource that contains the policy definition.",
         "type": [
           "object",
           "null"
@@ -48,7 +48,7 @@
               "null"
             ],
             "enum": [
-              "ValidationPolicy"
+              "ValidatingPolicy"
             ]
           },
           "metadata": {
@@ -480,7 +480,7 @@
         "x-kubernetes-group-version-kind": [
           {
             "group": "json.kyverno.io",
-            "kind": "ValidationPolicy",
+            "kind": "ValidatingPolicy",
             "version": "v1alpha1"
           }
         ]
@@ -493,7 +493,7 @@
         "null"
       ],
       "enum": [
-        "ValidationPolicyList"
+        "ValidatingPolicyList"
       ]
     },
     "metadata": {
@@ -538,7 +538,7 @@
   "x-kubernetes-group-version-kind": [
     {
       "group": "json.kyverno.io",
-      "kind": "ValidationPolicyList",
+      "kind": "ValidatingPolicyList",
       "version": "v1alpha1"
     }
   ],

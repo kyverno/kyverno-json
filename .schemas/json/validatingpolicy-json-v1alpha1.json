@@ -1,5 +1,5 @@
 {
-  "description": "ValidationPolicy is the resource that contains the policy definition.",
+  "description": "ValidatingPolicy is the resource that contains the policy definition.",
   "type": "object",
   "required": [
     "spec"
@@ -22,7 +22,7 @@
         "null"
       ],
       "enum": [
-        "ValidationPolicy"
+        "ValidatingPolicy"
       ]
     },
     "metadata": {
@@ -457,7 +457,7 @@
   "x-kubernetes-group-version-kind": [
     {
       "group": "json.kyverno.io",
-      "kind": "ValidationPolicy",
+      "kind": "ValidatingPolicy",
       "version": "v1alpha1"
     }
   ],

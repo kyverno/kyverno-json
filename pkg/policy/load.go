@@ -18,7 +18,7 @@ import (
 
 var (
 	gv_v1alpha1               = schema.GroupVersion{Group: "json.kyverno.io", Version: "v1alpha1"}
-	validationPolicy_v1alpha1 = gv_v1alpha1.WithKind("ValidationPolicy")
+	validationPolicy_v1alpha1 = gv_v1alpha1.WithKind("ValidatingPolicy")
 )
 
 func Load(path ...string) ([]*v1alpha1.ValidatingPolicy, error) {
