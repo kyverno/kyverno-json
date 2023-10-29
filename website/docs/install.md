@@ -12,31 +12,27 @@ go install github.com/kyverno/kyverno-json@latest
 
 ## Manually
 
-```
 Download the pre-compiled binaries from the [releases page](https://github.com/kyverno/kyverno-json/releases) and copy them to the desired location.
-```
 
-## Compile from sources
+## Build from the source code
 
-**clone:**
+**clone the repository:**
 
 ```bash
 git clone github.com/kyverno/kyverno-json
 ```
 
-**get the dependencies:**
+**build the binaries:**
 
 ```bash
-go mod tidy
+cd kyverno-json
 ```
-
-**build:**
 
 ```bash
 make build
 ```
 
-**verify it works:**
+**verify the build:**
 
 ```bash
 ./kyverno-json version

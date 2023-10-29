@@ -79,6 +79,19 @@ func Test_Execute(t *testing.T) {
 		policies: []string{"../../../test/dockerfile/policy.yaml"},
 		out:      "../../../test/dockerfile/out.txt",
 		wantErr:  false,
+	}, {
+		name:     "tf-s3",
+		payload:  "../../../test/tf-s3/payload.json",
+		policies: []string{"../../../test/tf-s3/policy.yaml"},
+		out:      "../../../test/tf-s3/out.txt",
+		wantErr:  false,
+	}, {
+		name:          "tf-ec2",
+		payload:       "../../../test/tf-ec2/payload.json",
+		preprocessors: []string{"planned_values.root_module.resources"},
+		policies:      []string{"../../../test/tf-ec2/policy.yaml"},
+		out:           "../../../test/tf-ec2/out.txt",
+		wantErr:       false,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

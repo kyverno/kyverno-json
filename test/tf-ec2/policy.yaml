@@ -1,0 +1,16 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidationPolicy
+metadata:
+  name: required-ec2-tags
+spec:
+  rules:
+    - name: require-team-tag
+      match:
+        any:
+        - type: aws_instance
+      assert:
+        all:
+        - check:
+            values:
+              tags:
+                (contains('@', Team)): false
