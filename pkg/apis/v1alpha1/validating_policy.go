@@ -24,7 +24,7 @@ type ValidatingPolicy struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// ValidatingPolicyList is a list of Policy instances.
+// ValidatingPolicyList is a list of ValidatingPolicy instances.
 type ValidatingPolicyList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata" yaml:"metadata"`

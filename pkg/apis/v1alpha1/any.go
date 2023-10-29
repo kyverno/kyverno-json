@@ -6,10 +6,13 @@ import (
 	"github.com/jinzhu/copier"
 )
 
+// Any can be any type.
 // +k8s:deepcopy-gen=false
 type Any struct {
+	// Value contains the value of the Any object.
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
+	// +optional
 	Value interface{} `json:",inline"`
 }
 

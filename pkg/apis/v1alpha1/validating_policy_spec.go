@@ -1,6 +1,7 @@
 package v1alpha1
 
+// ValidatingPolicySpec contains the policy spec.
 type ValidatingPolicySpec struct {
-	// Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.
-	Rules []ValidatingRule `json:"rules,omitempty"`
+	// Rules is a list of ValidatingRule instances.
+	Rules []ValidatingRule `json:"rules"`
 }
