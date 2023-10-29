@@ -30,7 +30,7 @@ curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/aws/
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidatingPolicy
+kind: ValidationPolicy
 metadata:
   annotations:
     description.policy.kyverno.io: Policy 1
