@@ -28,7 +28,7 @@ import (
 
 type JsonV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	ValidationPoliciesGetter
+	ValidatingPoliciesGetter
 }
 
 // JsonV1alpha1Client is used to interact with features provided by the json.kyverno.io group.
@@ -36,8 +36,8 @@ type JsonV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *JsonV1alpha1Client) ValidationPolicies() ValidationPolicyInterface {
-	return newValidationPolicies(c)
+func (c *JsonV1alpha1Client) ValidatingPolicies() ValidatingPolicyInterface {
+	return newValidatingPolicies(c)
 }
 
 // NewForConfig creates a new JsonV1alpha1Client for the given config.

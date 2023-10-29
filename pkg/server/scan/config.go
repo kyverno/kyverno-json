@@ -5,5 +5,5 @@ import (
 )
 
 type PolicyProvider interface {
-	Get() ([]v1alpha1.ValidationPolicy, error)
+	Get() ([]v1alpha1.ValidatingPolicy, error)
 }

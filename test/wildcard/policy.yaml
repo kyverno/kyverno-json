@@ -1,5 +1,5 @@
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   name: required-s3-tags
 spec:

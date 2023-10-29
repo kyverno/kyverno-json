@@ -16458,8 +16458,8 @@
         }
       }
     },
-    "io.kyverno.json.v1alpha1.ValidationPolicy": {
-      "description": "ValidationPolicy is the resource that contains the policy definition.",
+    "io.kyverno.json.v1alpha1.ValidatingPolicy": {
+      "description": "ValidatingPolicy is the resource that contains the policy definition.",
       "type": "object",
       "required": [
         "spec"
@@ -16476,7 +16476,7 @@
           "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
           "type": "string",
           "enum": [
-            "ValidationPolicy"
+            "ValidatingPolicy"
           ]
         },
         "metadata": {
@@ -16617,13 +16617,13 @@
       "x-kubernetes-group-version-kind": [
         {
           "group": "json.kyverno.io",
-          "kind": "ValidationPolicy",
+          "kind": "ValidatingPolicy",
           "version": "v1alpha1"
         }
       ]
     },
-    "io.kyverno.json.v1alpha1.ValidationPolicyList": {
-      "description": "ValidationPolicyList is a list of ValidationPolicy",
+    "io.kyverno.json.v1alpha1.ValidatingPolicyList": {
+      "description": "ValidatingPolicyList is a list of ValidatingPolicy",
       "type": "object",
       "required": [
         "items"
@@ -16637,17 +16637,17 @@
           ]
         },
         "items": {
-          "description": "List of validationpolicies. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md",
+          "description": "List of validatingpolicies. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/io.kyverno.json.v1alpha1.ValidationPolicy"
+            "$ref": "#/definitions/io.kyverno.json.v1alpha1.ValidatingPolicy"
           }
         },
         "kind": {
           "description": "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds",
           "type": "string",
           "enum": [
-            "ValidationPolicyList"
+            "ValidatingPolicyList"
           ]
         },
         "metadata": {
@@ -16658,7 +16658,7 @@
       "x-kubernetes-group-version-kind": [
         {
           "group": "json.kyverno.io",
-          "kind": "ValidationPolicyList",
+          "kind": "ValidatingPolicyList",
           "version": "v1alpha1"
         }
       ]

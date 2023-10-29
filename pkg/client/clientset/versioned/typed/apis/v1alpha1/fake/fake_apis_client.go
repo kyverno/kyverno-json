@@ -28,8 +28,8 @@ type FakeJsonV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeJsonV1alpha1) ValidationPolicies() v1alpha1.ValidationPolicyInterface {
-	return &FakeValidationPolicies{c}
+func (c *FakeJsonV1alpha1) ValidatingPolicies() v1alpha1.ValidatingPolicyInterface {
+	return &FakeValidatingPolicies{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

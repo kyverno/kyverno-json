@@ -15,12 +15,12 @@ import (
 
 type JsonEngineRequest struct {
 	Resources []interface{}
-	Policies  []*v1alpha1.ValidationPolicy
+	Policies  []*v1alpha1.ValidatingPolicy
 }
 
 type JsonEngineResponse struct {
-	Policy   *v1alpha1.ValidationPolicy
-	Rule     v1alpha1.ValidationRule
+	Policy   *v1alpha1.ValidatingPolicy
+	Rule     v1alpha1.ValidatingRule
 	Resource interface{}
 	Failure  error
 	Error    error
@@ -28,8 +28,8 @@ type JsonEngineResponse struct {
 
 func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	type request struct {
-		policy   *v1alpha1.ValidationPolicy
-		rule     v1alpha1.ValidationRule
+		policy   *v1alpha1.ValidatingPolicy
+		rule     v1alpha1.ValidatingRule
 		value    interface{}
 		bindings binding.Bindings
 	}
