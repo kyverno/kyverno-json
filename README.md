@@ -315,9 +315,10 @@ spec:
 
 Finally, we can always access the current payload, policy and rule being evaluated using the builtin `$payload`, `$policy` and `$rule` bindings. No protection is made to prevent you from overriding those bindings though.
 
-#### Escaping projection
+#### Escaping projections
 
 It can be necessary to prevent a projection under certain circumstances.
+
 Consider the following document:
 
 ```yaml

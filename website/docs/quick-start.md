@@ -1,10 +1,83 @@
-# Quick start
+# Quick Start
 
 In this example we will create a YAML payload and policy and use `kyverno-json` to run analysis.
 
-## Create a YAML payload
+## Validate a Terraform Plan
+
+In this example we will use a Kyverno policy to validate a Terraform plan:
+
+### Create the Terraform Plan JSON
+
+Here is a Terraform plan that creates an AWS S3 bucket:
+
+```terraform
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+
+  required_version = ">= 1.2.0"
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_s3_bucket" "example" {
+  bucket = "my-tf-test-bucket"
+
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
+```
+
+You can convert this to JSON using the following commands:
+
+*output the plan:*
+```sh
+terraform plan -out tfplan.binary
+```
+*convert to JSON:*
+```sh
+terraform show -json tfplan.binary | jq > bucket.tf.json
+```
+
+### Create a policy to check for required labels
+
+```yaml
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidationPolicy
+metadata:
+  name: s3
+spec:
+  rules:
+    - name: check-tags
+      assert:
+        all:
+        - check:
+            planned_values:
+              root_module:
+                ~.resources:
+                  values:
+                    (keys(tags_all)):
+                      (contains(@, 'Environment')): true
+                      (contains(@, 'Name')): true
+                      (contains(@, 'Team')): true
+```
+
+The plan shown above will fail as it does not contain the `Team` tag.
+
+
+## Validate a Kubernetes Resource
 
 For this example we will use a [Kubernetes](https://kubernetes.io) `Pod` payload.
+
+### Create a Pod configuration
 
 Create a `payload.yaml` file and paste the content below:
 
@@ -28,13 +101,13 @@ Now, using the `latest` tag of an image is considered a bad practice.
 
 In the next part of this example we will write a policy to detect such cases.
 
-## Create a policy to block `latest` images
+### Create a policy to block `latest` images
 
 Create a `policy.yaml` file and paste the content below:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidationPolicy
 metadata:
   name: pod-policy
 spec:
@@ -62,13 +135,17 @@ spec:
 
 This policy iterates over pod containers, checking that the container image has a tag specified and that the tag being used is not `latest`.
 
-## Run `kyverno-json` scan
+### Run `kyverno-json` scan
 
 With the payload and policy above, we can invoke `kyverno-json` with the command below:
 
 ```bash
 kyverno-json scan --payload payload.yaml --policy policy.yaml
+```
 
+This will produce the output:
+
+```bash
 Loading policies ...
 Loading payload ...
 Pre processing ...
