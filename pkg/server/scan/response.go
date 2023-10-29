@@ -10,8 +10,8 @@ type Response struct {
 }
 
 type Result struct {
-	Policy   *v1alpha1.ValidationPolicy `json:"policy"`
-	Rule     v1alpha1.ValidationRule    `json:"rule"`
+	Policy   *v1alpha1.ValidatingPolicy `json:"policy"`
+	Rule     v1alpha1.ValidatingRule    `json:"rule"`
 	Resource interface{}                `json:"resource"`
 	Failure  error                      `json:"failure"`
 	Error    error                      `json:"error"`

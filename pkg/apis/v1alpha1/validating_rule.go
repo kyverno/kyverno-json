@@ -1,6 +1,6 @@
 package v1alpha1
 
-type ValidationRule struct {
+type ValidatingRule struct {
 	// Name is a label to identify the rule, It must be unique within the policy.
 	// +kubebuilder:validation:MaxLength=63
 	Name string `json:"name"`

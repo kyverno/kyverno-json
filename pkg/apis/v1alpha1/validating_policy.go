@@ -10,8 +10,8 @@ import (
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:scope=Cluster
 
-// ValidationPolicy is the resource that contains the policy definition.
-type ValidationPolicy struct {
+// ValidatingPolicy is the resource that contains the policy definition.
+type ValidatingPolicy struct {
 	metav1.TypeMeta `json:",inline"`
 
 	// Standard object's metadata.
@@ -19,14 +19,14 @@ type ValidationPolicy struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// Policy spec.
-	Spec PolicySpec `json:"spec"`
+	Spec ValidatingPolicySpec `json:"spec"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// ValidationPolicyList is a list of Policy instances.
-type ValidationPolicyList struct {
+// ValidatingPolicyList is a list of Policy instances.
+type ValidatingPolicyList struct {
 	metav1.TypeMeta `json:",inline" yaml:",inline"`
 	metav1.ListMeta `json:"metadata" yaml:"metadata"`
-	Items           []ValidationPolicy `json:"items" yaml:"items"`
+	Items           []ValidatingPolicy `json:"items" yaml:"items"`
 }

@@ -40,7 +40,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		selector = parsed
 	}
 	{
-		var filteredPolicies []*v1alpha1.ValidationPolicy
+		var filteredPolicies []*v1alpha1.ValidatingPolicy
 		for _, policy := range policies {
 			if selector.Matches(labels.Set(policy.Labels)) {
 				filteredPolicies = append(filteredPolicies, policy)

@@ -50,7 +50,7 @@ func newHandler() (gin.HandlerFunc, error) {
 			resources = append(resources, payload)
 		}
 		// load policy
-		var policy v1alpha1.ValidationPolicy
+		var policy v1alpha1.ValidatingPolicy
 		if err := yaml.Unmarshal([]byte(in.Policy), &policy); err != nil {
 			return nil, fmt.Errorf("failed to parse policies (%w)", err)
 		}
@@ -58,7 +58,7 @@ func newHandler() (gin.HandlerFunc, error) {
 		e := jsonengine.New()
 		results := e.Run(context.Background(), jsonengine.JsonEngineRequest{
 			Resources: resources,
-			Policies:  []*v1alpha1.ValidationPolicy{&policy},
+			Policies:  []*v1alpha1.ValidatingPolicy{&policy},
 		})
 		return makeResponse(results...), nil
 	}, http.StatusOK), nil

@@ -25,44 +25,44 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-// ValidationPolicyLister helps list ValidationPolicies.
+// ValidatingPolicyLister helps list ValidatingPolicies.
 // All objects returned here must be treated as read-only.
-type ValidationPolicyLister interface {
-	// List lists all ValidationPolicies in the indexer.
+type ValidatingPolicyLister interface {
+	// List lists all ValidatingPolicies in the indexer.
 	// Objects returned here must be treated as read-only.
-	List(selector labels.Selector) (ret []*v1alpha1.ValidationPolicy, err error)
-	// Get retrieves the ValidationPolicy from the index for a given name.
+	List(selector labels.Selector) (ret []*v1alpha1.ValidatingPolicy, err error)
+	// Get retrieves the ValidatingPolicy from the index for a given name.
 	// Objects returned here must be treated as read-only.
-	Get(name string) (*v1alpha1.ValidationPolicy, error)
-	ValidationPolicyListerExpansion
+	Get(name string) (*v1alpha1.ValidatingPolicy, error)
+	ValidatingPolicyListerExpansion
 }
 
-// validationPolicyLister implements the ValidationPolicyLister interface.
-type validationPolicyLister struct {
+// validatingPolicyLister implements the ValidatingPolicyLister interface.
+type validatingPolicyLister struct {
 	indexer cache.Indexer
 }
 
-// NewValidationPolicyLister returns a new ValidationPolicyLister.
-func NewValidationPolicyLister(indexer cache.Indexer) ValidationPolicyLister {
-	return &validationPolicyLister{indexer: indexer}
+// NewValidatingPolicyLister returns a new ValidatingPolicyLister.
+func NewValidatingPolicyLister(indexer cache.Indexer) ValidatingPolicyLister {
+	return &validatingPolicyLister{indexer: indexer}
 }
 
-// List lists all ValidationPolicies in the indexer.
-func (s *validationPolicyLister) List(selector labels.Selector) (ret []*v1alpha1.ValidationPolicy, err error) {
+// List lists all ValidatingPolicies in the indexer.
+func (s *validatingPolicyLister) List(selector labels.Selector) (ret []*v1alpha1.ValidatingPolicy, err error) {
 	err = cache.ListAll(s.indexer, selector, func(m interface{}) {
-		ret = append(ret, m.(*v1alpha1.ValidationPolicy))
+		ret = append(ret, m.(*v1alpha1.ValidatingPolicy))
 	})
 	return ret, err
 }
 
-// Get retrieves the ValidationPolicy from the index for a given name.
-func (s *validationPolicyLister) Get(name string) (*v1alpha1.ValidationPolicy, error) {
+// Get retrieves the ValidatingPolicy from the index for a given name.
+func (s *validatingPolicyLister) Get(name string) (*v1alpha1.ValidatingPolicy, error) {
 	obj, exists, err := s.indexer.GetByKey(name)
 	if err != nil {
 		return nil, err
 	}
 	if !exists {
-		return nil, errors.NewNotFound(v1alpha1.Resource("validationpolicy"), name)
+		return nil, errors.NewNotFound(v1alpha1.Resource("validatingpolicy"), name)
 	}
-	return obj.(*v1alpha1.ValidationPolicy), nil
+	return obj.(*v1alpha1.ValidatingPolicy), nil
 }
