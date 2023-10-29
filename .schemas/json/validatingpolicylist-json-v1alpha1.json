@@ -298,36 +298,36 @@
           "spec": {
             "description": "Policy spec.",
             "type": "object",
+            "required": [
+              "rules"
+            ],
             "properties": {
               "rules": {
-                "description": "Rules is a list of Rule instances. A Policy contains multiple rules and each rule can validate, mutate, or generate resources.",
-                "type": [
-                  "array",
-                  "null"
-                ],
+                "description": "Rules is a list of ValidatingRule instances.",
+                "type": "array",
                 "items": {
+                  "description": "ValidatingRule defines a validating rule.",
                   "type": [
                     "object",
                     "null"
                   ],
                   "required": [
+                    "assert",
                     "name"
                   ],
                   "properties": {
                     "assert": {
                       "description": "Assert is used to validate matching resources.",
-                      "type": [
-                        "object",
-                        "null"
-                      ],
+                      "type": "object",
                       "properties": {
                         "all": {
-                          "description": "All allows specifying resources which will be ANDed.",
+                          "description": "All allows specifying assertions which will be ANDed.",
                           "type": [
                             "array",
                             "null"
                           ],
                           "items": {
+                            "description": "Assertion contains an assertion tree associated with a message.",
                             "type": [
                               "object",
                               "null"
@@ -341,7 +341,7 @@
                                 "x-kubernetes-preserve-unknown-fields": true
                               },
                               "message": {
-                                "description": "Message is the variable associated message.",
+                                "description": "Message is the message associated message.",
                                 "type": [
                                   "string",
                                   "null"
@@ -351,12 +351,13 @@
                           }
                         },
                         "any": {
-                          "description": "Any allows specifying resources which will be ORed.",
+                          "description": "Any allows specifying assertions which will be ORed.",
                           "type": [
                             "array",
                             "null"
                           ],
                           "items": {
+                            "description": "Assertion contains an assertion tree associated with a message.",
                             "type": [
                               "object",
                               "null"
@@ -370,7 +371,7 @@
                                 "x-kubernetes-preserve-unknown-fields": true
                               },
                               "message": {
-                                "description": "Message is the variable associated message.",
+                                "description": "Message is the message associated message.",
                                 "type": [
                                   "string",
                                   "null"
@@ -388,7 +389,7 @@
                         "null"
                       ],
                       "items": {
-                        "description": "ContextEntry adds variables and data sources to a rule Context.",
+                        "description": "ContextEntry adds variables and data sources to a rule context.",
                         "type": [
                           "object",
                           "null"
@@ -398,69 +399,73 @@
                         ],
                         "properties": {
                           "name": {
-                            "description": "Name is the variable name.",
+                            "description": "Name is the entry name.",
                             "type": "string"
                           },
                           "variable": {
-                            "description": "Variable defines an arbitrary JMESPath context variable that can be defined inline.",
+                            "description": "Variable defines an arbitrary variable.",
                             "x-kubernetes-preserve-unknown-fields": true
                           }
                         }
                       }
                     },
                     "exclude": {
-                      "description": "Exclude defines when this policy rule should not be applied. The exclude criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the name or role.",
+                      "description": "Exclude defines when this policy rule should not be applied.",
                       "type": [
                         "object",
                         "null"
                       ],
                       "properties": {
                         "all": {
-                          "description": "All allows specifying resources which will be ANDed.",
+                          "description": "All allows specifying assertion trees which will be ANDed.",
                           "type": [
                             "array",
                             "null"
                           ],
                           "items": {
+                            "description": "Any can be any type.",
                             "x-kubernetes-preserve-unknown-fields": true
                           }
                         },
                         "any": {
-                          "description": "Any allows specifying resources which will be ORed.",
+                          "description": "Any allows specifying assertion trees which will be ORed.",
                           "type": [
                             "array",
                             "null"
                           ],
                           "items": {
+                            "description": "Any can be any type.",
                             "x-kubernetes-preserve-unknown-fields": true
                           }
                         }
                       }
                     },
                     "match": {
-                      "description": "Match defines when this policy rule should be applied. The match criteria can include resource information (e.g. kind, name, namespace, labels) and admission review request information like the user name or role. At least one kind is required.",
+                      "description": "Match defines when this policy rule should be applied.",
                       "type": [
                         "object",
                         "null"
                       ],
                       "properties": {
                         "all": {
-                          "description": "All allows specifying resources which will be ANDed.",
+                          "description": "All allows specifying assertion trees which will be ANDed.",
                           "type": [
                             "array",
                             "null"
                           ],
                           "items": {
+                            "description": "Any can be any type.",
                             "x-kubernetes-preserve-unknown-fields": true
                           }
                         },
                         "any": {
-                          "description": "Any allows specifying resources which will be ORed.",
+                          "description": "Any allows specifying assertion trees which will be ORed.",
                           "type": [
                             "array",
                             "null"
                           ],
                           "items": {
+                            "description": "Any can be any type.",
                             "x-kubernetes-preserve-unknown-fields": true
                           }
                         }
