@@ -8,9 +8,9 @@ import (
 
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/data"
-	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/convert"
 	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/resource/loader"
 	fileinfo "github.com/kyverno/kyverno/ext/file-info"
+	"github.com/kyverno/kyverno/ext/resource/convert"
 	yamlutils "github.com/kyverno/kyverno/ext/yaml"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/kubectl-validate/pkg/openapiclient"
