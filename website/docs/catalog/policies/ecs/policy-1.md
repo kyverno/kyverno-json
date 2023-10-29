@@ -26,7 +26,7 @@ curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/ecs/
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   creationTimestamp: null
   name: test

@@ -19,7 +19,7 @@ This policy checks that a pod does not use the default service account:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   name: assert-sample
 spec:
@@ -52,7 +52,7 @@ It is possible to write a validation rule like this:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -185,7 +185,7 @@ As a consequence, the policy below will evaluate to true:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -224,7 +224,7 @@ To workaround this situation, you can escape a projection by surrounding it with
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:

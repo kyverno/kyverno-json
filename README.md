@@ -28,7 +28,7 @@ Policies for this tool belong to the `json.kyverno.io` group, exist only in `v1a
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -53,7 +53,7 @@ This tool uses [assertion trees](#assertion-trees-replace-pattern-matching) to i
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: required-s3-tags
 spec:
@@ -83,7 +83,7 @@ This implementation supports the `let` feature and this tool leverages it to imp
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: required-s3-tags
 spec:
@@ -139,7 +139,7 @@ It is now possible to write a validation tree like this:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -186,7 +186,7 @@ The policy below does not use the `~` modifier and `foo.bar` array is compared a
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -208,7 +208,7 @@ The policy below ensures that all elements in the input array are `< 5`:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -246,7 +246,7 @@ The following policy will compute a sum and bind the result to the `sum` binding
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -270,7 +270,7 @@ As a consequence, the policy below is perfectly valid:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:
@@ -290,7 +290,7 @@ Note that all context entries are made available to the rule via bindings:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: required-s3-tags
 spec:
@@ -335,7 +335,7 @@ To workaround this issue, you can escape a projection by surrounding it with `\`
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:

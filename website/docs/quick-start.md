@@ -52,7 +52,7 @@ Create a `policy.yaml` file and paste the content below that checks for required
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   name: s3
 spec:
@@ -122,7 +122,7 @@ Create a `policy.yaml` file and paste the content below to block `latest` images
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   name: pod-policy
 spec:
