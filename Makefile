@@ -220,8 +220,8 @@ codegen-api-docs: $(REFERENCE_DOCS) ## Generate API docs
 .PHONY: codegen-cli-docs
 codegen-cli-docs: $(CLI_BIN) ## Generate CLI docs
 	@echo Generate cli docs... >&2
-	@rm -rf ./website/docs/commands && mkdir -p ./website/docs/commands
-	@./kyverno-json docs -o ./website/docs/commands --autogenTag=false
+	@rm -rf ./website/docs/cli/commands && mkdir -p ./website/docs/cli/commands
+	@./kyverno-json docs -o ./website/docs/cli/commands --autogenTag=false
 
 .PHONY: codegen-jp-docs
 codegen-jp-docs: ## Generate JP docs
