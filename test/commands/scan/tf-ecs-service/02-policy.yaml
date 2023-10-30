@@ -1,0 +1,20 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: ecs-public-ip
+spec:
+  rules:
+    - name: ecs-public-ip
+      match:
+        any:
+        - type: aws_ecs_service
+      context:
+      - name: allowed-values
+        variable: [false]
+      assert:
+        all:
+        - message: "ECS services should not have public IP addresses assigned to them automatically"
+          check:
+            values:
+              ~.network_configuration:
+                (contains('$allowed-values', @.assign_public_ip)): false
