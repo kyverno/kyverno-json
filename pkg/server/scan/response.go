@@ -52,7 +52,7 @@ func makeResponse(responses ...jsonengine.JsonEngineResponse) (*Response, int) {
 	if failCount > 0 {
 		httpStatus = http.StatusForbidden
 	} else if errorCount > 0 {
-		httpStatus = http.StatusInternalServerError
+		httpStatus = http.StatusNotAcceptable
 	}
 
 	return &response, httpStatus
