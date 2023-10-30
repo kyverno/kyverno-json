@@ -1,0 +1,12 @@
+Print the version informations
+
+Usage:
+  version [flags]
+
+Examples:
+  # Print version infos
+  version
+
+
+Flags:
+  -h, --help   help for version

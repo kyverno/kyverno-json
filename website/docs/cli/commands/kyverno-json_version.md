@@ -1,10 +1,10 @@
 ## kyverno-json version
 
-Prints the version informations.
+Print the version informations
 
 ### Synopsis
 
-Prints the version informations.
+Print the version informations
 
 
 ```
