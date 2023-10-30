@@ -10,7 +10,7 @@ spec:
         - type: aws_ecs_task_definition
       assert:
         any:
-        - message: Bucket `{{ name }}` ({{ address }}) does not have the required tags {{ to_string($tags) }}
+        - message: ECS containers only have read-only access to root filesystems
           check:
             values:
                 ~.(json_parse(container_definitions)):
