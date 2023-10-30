@@ -1,0 +1,13 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: test-1
+spec:
+  rules: []
+---
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: test-2
+spec:
+  rules: []
