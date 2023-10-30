@@ -9,7 +9,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmespath-community/go-jmespath v1.1.2-0.20231004164315-78945398586a
-	github.com/kyverno/kyverno v1.5.0-rc1.0.20231029093939-32d16059beb4
+	github.com/kyverno/kyverno v1.5.0-rc1.0.20231029235953-c96199dee1f6
 	github.com/loopfz/gadgeto v0.11.3
 	github.com/nlepage/go-wasm-http-server v1.1.0
 	github.com/spf13/cobra v1.7.0
