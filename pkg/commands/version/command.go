@@ -11,7 +11,7 @@ import (
 func Command(parents ...string) *cobra.Command {
 	doc := command.New(
 		command.WithParents(parents...),
-		command.WithDescription("Prints the version informations."),
+		command.WithDescription("Print the version informations"),
 		command.WithExample("Print version infos", "version"),
 	)
 	return &cobra.Command{

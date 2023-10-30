@@ -25,5 +25,5 @@ kyverno-json [flags]
 * [kyverno-json playground](kyverno-json_playground.md)	 - playground
 * [kyverno-json scan](kyverno-json_scan.md)	 - scan
 * [kyverno-json serve](kyverno-json_serve.md)	 - serve
-* [kyverno-json version](kyverno-json_version.md)	 - Prints the version informations.
+* [kyverno-json version](kyverno-json_version.md)	 - Print the version informations
 
