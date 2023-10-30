@@ -2,7 +2,7 @@
 
 Kyverno policies are [Kubernetes resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) and can be easily managed via Kubernetes APIs, GitOps workflows, and other existing tools.
 
-However, policies that apply to JSON payload have a few differences from Kyverno policies that are applied to Kubernetes resources at admission controls.
+Policies that apply to JSON payload have a few differences from Kyverno policies that are applied to Kubernetes resources at admission controls.
 
 ## Resource Scope
 
@@ -65,7 +65,7 @@ A policy rule can contain `context` entries are made available to the rule via b
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: required-s3-tags
 spec:

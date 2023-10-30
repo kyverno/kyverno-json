@@ -5,6 +5,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 )
@@ -21,5 +22,6 @@ func Run(_ context.Context, s Server, host string, port int) Shutdown {
 			panic(err)
 		}
 	}()
+	log.Default().Printf("listening to requests on %s:%d", host, port)
 	return srv.Shutdown
 }

@@ -11,6 +11,7 @@ keywords:
 sources:
   - https://github.com/kyverno/kyverno-json
 maintainers:
-  - name: Nirmata
+  - name: The Kyverno developers
     url: https://kyverno.io/
+    email: cncf-kyverno-maintainers@lists.cncf.io
 kubeVersion: ">=1.16.0-0"
