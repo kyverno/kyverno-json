@@ -1,6 +1,6 @@
 # Labels docs
 
-This docs contains informations on how we use GitHub labels on issues and pull requests.
+This docs contains information on how we use GitHub labels on issues and pull requests.
 
 ## Labels
 
