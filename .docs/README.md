@@ -1,6 +1,6 @@
 # Release docs
 
-This docs contains informations for releasing releasing.
+This docs contains information for releasing.
 
 ## Create a release
 
