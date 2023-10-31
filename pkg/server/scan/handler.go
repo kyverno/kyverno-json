@@ -56,10 +56,10 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 			Resources: resources,
 			Policies:  pols,
 		})
-		resp, status := makeResponse(results...)
-		if status != http.StatusOK {
-			// TODO: handle HTTP status codes
-		}
+		resp, _ := makeResponse(results...)
+		// if status != http.StatusOK {
+		// 	// TODO: handle HTTP status codes
+		// }
 		return resp, nil
 	}, http.StatusOK), nil
 }
