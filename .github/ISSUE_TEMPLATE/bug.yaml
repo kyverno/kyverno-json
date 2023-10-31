@@ -14,7 +14,7 @@ body:
       description: >-
         What version of the Kyverno JSON are you running?
       options:
-        - 1.0.0
+        - 0.1.0
     validations:
       required: true
   - type: textarea
