@@ -1,0 +1,21 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: ecs-cluster-enable-logging
+spec:
+  rules:
+    - name: ecs-cluster-enable-logging
+      match:
+        any:
+        - type: aws_ecs_cluster
+      context:
+      - name: forbidden_values
+        variable: ["NONE"]
+      assert:
+        all:
+        - message: "ECS Cluster should enable logging of ECS Exec"
+          check:
+            values:
+              ~.configuration: 
+                ~.execute_command_configuration:
+                  (contains($forbidden_values, @.logging)): false

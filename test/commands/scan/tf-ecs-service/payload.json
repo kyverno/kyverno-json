@@ -1,0 +1,338 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.6.0",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_ecs_service.mongo",
+          "mode": "managed",
+          "type": "aws_ecs_service",
+          "name": "mongo",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "alarms": [],
+            "capacity_provider_strategy": [],
+            "cluster": "id",
+            "deployment_circuit_breaker": [],
+            "deployment_controller": [],
+            "deployment_maximum_percent": 200,
+            "deployment_minimum_healthy_percent": 100,
+            "desired_count": 3,
+            "enable_ecs_managed_tags": false,
+            "enable_execute_command": false,
+            "force_new_deployment": null,
+            "health_check_grace_period_seconds": null,
+            "launch_type": "FARGATE",
+            "load_balancer": [
+              {
+                "container_name": "mongo",
+                "container_port": 8080,
+                "elb_name": "",
+                "target_group_arn": ""
+              }
+            ],
+            "name": "mongodb",
+            "network_configuration": [
+              {
+                "assign_public_ip": true,
+                "security_groups": null,
+                "subnets": [
+                  "subnet-abcde012",
+                  "subnet-bcde012a",
+                  "subnet-fghi345a"
+                ]
+              }
+            ],
+            "ordered_placement_strategy": [
+              {
+                "field": "cpu",
+                "type": "binpack"
+              }
+            ],
+            "placement_constraints": [
+              {
+                "expression": "attribute:ecs.availability-zone in [us-west-2a, us-west-2b]",
+                "type": "memberOf"
+              }
+            ],
+            "platform_version": "LATEST",
+            "propagate_tags": null,
+            "scheduling_strategy": "REPLICA",
+            "service_connect_configuration": [],
+            "service_registries": [],
+            "tags": null,
+            "task_definition": "aws_arn",
+            "timeouts": null,
+            "wait_for_steady_state": false
+          },
+          "sensitive_values": {
+            "alarms": [],
+            "capacity_provider_strategy": [],
+            "deployment_circuit_breaker": [],
+            "deployment_controller": [],
+            "load_balancer": [
+              {}
+            ],
+            "network_configuration": [
+              {
+                "subnets": [
+                  false,
+                  false,
+                  false
+                ]
+              }
+            ],
+            "ordered_placement_strategy": [
+              {}
+            ],
+            "placement_constraints": [
+              {}
+            ],
+            "service_connect_configuration": [],
+            "service_registries": [],
+            "tags_all": {},
+            "triggers": {}
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_ecs_service.mongo",
+      "mode": "managed",
+      "type": "aws_ecs_service",
+      "name": "mongo",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "alarms": [],
+          "capacity_provider_strategy": [],
+          "cluster": "id",
+          "deployment_circuit_breaker": [],
+          "deployment_controller": [],
+          "deployment_maximum_percent": 200,
+          "deployment_minimum_healthy_percent": 100,
+          "desired_count": 3,
+          "enable_ecs_managed_tags": false,
+          "enable_execute_command": false,
+          "force_new_deployment": null,
+          "health_check_grace_period_seconds": null,
+          "launch_type": "FARGATE",
+          "load_balancer": [
+            {
+              "container_name": "mongo",
+              "container_port": 8080,
+              "elb_name": "",
+              "target_group_arn": ""
+            }
+          ],
+          "name": "mongodb",
+          "network_configuration": [
+            {
+              "assign_public_ip": true,
+              "security_groups": null,
+              "subnets": [
+                "subnet-abcde012",
+                "subnet-bcde012a",
+                "subnet-fghi345a"
+              ]
+            }
+          ],
+          "ordered_placement_strategy": [
+            {
+              "field": "cpu",
+              "type": "binpack"
+            }
+          ],
+          "placement_constraints": [
+            {
+              "expression": "attribute:ecs.availability-zone in [us-west-2a, us-west-2b]",
+              "type": "memberOf"
+            }
+          ],
+          "platform_version": "LATEST",
+          "propagate_tags": null,
+          "scheduling_strategy": "REPLICA",
+          "service_connect_configuration": [],
+          "service_registries": [],
+          "tags": null,
+          "task_definition": "aws_arn",
+          "timeouts": null,
+          "wait_for_steady_state": false
+        },
+        "after_unknown": {
+          "alarms": [],
+          "capacity_provider_strategy": [],
+          "deployment_circuit_breaker": [],
+          "deployment_controller": [],
+          "iam_role": true,
+          "id": true,
+          "load_balancer": [
+            {}
+          ],
+          "network_configuration": [
+            {
+              "subnets": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "ordered_placement_strategy": [
+            {}
+          ],
+          "placement_constraints": [
+            {}
+          ],
+          "service_connect_configuration": [],
+          "service_registries": [],
+          "tags_all": true,
+          "triggers": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "alarms": [],
+          "capacity_provider_strategy": [],
+          "deployment_circuit_breaker": [],
+          "deployment_controller": [],
+          "load_balancer": [
+            {}
+          ],
+          "network_configuration": [
+            {
+              "subnets": [
+                false,
+                false,
+                false
+              ]
+            }
+          ],
+          "ordered_placement_strategy": [
+            {}
+          ],
+          "placement_constraints": [
+            {}
+          ],
+          "service_connect_configuration": [],
+          "service_registries": [],
+          "tags_all": {},
+          "triggers": {}
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "access_key": {
+            "constant_value": "mock_access_key"
+          },
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "secret_key": {
+            "constant_value": "mock_secret_key"
+          },
+          "skip_credentials_validation": {
+            "constant_value": true
+          },
+          "skip_metadata_api_check": {
+            "constant_value": true
+          },
+          "skip_requesting_account_id": {
+            "constant_value": true
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_ecs_service.mongo",
+          "mode": "managed",
+          "type": "aws_ecs_service",
+          "name": "mongo",
+          "provider_config_key": "aws",
+          "expressions": {
+            "cluster": {
+              "constant_value": "id"
+            },
+            "desired_count": {
+              "constant_value": 3
+            },
+            "launch_type": {
+              "constant_value": "FARGATE"
+            },
+            "load_balancer": [
+              {
+                "container_name": {
+                  "constant_value": "mongo"
+                },
+                "container_port": {
+                  "constant_value": 8080
+                }
+              }
+            ],
+            "name": {
+              "constant_value": "mongodb"
+            },
+            "network_configuration": [
+              {
+                "assign_public_ip": {
+                  "constant_value": true
+                },
+                "subnets": {
+                  "constant_value": [
+                    "subnet-abcde012",
+                    "subnet-bcde012a",
+                    "subnet-fghi345a"
+                  ]
+                }
+              }
+            ],
+            "ordered_placement_strategy": [
+              {
+                "field": {
+                  "constant_value": "cpu"
+                },
+                "type": {
+                  "constant_value": "binpack"
+                }
+              }
+            ],
+            "placement_constraints": [
+              {
+                "expression": {
+                  "constant_value": "attribute:ecs.availability-zone in [us-west-2a, us-west-2b]"
+                },
+                "type": {
+                  "constant_value": "memberOf"
+                }
+              }
+            ],
+            "platform_version": {
+              "constant_value": "LATEST"
+            },
+            "task_definition": {
+              "constant_value": "aws_arn"
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  },
+  "timestamp": "2023-10-05T12:30:36Z",
+  "errored": false
+}
