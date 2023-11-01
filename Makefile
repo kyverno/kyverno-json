@@ -18,6 +18,7 @@ KO_REGISTRY                        := ko.local
 KO_PLATFORMS                       := all
 KO_TAGS                            := $(GIT_SHA)
 KO_CACHE                           ?= /tmp/ko-cache
+CLI_BIN                            := kyverno-json
 
 #########
 # TOOLS #
@@ -101,7 +102,6 @@ clean-tools: ## Remove installed tools
 # BUILD #
 #########
 
-CLI_BIN        := kyverno-json
 CGO_ENABLED    ?= 0
 ifdef VERSION
 LD_FLAGS       := "-s -w -X $(PACKAGE)/pkg/version.BuildVersion=$(VERSION)"
@@ -119,7 +119,7 @@ vet: ## Run go vet
 	@echo Go vet... >&2
 	@go vet ./...
 
-$(CLI_BIN): fmt vet
+$(CLI_BIN): fmt vet build-wasm codegen-crds codegen-deepcopy codegen-register codegen-client codegen-playground
 	@echo Build cli binary... >&2
 	@CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) go build -o ./$(CLI_BIN) -ldflags=$(LD_FLAGS) .
 
@@ -127,12 +127,14 @@ $(CLI_BIN): fmt vet
 build: $(CLI_BIN) ## Build
 
 .PHONY: build-wasm
-build-wasm: fmt vet ## Build the wasm binary
-	@GOOS=js GOARCH=wasm go build -o ./playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./cmd/wasm/main.go
+build-wasm: fmt vet codegen-crds codegen-deepcopy codegen-register codegen-client ## Build the wasm binary
+	@echo Build wasm module... >&2
+	@GOOS=js GOARCH=wasm go build -o ./website/playground/assets/main.wasm -ldflags=$(LD_FLAGS) ./wasm/main.go
 
-.PHONY: serve
-serve: build-wasm ## Serve static files.
-	python3 -m http.server -d playground/ 8080
+.PHONY: serve-playground
+serve-playground: $(CLI_BIN) ## Serve playground
+	@echo Serve playground... >&2
+	@./$(CLI_BIN) playground
 
 .PHONY: ko-build
 ko-build: $(KO) ## Build image (with ko)
@@ -147,7 +149,7 @@ ko-build: $(KO) ## Build image (with ko)
 GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
-CRDS_PATH                   := ${PWD}/config/crds
+CRDS_PATH                   := ${PWD}/.crds
 INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
 OUT_PACKAGE                 := $(PACKAGE)/pkg/client
 CLIENTSET_PACKAGE           := $(OUT_PACKAGE)/clientset
@@ -167,19 +169,19 @@ $(PACKAGE_SHIM): $(GOPATH_SHIM)
 codegen-client: $(PACKAGE_SHIM) $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) ## Generate client, informers and listers
 	@echo Generate clientset... >&2
 	@GOPATH=$(GOPATH_SHIM) $(CLIENT_GEN) \
-		--go-header-file ./hack/boilerplate.go.txt \
+		--go-header-file ./.hack/boilerplate.go.txt \
 		--clientset-name versioned \
 		--output-package $(CLIENTSET_PACKAGE) \
 		--input-base "" \
 		--input $(INPUT_DIRS)
 	@echo Generate listers... >&2
 	@GOPATH=$(GOPATH_SHIM) $(LISTER_GEN) \
-		--go-header-file ./hack/boilerplate.go.txt \
+		--go-header-file ./.hack/boilerplate.go.txt \
 		--output-package $(LISTERS_PACKAGE) \
 		--input-dirs $(INPUT_DIRS)
 	@echo Generate informers... >&2
 	@GOPATH=$(GOPATH_SHIM) $(INFORMER_GEN) \
-		--go-header-file ./hack/boilerplate.go.txt \
+		--go-header-file ./.hack/boilerplate.go.txt \
 		--output-package $(INFORMERS_PACKAGE) \
 		--input-dirs $(INPUT_DIRS) \
 		--versioned-clientset-package $(CLIENTSET_PACKAGE)/versioned \
@@ -189,14 +191,14 @@ codegen-client: $(PACKAGE_SHIM) $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) ## G
 codegen-register: $(PACKAGE_SHIM) $(REGISTER_GEN) ## Generate types registrations
 	@echo Generate registration... >&2
 	@GOPATH=$(GOPATH_SHIM) $(REGISTER_GEN) \
-		--go-header-file=./hack/boilerplate.go.txt \
+		--go-header-file=./.hack/boilerplate.go.txt \
 		--input-dirs=$(INPUT_DIRS)
 
 .PHONY: codegen-deepcopy
 codegen-deepcopy: $(PACKAGE_SHIM) $(DEEPCOPY_GEN) ## Generate deep copy functions
 	@echo Generate deep copy functions... >&2
 	@GOPATH=$(GOPATH_SHIM) $(DEEPCOPY_GEN) \
-		--go-header-file=./hack/boilerplate.go.txt \
+		--go-header-file=./.hack/boilerplate.go.txt \
 		--input-dirs=$(INPUT_DIRS) \
 		--output-file-base=zz_generated.deepcopy
 
@@ -207,7 +209,7 @@ codegen-crds: $(CONTROLLER_GEN) ## Generate CRDs
 	@$(CONTROLLER_GEN) crd paths=./pkg/apis/... crd:crdVersions=v1 output:dir=$(CRDS_PATH)
 	@echo Copy generated CRDs to embed in the CLI... >&2
 	@rm -rf pkg/data/crds && mkdir -p pkg/data/crds
-	@cp config/crds/* pkg/data/crds
+	@cp $(CRDS_PATH)/* pkg/data/crds
 
 .PHONY: codegen-api-docs
 codegen-api-docs: $(REFERENCE_DOCS) ## Generate API docs
@@ -218,19 +220,19 @@ codegen-api-docs: $(REFERENCE_DOCS) ## Generate API docs
 .PHONY: codegen-cli-docs
 codegen-cli-docs: $(CLI_BIN) ## Generate CLI docs
 	@echo Generate cli docs... >&2
-	@rm -rf docs/user/commands && mkdir -p docs/user/commands
-	@./kyverno-json docs -o docs/user/commands --autogenTag=false
+	@rm -rf ./website/docs/cli/commands && mkdir -p ./website/docs/cli/commands
+	@./kyverno-json docs -o ./website/docs/cli/commands --autogenTag=false
 
 .PHONY: codegen-jp-docs
 codegen-jp-docs: ## Generate JP docs
 	@echo Generate jp docs... >&2
-	@rm -rf docs/user/jp && mkdir -p docs/user/jp
-	@go run ./hack/docs/jp/main.go > docs/user/jp/functions.md
+	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp
+	@go run ./website/jp/main.go > ./website/docs/jp/functions.md
 
 .PHONY: codegen-catalog
 codegen-catalog: ## Generate policy catalog
 	@echo Generate policy catalog... >&2
-	@go run ./hack/docs/catalog/main.go
+	@go run ./website/catalog/main.go
 
 .PHONY: codegen-docs
 codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog ## Generate docs
@@ -241,31 +243,35 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@pip install mkdocs
 	@pip install --upgrade pip
 	@pip install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin
-	@rm -rf ./website/docs/commands && mkdir -p ./website/docs/commands && cp docs/user/commands/* ./website/docs/commands
-	@rm -rf ./website/docs/jp && mkdir -p ./website/docs/jp && cp docs/user/jp/* ./website/docs/jp
 	@mkdocs build -f ./website/mkdocs.yaml
 
-.PHONY: codegen-schema-openapi
-codegen-schema-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
+.PHONY: codegen-schemas-openapi
+codegen-schemas-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 	@echo Generate openapi schema... >&2
-	@rm -rf ./schemas
-	@mkdir -p ./schemas/openapi/v2
-	@mkdir -p ./schemas/openapi/v3/apis/json.kyverno.io
+	@rm -rf ./.schemas
+	@mkdir -p ./.schemas/openapi/v2
+	@mkdir -p ./.schemas/openapi/v3/apis/json.kyverno.io
 	@$(KIND) create cluster --name schema --image $(KIND_IMAGE)
-	@kubectl create -f ./config/crds
+	@kubectl create -f $(CRDS_PATH)
 	@sleep 15
-	@kubectl get --raw /openapi/v2 > ./schemas/openapi/v2/schema.json
-	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
+	@kubectl get --raw /openapi/v2 > ./.schemas/openapi/v2/schema.json
+	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./.schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
 	@$(KIND) delete cluster --name schema
 
-.PHONY: codegen-schema-json
-codegen-schema-json: codegen-schema-openapi ## Generate json schemas
+.PHONY: codegen-schemas-json
+codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
 	@$(PIP) install openapi2jsonschema
-	@rm -rf ./schemas/json
-	@openapi2jsonschema ./schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./schemas/json
+	@rm -rf ./.schemas/json
+	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
 
-.PHONY: codegen-schema-all
-codegen-schema-all: codegen-schema-openapi codegen-schema-json ## Generate openapi and json schemas
+.PHONY: codegen-schemas
+codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openapi and json schemas
+
+.PHONY: codegen-playground
+codegen-playground: build-wasm ## Generate playground
+	@echo Generate playground... >&2
+	@rm -rf ./pkg/server/ui/dist && mkdir -p ./pkg/server/ui/dist && cp -r ./website/playground/* ./pkg/server/ui/dist
+	@rm -rf ./website/docs/_playground && mkdir -p ./website/docs/_playground && cp -r ./website/playground/* ./website/docs/_playground
 
 .PHONY: codegen-helm-crds
 codegen-helm-crds: codegen-crds ## Generate helm CRDs
@@ -289,7 +295,7 @@ codegen-helm-docs: ## Generate helm docs
 	@docker run -v ${PWD}/charts:/work -w /work jnorwood/helm-docs:v1.11.0 -s file
 
 .PHONY: codegen
-codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schema-all codegen-helm-docs ## Rebuild all generated code and docs
+codegen: codegen-crds codegen-deepcopy codegen-register codegen-client codegen-docs codegen-mkdocs codegen-schemas codegen-playground codegen-helm-crds codegen-helm-docs ## Rebuild all generated code and docs
 
 .PHONY: verify-codegen
 verify-codegen: codegen ## Verify all generated code and docs are up to date
@@ -340,9 +346,9 @@ kind-install: $(HELM) kind-load ## Build image, load it in kind cluster and depl
 ###########
 
 .PHONY: install-crds
-install-crds: ## Install CRDs
+install-crds: codegen-crds ## Install CRDs
 	@echo Install CRDs... >&2
-	@kubectl create -f ./config/crds
+	@kubectl create -f ./$(CRDS_PATH)
 
 ########
 # HELP #

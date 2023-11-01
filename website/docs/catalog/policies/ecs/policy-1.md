@@ -1,6 +1,10 @@
 
 # policy-1
 
+## Description
+
+None
+
 ## Install
 
 ### In cluster
@@ -15,17 +19,14 @@ kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno-json/main/cat
 curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/ecs/policy-1.yaml
 ```
 
-## Description
-
-None
-
 ## Manifest
 
-[Original policy](https://github.com/kyverno/kyverno-json/catalog/ecs/policy-1.yaml)
+[Original policy](https://github.com/kyverno/kyverno-json/blob/main/catalog/ecs/policy-1.yaml)
+[Raw](https://raw.githubusercontent.com/kyverno/kyverno-json/main/catalog/ecs/policy-1.yaml)
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   creationTimestamp: null
   name: test

@@ -3,7 +3,8 @@ before:
     - go mod tidy
 
 builds:
-  - env:
+  - id: kyverno-json
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -26,6 +27,27 @@ signs:
       - --yes
     artifacts: all
     output: true
+
+kos:
+  - build: kyverno-json
+    repository: ghcr.io/kyverno/kyverno-json
+    tags:
+      - '{{.Tag}}'
+      - '{{ if not .Prerelease }}latest{{ end }}' 
+    bare: true
+    preserve_import_paths: false
+    sbom: none
+    platforms:
+      - all
+
+docker_signs:
+  - cmd: cosign
+    artifacts: all
+    output: true
+    args:
+      - sign
+      - ${artifact}
+      - --yes
 
 archives:
   - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'

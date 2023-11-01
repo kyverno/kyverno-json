@@ -8,6 +8,10 @@ tags:
 {{- end }}
 # {{ .Title }}
 
+## Description
+
+{{ .Description }}
+
 ## Install
 
 ### In cluster
@@ -22,13 +26,10 @@ kubectl apply -f https://raw.githubusercontent.com/kyverno/kyverno-json/main/{{ 
 curl -O https://raw.githubusercontent.com/kyverno/kyverno-json/main/{{ .Path }}
 ```
 
-## Description
-
-{{ .Description }}
-
 ## Manifest
 
-[Original policy](https://github.com/kyverno/kyverno-json/{{ .Path }})
+[Original policy](https://github.com/kyverno/kyverno-json/blob/main/{{ .Path }})
+[Raw](https://raw.githubusercontent.com/kyverno/kyverno-json/main/{{ .Path }})
 
 ```yaml
 {{ .Manifest }}

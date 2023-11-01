@@ -15,12 +15,12 @@ import (
 
 type JsonEngineRequest struct {
 	Resources []interface{}
-	Policies  []*v1alpha1.ValidationPolicy
+	Policies  []*v1alpha1.ValidatingPolicy
 }
 
 type JsonEngineResponse struct {
-	Policy   *v1alpha1.ValidationPolicy
-	Rule     v1alpha1.ValidationRule
+	Policy   *v1alpha1.ValidatingPolicy
+	Rule     v1alpha1.ValidatingRule
 	Resource interface{}
 	Failure  error
 	Error    error
@@ -28,8 +28,8 @@ type JsonEngineResponse struct {
 
 func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 	type request struct {
-		policy   *v1alpha1.ValidationPolicy
-		rule     v1alpha1.ValidationRule
+		policy   *v1alpha1.ValidatingPolicy
+		rule     v1alpha1.ValidatingRule
 		value    interface{}
 		bindings binding.Bindings
 	}
@@ -37,7 +37,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 		var requests []request
 		bindings := jpbinding.NewBindings()
 		for _, resource := range r.Resources {
-			bindings = bindings.Register("$resource", jpbinding.NewBinding(resource))
+			bindings = bindings.Register("$payload", jpbinding.NewBinding(resource))
 			for _, policy := range r.Policies {
 				bindings = bindings.Register("$policy", jpbinding.NewBinding(policy))
 				for _, rule := range policy.Spec.Rules {
@@ -63,9 +63,9 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			}
 			errs, err := assert.MatchAssert(ctx, nil, r.rule.Assert, r.value, r.bindings)
 			if err != nil {
-				response.Failure = err
-			} else if err := multierr.Combine(errs...); err != nil {
 				response.Error = err
+			} else if err := multierr.Combine(errs...); err != nil {
+				response.Failure = err
 			}
 			return response
 		}).

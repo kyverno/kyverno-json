@@ -11,7 +11,7 @@ import (
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/payload"
 	"github.com/kyverno/kyverno-json/pkg/policy"
-	"github.com/kyverno/kyverno/cmd/cli/kubectl-kyverno/output/pluralize"
+	"github.com/kyverno/kyverno/ext/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/labels"
 )
@@ -40,7 +40,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		selector = parsed
 	}
 	{
-		var filteredPolicies []*v1alpha1.ValidationPolicy
+		var filteredPolicies []*v1alpha1.ValidatingPolicy
 		for _, policy := range policies {
 			if selector.Matches(labels.Set(policy.Labels)) {
 				filteredPolicies = append(filteredPolicies, policy)

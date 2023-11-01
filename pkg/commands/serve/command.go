@@ -24,7 +24,7 @@ func Command(parents ...string) *cobra.Command {
 	cmd.Flags().BoolVar(&command.ginFlags.log, "gin-log", true, "enable gin logger")
 	cmd.Flags().BoolVar(&command.ginFlags.cors, "gin-cors", true, "enable gin cors")
 	cmd.Flags().IntVar(&command.ginFlags.maxBodySize, "gin-max-body-size", 2*1024*1024, "gin max body size")
-	// // cluster flags
+	// cluster flags
 	clientcmd.BindOverrideFlags(&command.clusterFlags.kubeConfigOverrides, cmd.Flags(), clientcmd.RecommendedConfigOverrideFlags("kube-"))
 	return cmd
 }

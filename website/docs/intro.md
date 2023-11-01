@@ -1,15 +1,16 @@
 # Introduction
 
-`kyverno-json` is a CLI tool very similar to the [Kyverno CLI](https://github.com/kyverno/kyverno/tree/main/cmd/cli/kubectl-kyverno).
+`kyverno-json` extends Kyverno policies to perform simple and efficient validation of data in JSON or YAML format. With `kyverno-json`, you can now use Kyverno policies to validate:
 
-The difference is that `kyverno-json` can apply policies to abitrary json or yaml payloads.
+- Terraform files
+- Dockerfiles
+- Cloud configurations
+- Authorization requests
 
-Policy definition syntax looks a lot like the [Kyverno policy](https://kyverno.io/docs/kyverno-policies/) definition syntax but is more generic and flexible.
+Simply convert your runtime or configuration data to JSON, and use Kyverno to audit or enforce policies for security and best practices compliance.
 
-This was needed to allow working with arbitrary payloads, not just [Kubernetes](https://kubernetes.io) ones.
+`kyverno-json` can be run as a:
 
-## Pre-processing
-
-Additionally, you can provide preprocessing queries in [jmespath](https://jmespath.site) format to preprocess the input payload before evaluating *resources* against policies.
-
-This is necessary if the input payload is not what you want to directly analyse.
+1. [A Command Line Interface (CLI)](./cli/index.md)
+2. [A web application with a REST API](./webapp/index.md)
+3. [A Golang library](./go-library/index.md)

@@ -17,7 +17,7 @@ make install-crds
 ```bash
 kubectl apply -f - <<EOF
 apiVersion: json.kyverno.io/v1alpha1
-kind: ValidationPolicy
+kind: ValidatingPolicy
 metadata:
   name: test
 spec:

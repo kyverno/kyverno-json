@@ -4,14 +4,20 @@ import (
 	"runtime/debug"
 )
 
-// BuildVersion is provided by govvv at compile-time
+const (
+	notFound    = "---"
+	vcsTime     = "vcs.time"
+	vcsRevision = "vcs.revision"
+)
+
+// BuildVersion is provided at compile-time
 var BuildVersion string
 
 func Version() string {
 	if BuildVersion == "" {
 		bi, ok := debug.ReadBuildInfo()
 		if !ok {
-			return "---"
+			return notFound
 		}
 		BuildVersion = bi.Main.Version
 	}
@@ -20,24 +26,25 @@ func Version() string {
 
 func Time() string {
 	bi, ok := debug.ReadBuildInfo()
-	if ok {
-		for _, setting := range bi.Settings {
-			if setting.Key == "vcs.time" {
-				return setting.Value
-			}
-		}
+	if !ok {
+		return notFound
 	}
-	return "---"
+	return tryFindSetting(vcsTime, bi.Settings...)
 }
 
 func Hash() string {
 	bi, ok := debug.ReadBuildInfo()
-	if ok {
-		for _, setting := range bi.Settings {
-			if setting.Key == "vcs.revision" {
-				return setting.Value
-			}
+	if !ok {
+		return notFound
+	}
+	return tryFindSetting(vcsRevision, bi.Settings...)
+}
+
+func tryFindSetting(key string, settings ...debug.BuildSetting) string {
+	for _, setting := range settings {
+		if setting.Key == key {
+			return setting.Value
 		}
 	}
-	return "---"
+	return notFound
 }

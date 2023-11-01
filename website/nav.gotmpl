@@ -2,40 +2,41 @@ INHERIT: ./mkdocs.base.yaml
 
 nav:
 - Home: index.md
-- Getting Started:
+- Documentation:
   - intro.md
   - install.md
   - quick-start.md
-- Writing policies:
-  - policies/index.md
-  - Basics:
-    - policies/api-version.md
-    - policies/match.md
-    - policies/assertion-trees.md
-    - policies/modifiers.md
-    - policies/explicit-bindings.md
-    - policies/escaping.md
-  - Command Line Usage:
-    - commands/kyverno-json.md
-    - commands/kyverno-json_completion.md
-    - commands/kyverno-json_completion_bash.md
-    - commands/kyverno-json_completion_fish.md
-    - commands/kyverno-json_completion_powershell.md
-    - commands/kyverno-json_completion_zsh.md
-    - commands/kyverno-json_docs.md
-    - commands/kyverno-json_jp.md
-    - commands/kyverno-json_jp_function.md
-    - commands/kyverno-json_jp_parse.md
-    - commands/kyverno-json_jp_query.md
-    - commands/kyverno-json_scan.md
-    - commands/kyverno-json_serve.md
-    - commands/kyverno-json_version.md
+  - Writing policies:
+    - policies/policies.md
+    - policies/asserts.md
+  - Command Line:
+    - cli/index.md
+    - Command Reference:
+      - cli/commands/kyverno-json.md
+      - cli/commands/kyverno-json_completion.md
+      - cli/commands/kyverno-json_completion_bash.md
+      - cli/commands/kyverno-json_completion_fish.md
+      - cli/commands/kyverno-json_completion_powershell.md
+      - cli/commands/kyverno-json_completion_zsh.md
+      - cli/commands/kyverno-json_docs.md
+      - cli/commands/kyverno-json_jp.md
+      - cli/commands/kyverno-json_jp_function.md
+      - cli/commands/kyverno-json_jp_parse.md
+      - cli/commands/kyverno-json_jp_query.md
+      - cli/commands/kyverno-json_playground.md
+      - cli/commands/kyverno-json_scan.md
+      - cli/commands/kyverno-json_serve.md
+      - cli/commands/kyverno-json_version.md
+  - Web Application:
+    - webapp/index.md
+  - Golang Library:
+    - go-library/index.md
   - JMESPath:
     - Overview: jp.md
     - Functions: jp/functions.md
   - APIs:
     - v1alpha1: apis/kyverno-json.v1alpha1.md
-- Policy catalog:
+- Policies:
   - catalog/index.md
   - All:
 {{- range .Policies }}
@@ -43,5 +44,3 @@ nav:
 {{- end }}
 - Playground:
   - playground.md
-- Blog:
-  - blog/index.md

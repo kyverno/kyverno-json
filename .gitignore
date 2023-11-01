@@ -2,5 +2,7 @@
 .tools
 .gopath
 /kyverno-json
-website/site
-playground/assets/main.wasm
+/pkg/server/ui/dist/assets/main.wasm
+/website/docs/_playground
+/website/playground/assets/main.wasm
+/website/site

@@ -1,0 +1,157 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.12.0
+  name: validatingpolicies.json.kyverno.io
+spec:
+  group: json.kyverno.io
+  names:
+    kind: ValidatingPolicy
+    listKind: ValidatingPolicyList
+    plural: validatingpolicies
+    singular: validatingpolicy
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: ValidatingPolicy is the resource that contains the policy definition.
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: Policy spec.
+            properties:
+              rules:
+                description: Rules is a list of ValidatingRule instances.
+                items:
+                  description: ValidatingRule defines a validating rule.
+                  properties:
+                    assert:
+                      description: Assert is used to validate matching resources.
+                      properties:
+                        all:
+                          description: All allows specifying assertions which will
+                            be ANDed.
+                          items:
+                            description: Assertion contains an assertion tree associated
+                              with a message.
+                            properties:
+                              check:
+                                description: Check is the assertion check definition.
+                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
+                              message:
+                                description: Message is the message associated message.
+                                type: string
+                            required:
+                            - check
+                            type: object
+                          type: array
+                        any:
+                          description: Any allows specifying assertions which will
+                            be ORed.
+                          items:
+                            description: Assertion contains an assertion tree associated
+                              with a message.
+                            properties:
+                              check:
+                                description: Check is the assertion check definition.
+                                type: object
+                                x-kubernetes-preserve-unknown-fields: true
+                              message:
+                                description: Message is the message associated message.
+                                type: string
+                            required:
+                            - check
+                            type: object
+                          type: array
+                      type: object
+                    context:
+                      description: Context defines variables and data sources that
+                        can be used during rule execution.
+                      items:
+                        description: ContextEntry adds variables and data sources
+                          to a rule context.
+                        properties:
+                          name:
+                            description: Name is the entry name.
+                            type: string
+                          variable:
+                            description: Variable defines an arbitrary variable.
+                            x-kubernetes-preserve-unknown-fields: true
+                        required:
+                        - name
+                        type: object
+                      type: array
+                    exclude:
+                      description: Exclude defines when this policy rule should not
+                        be applied.
+                      properties:
+                        all:
+                          description: All allows specifying assertion trees which
+                            will be ANDed.
+                          items:
+                            description: Any can be any type.
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                          type: array
+                        any:
+                          description: Any allows specifying assertion trees which
+                            will be ORed.
+                          items:
+                            description: Any can be any type.
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                          type: array
+                      type: object
+                    match:
+                      description: Match defines when this policy rule should be applied.
+                      properties:
+                        all:
+                          description: All allows specifying assertion trees which
+                            will be ANDed.
+                          items:
+                            description: Any can be any type.
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                          type: array
+                        any:
+                          description: Any allows specifying assertion trees which
+                            will be ORed.
+                          items:
+                            description: Any can be any type.
+                            type: object
+                            x-kubernetes-preserve-unknown-fields: true
+                          type: array
+                      type: object
+                    name:
+                      description: Name is a label to identify the rule, It must be
+                        unique within the policy.
+                      maxLength: 63
+                      type: string
+                  required:
+                  - assert
+                  - name
+                  type: object
+                type: array
+            required:
+            - rules
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true

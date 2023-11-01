@@ -2,12 +2,14 @@
 
 `kyverno-json` uses [JMESPath community edition](https://jmespath.site/), a modern JMESPath implementation with lexical scopes support.
 
-The current resource, policy and rule are always available using the following builtin bindings:
+The current *payload*, *policy* and *rule* are always available using the following builtin bindings:
 
 | Binding | Usage |
 |---|---|
-| `$resource` | Current resource being analysed |
+| `$payload` | Current payload being analysed |
 | `$policy` | Current policy being executed |
 | `$rule` | Current rule being evaluated |
 
-No protection is made to prevent you from overriding those bindings though.
+!!! warning
+
+    No protection is made to prevent you from overriding those bindings.

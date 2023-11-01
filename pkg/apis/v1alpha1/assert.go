@@ -1,9 +1,12 @@
 package v1alpha1
 
+// Assert defines collections of assertions.
 type Assert struct {
-	// Any allows specifying resources which will be ORed.
+	// Any allows specifying assertions which will be ORed.
+	// +optional
 	Any []Assertion `json:"any,omitempty"`
 
-	// All allows specifying resources which will be ANDed.
+	// All allows specifying assertions which will be ANDed.
+	// +optional
 	All []Assertion `json:"all,omitempty"`
 }

@@ -1,12 +1,102 @@
-# Quick start
+# Quick Start
 
-In this example we will create a YAML payload and policy and use `kyverno-json` to run analysis.
+## Validate a Terraform Plan
 
-## Create a YAML payload
+In this example we will use a Kyverno policy to validate a Terraform plan:
+
+### Create the payload
+
+Here is a Terraform plan that creates an AWS S3 bucket:
+
+```terraform
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+
+  required_version = ">= 1.2.0"
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_s3_bucket" "example" {
+  bucket = "my-tf-test-bucket"
+
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
+```
+
+You can convert this to JSON using the following commands:
+
+*output the plan:*
+```sh
+terraform plan -out tfplan.binary
+```
+*convert to JSON:*
+```sh
+terraform show -json tfplan.binary | jq > payload.json
+```
+
+### Create the policy
+
+Create a `policy.yaml` file and paste the content below that checks for required labels:
+
+
+```yaml
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: s3
+spec:
+  rules:
+    - name: check-tags
+      assert:
+        all:
+        - check:
+            planned_values:
+              root_module:
+                ~.resources:
+                  values:
+                    (keys(tags_all)):
+                      (contains(@, 'Environment')): true
+                      (contains(@, 'Name')): true
+                      (contains(@, 'Team')): true
+```
+
+### Scan the payload
+
+With the payload and policy above, we can invoke `kyverno-json` with the command below:
+
+```bash
+kyverno-json scan --payload payload.json --policy policy.yaml
+```
+
+The plan shown above will fail as it does not contain the `Team` tag.
+
+```sh
+Loading policies ...
+Loading payload ...
+Pre processing ...
+Running ( evaluating 1 resource against 1 policy ) ...
+- s3 / check-tags / (unknown) FAILED: all[0].check.planned_values.root_module.~.resources[0].values.(keys(tags_all)).(contains(@, 'Team')): Invalid value: false: Expected value: true
+Done
+```
+
+## Validate a Kubernetes Resource
 
 For this example we will use a [Kubernetes](https://kubernetes.io) `Pod` payload.
 
-Create a `payload.yaml` file and paste the content below:
+### Create the payload
+
+Create a `payload.yaml` file and paste the Pod declaration below in it:
 
 ```yaml
 apiVersion: v1
@@ -24,17 +114,15 @@ spec:
 
 This is a simple `Pod` with one container running the `busybox` latest docker image.
 
-Now, using the `latest` tag of an image is considered a bad practice.
+Using the `latest` tag of an image is a bad practice. Let's write a policy to detect this.
 
-In the next part of this example we will write a policy to detect such cases.
+### Create the policy
 
-## Create a policy to block `latest` images
-
-Create a `policy.yaml` file and paste the content below:
+Create a `policy.yaml` file and paste the content below to block `latest` images:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1
-kind: Policy
+kind: ValidatingPolicy
 metadata:
   name: pod-policy
 spec:
@@ -62,13 +150,17 @@ spec:
 
 This policy iterates over pod containers, checking that the container image has a tag specified and that the tag being used is not `latest`.
 
-## Run `kyverno-json` scan
+### Scan the payload
 
 With the payload and policy above, we can invoke `kyverno-json` with the command below:
 
 ```bash
 kyverno-json scan --payload payload.yaml --policy policy.yaml
+```
 
+This produces the output:
+
+```bash
 Loading policies ...
 Loading payload ...
 Pre processing ...

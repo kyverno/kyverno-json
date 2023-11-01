@@ -2,7 +2,7 @@
 
 You can install the pre-compiled binary (in several ways), or compile from source.
 
-## Install using `go install`
+## Using `go install`
 
 You can install with `go install` with:
 
@@ -10,33 +10,29 @@ You can install with `go install` with:
 go install github.com/kyverno/kyverno-json@latest
 ```
 
-## Manually
+## Download binary
 
-```
 Download the pre-compiled binaries from the [releases page](https://github.com/kyverno/kyverno-json/releases) and copy them to the desired location.
-```
 
-## Compile from sources
+## Build from the source code
 
-**clone:**
+**clone the repository:**
 
 ```bash
 git clone github.com/kyverno/kyverno-json
 ```
 
-**get the dependencies:**
+**build the binaries:**
 
 ```bash
-go mod tidy
+cd kyverno-json
 ```
-
-**build:**
 
 ```bash
 make build
 ```
 
-**verify it works:**
+**verify the build:**
 
 ```bash
 ./kyverno-json version
