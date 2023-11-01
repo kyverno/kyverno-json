@@ -1,0 +1,6 @@
+# categories
+dockerfile:
+  # names
+  check-dockerfile:
+    policy:   test/commands/scan/dockerfile/policy.yaml
+    payload:  test/commands/scan/dockerfile/payload.json
