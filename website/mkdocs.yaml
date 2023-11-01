@@ -39,7 +39,6 @@ nav:
 - Policies:
   - catalog/index.md
   - All:
-    - catalog/policies/aws/policy-1.md
     - catalog/policies/ecs/ecs-cluster-enable-logging.md
     - catalog/policies/ecs/ecs-cluster-required-container-insights.md
     - catalog/policies/ecs/ecs-service-public-ip.md
