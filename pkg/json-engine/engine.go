@@ -63,9 +63,9 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 			}
 			errs, err := assert.MatchAssert(ctx, nil, r.rule.Assert, r.value, r.bindings)
 			if err != nil {
-				response.Failure = err
-			} else if err := multierr.Combine(errs...); err != nil {
 				response.Error = err
+			} else if err := multierr.Combine(errs...); err != nil {
+				response.Failure = err
 			}
 			return response
 		}).

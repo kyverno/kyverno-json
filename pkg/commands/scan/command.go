@@ -15,9 +15,9 @@ func Command() *cobra.Command {
 		RunE:         command.run,
 	}
 	cmd.Flags().StringVar(&command.payload, "payload", "", "Path to payload (json or yaml file)")
-	cmd.Flags().StringSliceVar(&command.preprocessors, "pre-process", nil, "JmesPath expression used to pre process payload")
+	cmd.Flags().StringSliceVar(&command.preprocessors, "pre-process", nil, "JMESPath expression used to pre process payload")
 	cmd.Flags().StringSliceVar(&command.policies, "policy", nil, "Path to kyverno-json policies")
 	cmd.Flags().StringSliceVar(&command.selectors, "labels", nil, "Labels selectors for policies")
-	cmd.Flags().StringVar(&command.identifier, "identifier", "", "JmesPath expression used to identify a resource")
+	cmd.Flags().StringVar(&command.identifier, "identifier", "", "JMESPath expression used to identify a resource")
 	return cmd
 }

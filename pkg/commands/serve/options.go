@@ -39,7 +39,7 @@ type clusterFlags struct {
 }
 
 func (c *options) Run(_ *cobra.Command, _ []string) error {
-	// initialise gin framework
+	// initialize gin framework
 	gin.SetMode(c.ginFlags.mode)
 	tonic.SetBindHook(tonic.DefaultBindingHookMaxBodyBytes(int64(c.ginFlags.maxBodySize)))
 	// create router
