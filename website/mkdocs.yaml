@@ -40,6 +40,11 @@ nav:
   - catalog/index.md
   - All:
     - catalog/policies/aws/policy-1.md
+    - catalog/policies/ecs/ecs-cluster-enable-logging.md
+    - catalog/policies/ecs/ecs-cluster-required-container-insights.md
+    - catalog/policies/ecs/ecs-service-public-ip.md
+    - catalog/policies/ecs/ecs-service-required-latest-platform-fargate.md
+    - catalog/policies/ecs/ecs-task-definition-fs-read-only.md
     - catalog/policies/ecs/policy-1.md
 - Playground:
   - playground.md
