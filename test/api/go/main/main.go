@@ -5,33 +5,32 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
-	"gopkg.in/yaml.v2"
+	"github.com/kyverno/kyverno-json/pkg/policy"
 )
 
+const policyYAML = `
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: authz
+spec:
+  rules:
+  - name: delete-checks
+    match:
+      all:
+        (input.method): "DELETE"
+    assert:
+      all:
+      - check:
+          role: "admin"
+`
+
 func main() {
-
-	// load policies
-	policyYAML := `
-	apiVersion: json.kyverno.io/v1alpha1
-	kind: ValidatingPolicy
-	metadata:
-	  name: authz
-	spec:
-	  rules:
-	  - name: delete-checks
-	    match:
-		  all:
-		    (input.method): "DELETE"
-	    assert:
-		  all:
-		  - check:
-			  role: "admin"
-	`
-
-	var policy v1alpha1.ValidatingPolicy
-	yaml.Unmarshal([]byte(policyYAML), &policy)
+	policies, err := policy.Parse([]byte(policyYAML))
+	if err != nil {
+		panic(err)
+	}
 
 	// load payloads
 	requestJSON := `{
@@ -44,12 +43,14 @@ func main() {
 	}`
 
 	var payload interface{}
-	json.Unmarshal([]byte(requestJSON), &payload)
+	if err := json.Unmarshal([]byte(requestJSON), &payload); err != nil {
+		panic(err)
+	}
 
 	// create a JsonEngineRequest
 	request := jsonengine.JsonEngineRequest{
 		Resources: []interface{}{payload},
-		Policies:  []*v1alpha1.ValidatingPolicy{&policy},
+		Policies:  policies,
 	}
 
 	// create a J

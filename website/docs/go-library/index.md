@@ -6,6 +6,8 @@ The Go API can be added to a program's dependencies as follows:
 
 ```sh
 go get github.com/kyverno/kyverno-json/pkg/jsonengine
+go get github.com/kyverno/kyverno-json/pkg/policy
+
 ```
 
 Here is a sample program that shows the overall flow for programatically using the Kyverno JSON Engine:
@@ -18,33 +20,32 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
-	"gopkg.in/yaml.v2"
+	"github.com/kyverno/kyverno-json/pkg/policy"
 )
 
+const policyYAML = `
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: authz
+spec:
+  rules:
+  - name: delete-checks
+    match:
+      all:
+        (input.method): "DELETE"
+    assert:
+      all:
+      - check:
+          role: "admin"
+`
+
 func main() {
-
-	// load policies
-	policyYAML := `
-	apiVersion: json.kyverno.io/v1alpha1
-	kind: ValidatingPolicy
-	metadata:
-	  name: authz
-	spec:
-	  rules:
-	  - name: delete-checks
-	    match:
-		  all:
-		    (input.method): "DELETE"
-	    assert:
-		  all:
-		  - check:
-			  role: "admin"
-	`
-
-	var policy v1alpha1.ValidatingPolicy
-	yaml.Unmarshal([]byte(policyYAML), &policy)
+	policies, err := policy.Parse([]byte(policyYAML))
+	if err != nil {
+		panic(err)
+	}
 
 	// load payloads
 	requestJSON := `{
@@ -57,21 +58,21 @@ func main() {
 	}`
 
 	var payload interface{}
-	json.Unmarshal([]byte(requestJSON), &payload)
+	if err := json.Unmarshal([]byte(requestJSON), &payload); err != nil {
+		panic(err)
+	}
 
 	// create a JsonEngineRequest
 	request := jsonengine.JsonEngineRequest{
 		Resources: []interface{}{payload},
-		Policies:  []*v1alpha1.ValidatingPolicy{&policy},
+		Policies:  policies,
 	}
 
-	// create a JSON Engine
+	// create a J
 	engine := jsonengine.New()
 
-    // execute the request
 	responses := engine.Run(context.Background(), request)
 
-    // process the response
 	logger := log.Default()
 	for _, resp := range responses {
 		if resp.Error != nil {
@@ -86,7 +87,3 @@ func main() {
 	}
 }
 ```
-
-
-
-
