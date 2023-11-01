@@ -2,6 +2,11 @@ apiVersion: json.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
   name: fs-read-only
+  labels:
+    ecs.aws.tags.kyverno.io: 'ecs-task-definition'
+  annotations:
+    title.policy.kyverno.io: ECS require filesystem read only
+    description.policy.kyverno.io: This Policy ensures that ECS Fargate services runs on the latest Fargate platform version.
 spec:
   rules:
     - name: require-fs-read-only
@@ -10,7 +15,7 @@ spec:
         - type: aws_ecs_task_definition
       assert:
         any:
-        - message: ECS containers only have read-only access to root filesystems
+        - message: ECS containers should only have read-only access to root filesystems
           check:
             values:
               ~.(json_parse(container_definitions)):

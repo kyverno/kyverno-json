@@ -2,6 +2,11 @@ apiVersion: json.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
   name: ecs-public-ip
+  labels:
+    ecs.aws.tags.kyverno.io: 'ecs-service'
+  annotations:
+    title.policy.kyverno.io: ECS public IP
+    description.policy.kyverno.io: This Policy ensures that ECS services do not have public IP addresses assigned to them automatically.
 spec:
   rules:
     - name: ecs-public-ip

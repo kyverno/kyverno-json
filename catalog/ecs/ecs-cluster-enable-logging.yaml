@@ -2,6 +2,11 @@ apiVersion: json.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
   name: ecs-cluster-enable-logging
+  labels:
+    ecs.aws.tags.kyverno.io: 'ecs-cluster'
+  annotations:
+    title.policy.kyverno.io: ECS cluster enable logging
+    description.policy.kyverno.io: This Policy ensures that ECS clusters have logging enabled.
 spec:
   rules:
     - name: ecs-cluster-enable-logging
