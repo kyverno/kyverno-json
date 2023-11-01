@@ -1,18 +1,3 @@
-# Usage
-
-The Go API provides a way to embed the Kyverno JSON engine in Go programs that validate JSON payloads using Kyverno policies.
-
-The Go API can be added to a program's dependencies as follows:
-
-```sh
-go get github.com/kyverno/kyverno-json/pkg/jsonengine
-go get github.com/kyverno/kyverno-json/pkg/policy
-
-```
-
-Here is a sample program that shows the overall flow for programatically using the Kyverno JSON Engine:
-
-```go
 package main
 
 import (
@@ -86,4 +71,3 @@ func main() {
 		}
 	}
 }
-```
