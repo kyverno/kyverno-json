@@ -140,6 +140,7 @@ auto_generated: true
 | `context` | [`[]ContextEntry`](#json-kyverno-io-v1alpha1-ContextEntry) |  |  | <p>Context defines variables and data sources that can be used during rule execution.</p> |
 | `match` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Match defines when this policy rule should be applied.</p> |
 | `exclude` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Exclude defines when this policy rule should not be applied.</p> |
+| `identifier` | `string` |  |  | <p>Identifier declares a JMESPath expression to extract a name from the payload.</p> |
 | `assert` | [`Assert`](#json-kyverno-io-v1alpha1-Assert) | :white_check_mark: |  | <p>Assert is used to validate matching resources.</p> |
 
   
