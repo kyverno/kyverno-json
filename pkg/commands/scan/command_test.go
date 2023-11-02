@@ -92,6 +92,41 @@ func Test_Execute(t *testing.T) {
 		policies:      []string{"../../../test/commands/scan/tf-ec2/policy.yaml"},
 		out:           "../../../test/commands/scan/tf-ec2/out.txt",
 		wantErr:       false,
+	}, {
+		name:          "tf-ecs-cluster-1",
+		payload:       "../../../test/commands/scan/tf-ecs-cluster/payload.json",
+		preprocessors: []string{"planned_values.root_module.resources"},
+		policies:      []string{"../../../test/commands/scan/tf-ecs-cluster/01-policy.yaml"},
+		out:           "../../../test/commands/scan/tf-ecs-cluster/01-out.txt",
+		wantErr:       false,
+	}, {
+		name:          "tf-ecs-cluster-2",
+		payload:       "../../../test/commands/scan/tf-ecs-cluster/payload.json",
+		preprocessors: []string{"planned_values.root_module.resources"},
+		policies:      []string{"../../../test/commands/scan/tf-ecs-cluster/02-policy.yaml"},
+		out:           "../../../test/commands/scan/tf-ecs-cluster/02-out.txt",
+		wantErr:       false,
+	}, {
+		name:          "tf-ecs-service-1",
+		payload:       "../../../test/commands/scan/tf-ecs-service/payload.json",
+		preprocessors: []string{"planned_values.root_module.resources"},
+		policies:      []string{"../../../test/commands/scan/tf-ecs-service/01-policy.yaml"},
+		out:           "../../../test/commands/scan/tf-ecs-service/01-out.txt",
+		wantErr:       false,
+	}, {
+		name:          "tf-ecs-service-2",
+		payload:       "../../../test/commands/scan/tf-ecs-service/payload.json",
+		preprocessors: []string{"planned_values.root_module.resources"},
+		policies:      []string{"../../../test/commands/scan/tf-ecs-service/02-policy.yaml"},
+		out:           "../../../test/commands/scan/tf-ecs-service/02-out.txt",
+		wantErr:       false,
+	}, {
+		name:          "tf-ecs-task-definition",
+		payload:       "../../../test/commands/scan/tf-ecs-task-definition/payload.json",
+		preprocessors: []string{"planned_values.root_module.resources"},
+		policies:      []string{"../../../test/commands/scan/tf-ecs-task-definition/policy.yaml"},
+		out:           "../../../test/commands/scan/tf-ecs-task-definition/out.txt",
+		wantErr:       false,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

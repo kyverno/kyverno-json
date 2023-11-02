@@ -267,8 +267,13 @@ codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
 .PHONY: codegen-schemas
 codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openapi and json schemas
 
+.PHONY: codegen-playground-examples
+codegen-playground-examples: ## Generate playground examples
+	@echo Generate playground examples... >&2
+	@go run ./website/playground-examples/main.go
+
 .PHONY: codegen-playground
-codegen-playground: build-wasm ## Generate playground
+codegen-playground: build-wasm codegen-playground-examples ## Generate playground
 	@echo Generate playground... >&2
 	@rm -rf ./pkg/server/ui/dist && mkdir -p ./pkg/server/ui/dist && cp -r ./website/playground/* ./pkg/server/ui/dist
 	@rm -rf ./website/docs/_playground && mkdir -p ./website/docs/_playground && cp -r ./website/playground/* ./website/docs/_playground

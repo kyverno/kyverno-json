@@ -1,0 +1,18 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: fs-read-only
+spec:
+  rules:
+    - name: require-fs-read-only
+      match:
+        any:
+        - type: aws_ecs_task_definition
+      assert:
+        any:
+        - message: ECS containers only have read-only access to root filesystems
+          check:
+            values:
+              ~.(json_parse(container_definitions)):
+                  readonlyRootFilesystem: true
+

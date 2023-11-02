@@ -11,7 +11,7 @@ async function run() {
   const output = document.getElementById("output");
   output.value = "Evaluating...";
   try {
-    const reponse = await fetch("/api/playground/scan", {
+    const reponse = await fetch("api/playground/scan", {
       method: "POST",
       body: JSON.stringify({
         payload: payload,

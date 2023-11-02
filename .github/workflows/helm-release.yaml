@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Helm Release
+
+# permissions: {}
+
+on:
+  push:
+    tags:
+      - 'chart-v*'
+
+jobs:
+  chart-releaser:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      - name: Install Helm
+        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3.5
+      - name: Set version
+        run: |
+          set -e
+          TAG=${{ github.ref_name }}
+          echo "CHART_VERSION=${TAG#chart-}" >> $GITHUB_ENV
+      - name: Run chart-releaser
+        uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 #v1.7.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          linting: off
+          charts_dir: charts
+          chart_version: ${{ env.CHART_VERSION }}

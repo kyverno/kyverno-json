@@ -1,0 +1,365 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.6.0",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_cloudwatch_log_group.example",
+          "mode": "managed",
+          "type": "aws_cloudwatch_log_group",
+          "name": "example",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "kms_key_id": null,
+            "name": "example",
+            "retention_in_days": 0,
+            "skip_destroy": false,
+            "tags": null
+          },
+          "sensitive_values": {
+            "tags_all": {}
+          }
+        },
+        {
+          "address": "aws_ecs_cluster.test",
+          "mode": "managed",
+          "type": "aws_ecs_cluster",
+          "name": "test",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "configuration": [
+              {
+                "execute_command_configuration": [
+                  {
+                    "log_configuration": [
+                      {
+                        "cloud_watch_encryption_enabled": true,
+                        "cloud_watch_log_group_name": "example",
+                        "s3_bucket_encryption_enabled": null,
+                        "s3_bucket_name": null,
+                        "s3_key_prefix": null
+                      }
+                    ],
+                    "logging": "OVERRIDE"
+                  }
+                ]
+              }
+            ],
+            "name": "example",
+            "service_connect_defaults": [],
+            "setting": [
+              {
+                "name": "containerInsights",
+                "value": "enabled"
+              }
+            ],
+            "tags": null
+          },
+          "sensitive_values": {
+            "configuration": [
+              {
+                "execute_command_configuration": [
+                  {
+                    "log_configuration": [
+                      {}
+                    ]
+                  }
+                ]
+              }
+            ],
+            "service_connect_defaults": [],
+            "setting": [
+              {}
+            ],
+            "tags_all": {}
+          }
+        },
+        {
+          "address": "aws_kms_key.example",
+          "mode": "managed",
+          "type": "aws_kms_key",
+          "name": "example",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "bypass_policy_lockout_safety_check": false,
+            "custom_key_store_id": null,
+            "customer_master_key_spec": "SYMMETRIC_DEFAULT",
+            "deletion_window_in_days": 7,
+            "description": "example",
+            "enable_key_rotation": false,
+            "is_enabled": true,
+            "key_usage": "ENCRYPT_DECRYPT",
+            "tags": null
+          },
+          "sensitive_values": {
+            "tags_all": {}
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_cloudwatch_log_group.example",
+      "mode": "managed",
+      "type": "aws_cloudwatch_log_group",
+      "name": "example",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "kms_key_id": null,
+          "name": "example",
+          "retention_in_days": 0,
+          "skip_destroy": false,
+          "tags": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "name_prefix": true,
+          "tags_all": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_ecs_cluster.test",
+      "mode": "managed",
+      "type": "aws_ecs_cluster",
+      "name": "test",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "configuration": [
+            {
+              "execute_command_configuration": [
+                {
+                  "log_configuration": [
+                    {
+                      "cloud_watch_encryption_enabled": true,
+                      "cloud_watch_log_group_name": "example",
+                      "s3_bucket_encryption_enabled": null,
+                      "s3_bucket_name": null,
+                      "s3_key_prefix": null
+                    }
+                  ],
+                  "logging": "OVERRIDE"
+                }
+              ]
+            }
+          ],
+          "name": "example",
+          "service_connect_defaults": [],
+          "setting": [
+            {
+              "name": "containerInsights",
+              "value": "enabled"
+            }
+          ],
+          "tags": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "configuration": [
+            {
+              "execute_command_configuration": [
+                {
+                  "kms_key_id": true,
+                  "log_configuration": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ],
+          "id": true,
+          "service_connect_defaults": [],
+          "setting": [
+            {}
+          ],
+          "tags_all": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "configuration": [
+            {
+              "execute_command_configuration": [
+                {
+                  "log_configuration": [
+                    {}
+                  ]
+                }
+              ]
+            }
+          ],
+          "service_connect_defaults": [],
+          "setting": [
+            {}
+          ],
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_kms_key.example",
+      "mode": "managed",
+      "type": "aws_kms_key",
+      "name": "example",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bypass_policy_lockout_safety_check": false,
+          "custom_key_store_id": null,
+          "customer_master_key_spec": "SYMMETRIC_DEFAULT",
+          "deletion_window_in_days": 7,
+          "description": "example",
+          "enable_key_rotation": false,
+          "is_enabled": true,
+          "key_usage": "ENCRYPT_DECRYPT",
+          "tags": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "key_id": true,
+          "multi_region": true,
+          "policy": true,
+          "tags_all": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags_all": {}
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws"
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_cloudwatch_log_group.example",
+          "mode": "managed",
+          "type": "aws_cloudwatch_log_group",
+          "name": "example",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "constant_value": "example"
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_ecs_cluster.test",
+          "mode": "managed",
+          "type": "aws_ecs_cluster",
+          "name": "test",
+          "provider_config_key": "aws",
+          "expressions": {
+            "configuration": [
+              {
+                "execute_command_configuration": [
+                  {
+                    "kms_key_id": {
+                      "references": [
+                        "aws_kms_key.example.arn",
+                        "aws_kms_key.example"
+                      ]
+                    },
+                    "log_configuration": [
+                      {
+                        "cloud_watch_encryption_enabled": {
+                          "constant_value": true
+                        },
+                        "cloud_watch_log_group_name": {
+                          "references": [
+                            "aws_cloudwatch_log_group.example.name",
+                            "aws_cloudwatch_log_group.example"
+                          ]
+                        }
+                      }
+                    ],
+                    "logging": {
+                      "constant_value": "OVERRIDE"
+                    }
+                  }
+                ]
+              }
+            ],
+            "name": {
+              "constant_value": "example"
+            },
+            "setting": [
+              {
+                "name": {
+                  "constant_value": "containerInsights"
+                },
+                "value": {
+                  "constant_value": "enabled"
+                }
+              }
+            ]
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_kms_key.example",
+          "mode": "managed",
+          "type": "aws_kms_key",
+          "name": "example",
+          "provider_config_key": "aws",
+          "expressions": {
+            "deletion_window_in_days": {
+              "constant_value": 7
+            },
+            "description": {
+              "constant_value": "example"
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "aws_kms_key.example",
+      "attribute": [
+        "arn"
+      ]
+    },
+    {
+      "resource": "aws_cloudwatch_log_group.example",
+      "attribute": [
+        "name"
+      ]
+    }
+  ],
+  "timestamp": "2023-10-05T08:06:11Z",
+  "errored": false
+}

@@ -1,0 +1,26 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: required-latest-platform-fargate
+  labels:
+    ecs.aws.tags.kyverno.io: 'ecs-service'
+  annotations:
+    title.policy.kyverno.io: ECS require latest platform fargate
+    description.policy.kyverno.io: This Policy ensures that ECS Fargate services runs on the latest Fargate platform version.
+spec:
+  rules:
+    - name: required-latest-platform
+      match:
+        any:
+        - type: aws_ecs_service
+          values:
+            launch_type: FARGATE
+      context:
+      - name: pv
+        variable: platform_version
+      assert:
+        all:
+        - message: "ECS Fargate services should run on the latest Fargate platform version"
+          check: 
+            values:
+              platform_version: 'LATEST'
