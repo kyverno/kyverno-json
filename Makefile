@@ -42,8 +42,8 @@ HELM_VERSION                       := v3.10.1
 KO                                 := $(TOOLS_DIR)/ko
 KO_VERSION                         := v0.14.1
 TOOLS                              := $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) $(REGISTER_GEN) $(DEEPCOPY_GEN) $(CONTROLLER_GEN) $(REFERENCE_DOCS) $(KIND) $(HELM) $(KO)
-PYTHON_VENV                        ?= "./.python-venv"
-PIP                                ?= "$(PYTHON_VENV)/bin/pip"
+PYTHON_VENV                        ?= $(PWD)/.python-venv
+PIP                                ?= $(PWD)/.python-venv/bin/pip
 ifeq ($(GOOS), darwin)
 SED                                := gsed
 else
