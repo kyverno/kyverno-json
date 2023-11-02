@@ -117,6 +117,10 @@ spec:
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
                       type: object
+                    identifier:
+                      description: Identifier declares a JMESPath expression to extract
+                        a name from the payload.
+                      type: string
                     match:
                       description: Match defines when this policy rule should be applied.
                       properties:

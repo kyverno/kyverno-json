@@ -21,7 +21,6 @@ type options struct {
 	preprocessors []string
 	policies      []string
 	selectors     []string
-	identifier    string
 }
 
 func (c *options) run(cmd *cobra.Command, _ []string) error {
@@ -75,28 +74,18 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	fmt.Fprintln(out, "Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
 	e := jsonengine.New()
-	responses := e.Run(context.Background(), jsonengine.JsonEngineRequest{
+	responses := e.Run(context.Background(), jsonengine.Request{
 		Resources: resources,
 		Policies:  policies,
 	})
 	for _, response := range responses {
-		resourceName := "(unknown)"
-		if c.identifier != "" {
-			result, err := template.Execute(context.Background(), c.identifier, response.Resource, nil)
-			if err != nil {
-				resourceName = fmt.Sprintf("(error: %s)", err)
-			} else {
-				resourceName = fmt.Sprint(result)
-			}
-		}
-		if response.Failure != nil {
-			fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "ERROR:", response.Failure)
+		if response.Result == jsonengine.StatusFail {
+			fmt.Fprintln(out, "-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "FAILED:", response.Message)
+		} else if response.Result == jsonengine.StatusError {
+			fmt.Fprintln(out, "-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "ERROR:", response.Message)
 		} else {
-			if response.Error == nil {
-				fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "PASSED")
-			} else {
-				fmt.Fprintln(out, "-", response.Policy.Name, "/", response.Rule.Name, "/", resourceName, "FAILED:", response.Error)
-			}
+			// TODO: handle skip, warn
+			fmt.Fprintln(out, "-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "PASSED")
 		}
 	}
 	fmt.Fprintln(out, "Done")

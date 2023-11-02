@@ -18,6 +18,10 @@ type ValidatingRule struct {
 	// +optional
 	Exclude *Match `json:"exclude,omitempty"`
 
+	// Identifier declares a JMESPath expression to extract a name from the payload.
+	// +optional
+	Identifier string `json:"identifier,omitempty"`
+
 	// Assert is used to validate matching resources.
 	Assert *Assert `json:"assert"`
 }
