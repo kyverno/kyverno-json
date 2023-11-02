@@ -4,7 +4,7 @@
 
 `kyverno-json` applies Kyverno policies to any JSON or YAML payload.
 
-<a href="https://kyverno.github.io/kyverno-json" rel="https://kyverno.github.io/kyverno-json">![logo](website/docs/static/kyverno-json-horizontal.png)</a>
+<a href="https://kyverno.github.io/kyverno-json" rel="https://kyverno.github.io/kyverno-json">![logo](.assets/kyverno-json-horizontal.png)</a>
 
 Use Kyverno's powerful, declarative, low-code policies to validate any runtime or configuration data that can be converted to JSON including:
 * Terraform files
