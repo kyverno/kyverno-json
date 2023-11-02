@@ -4,13 +4,29 @@ Kyverno for JSON
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
 
-## About
+## Kyverno everywhere! 🎉
 
-TODO
+`kyverno-json` applies Kyverno policies to any JSON or YAML payload.
 
-## Features
+<a href="https://kyverno.github.io/kyverno-json" rel="https://kyverno.github.io/kyverno-json">![logo](website/docs/static/kyverno-json-horizontal.png)</a>
 
-TODO
+Use Kyverno's powerful, declarative, low-code policies to validate any runtime or configuration data that can be converted to JSON including:
+* Terraform files
+* Dockerfiles
+* Cloud configurations
+* Service authorization requests
+
+This chart deploys the `kyverno-json` [API](https://kyverno.github.io/kyverno-json/webapp).
+
+## 📙 Documentation
+
+Documentation is available at: https://kyverno.github.io/kyverno-json
+
+👉 **[Quick Start](https://kyverno.github.io/kyverno-json/quick-start/)**
+
+👉 **[Sample Policies](https://kyverno.github.io/kyverno-json/catalog/)**
+
+👉 **[Playground](https://kyverno.github.io/kyverno-json/playground/)**
 
 ## Installing the Chart
 
