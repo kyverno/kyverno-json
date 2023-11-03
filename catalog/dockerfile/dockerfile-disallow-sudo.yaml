@@ -1,0 +1,18 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: dockerfile-disallow-sudo
+  labels:
+    dockerfile.tags.kyverno.io: 'dockerfile'
+  annotations:
+    title.policy.kyverno.io: Ensure sudo is not used in Dockerfile
+    description.policy.kyverno.io: This Policy ensures that sudo isn’t used.
+spec:
+  rules:
+    - name: dockerfile-disallow-sudo
+      assert:
+        all:
+        - message: "sudo not allowed"
+          check:
+            ~.(Stages[].Commands[].CmdLine[]):
+              (contains(@, 'sudo')) : false 
