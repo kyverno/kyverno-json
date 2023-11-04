@@ -32,6 +32,7 @@ metadata:
 spec:
   rules:
   - name: delete-checks
+    identifier: "name"
     match:
       all:
         (input.method): "DELETE"

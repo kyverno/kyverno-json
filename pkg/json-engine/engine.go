@@ -2,38 +2,55 @@ package jsonengine
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/loop"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
+	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"go.uber.org/multierr"
 )
 
-type JsonEngineRequest struct {
+type Request struct {
 	Resources []interface{}
 	Policies  []*v1alpha1.ValidatingPolicy
 }
 
-type JsonEngineResponse struct {
-	Policy   *v1alpha1.ValidatingPolicy
-	Rule     v1alpha1.ValidatingRule
-	Resource interface{}
-	Failure  error
-	Error    error
+type Response struct {
+	Results []RuleResponse `json:"results"`
 }
 
-func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
-	type request struct {
-		policy   *v1alpha1.ValidatingPolicy
-		rule     v1alpha1.ValidatingRule
-		value    interface{}
-		bindings binding.Bindings
-	}
-	looper := func(r JsonEngineRequest) []request {
+type RuleResponse struct {
+	PolicyName string       `json:"policy"`
+	RuleName   string       `json:"rule"`
+	Identifier string       `json:"identifier,omitempty"`
+	Result     PolicyResult `json:"result"`
+	Message    string       `json:"message"`
+}
+
+// PolicyResult specifies state of a policy result
+type PolicyResult string
+
+const (
+	StatusPass  PolicyResult = "pass"
+	StatusFail  PolicyResult = "fail"
+	StatusWarn  PolicyResult = "warn"
+	StatusError PolicyResult = "error"
+	StatusSkip  PolicyResult = "skip"
+)
+
+type request struct {
+	policy   *v1alpha1.ValidatingPolicy
+	rule     v1alpha1.ValidatingRule
+	value    interface{}
+	bindings jpbinding.Bindings
+}
+
+func New() engine.Engine[Request, RuleResponse] {
+	looper := func(r Request) []request {
 		var requests []request
 		bindings := jpbinding.NewBindings()
 		for _, resource := range r.Resources {
@@ -55,18 +72,9 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 		return requests
 	}
 	inner := builder.
-		Function(func(ctx context.Context, r request) JsonEngineResponse {
-			response := JsonEngineResponse{
-				Policy:   r.policy,
-				Rule:     r.rule,
-				Resource: r.value,
-			}
+		Function(func(ctx context.Context, r request) RuleResponse {
 			errs, err := assert.MatchAssert(ctx, nil, r.rule.Assert, r.value, r.bindings)
-			if err != nil {
-				response.Error = err
-			} else if err := multierr.Combine(errs...); err != nil {
-				response.Failure = err
-			}
+			response := buildResponse(r, errs, err)
 			return response
 		}).
 		Predicate(func(ctx context.Context, r request) bool {
@@ -74,6 +82,7 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 				return true
 			}
 			errs, err := assert.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
+			// TODO: handle error and skip
 			return err == nil && len(errs) != 0
 		}).
 		Predicate(func(ctx context.Context, r request) bool {
@@ -81,8 +90,39 @@ func New() engine.Engine[JsonEngineRequest, JsonEngineResponse] {
 				return true
 			}
 			errs, err := assert.Match(ctx, nil, r.rule.Match, r.value, r.bindings)
+			// TODO: handle error and skip
 			return err == nil && len(errs) == 0
 		})
 	// TODO: we can't use the builder package for loops :(
 	return loop.New(inner, looper)
+}
+
+func buildResponse(req request, fails []error, ruleErr error) RuleResponse {
+	response := RuleResponse{
+		PolicyName: req.policy.Name,
+		RuleName:   req.rule.Name,
+	}
+
+	response.Identifier = ""
+	if req.rule.Identifier != "" {
+		result, subjectErr := template.Execute(context.Background(), req.rule.Identifier, req.value, nil)
+		if subjectErr != nil {
+			response.Identifier = fmt.Sprintf("(error: %s)", subjectErr)
+		} else {
+			response.Identifier = fmt.Sprint(result)
+		}
+	}
+
+	if ruleErr != nil {
+		response.Result = StatusError
+		response.Message = ruleErr.Error()
+	} else if err := multierr.Combine(fails...); err != nil {
+		response.Result = StatusFail
+		response.Message = err.Error()
+	} else {
+		// TODO: handle skip result
+		response.Result = StatusPass
+	}
+
+	return response
 }

@@ -15,7 +15,7 @@ import (
 )
 
 func newHandler() (gin.HandlerFunc, error) {
-	return tonic.Handler(func(ctx *gin.Context, in *Request) (*Response, error) {
+	return tonic.Handler(func(ctx *gin.Context, in *Request) (*jsonengine.Response, error) {
 		// check input
 		if in == nil {
 			return nil, errors.New("input is null")
@@ -56,10 +56,10 @@ func newHandler() (gin.HandlerFunc, error) {
 		}
 		// run engine
 		e := jsonengine.New()
-		results := e.Run(context.Background(), jsonengine.JsonEngineRequest{
+		results := e.Run(context.Background(), jsonengine.Request{
 			Resources: resources,
 			Policies:  []*v1alpha1.ValidatingPolicy{&policy},
 		})
-		return makeResponse(results...), nil
+		return &jsonengine.Response{Results: results}, nil
 	}, http.StatusOK), nil
 }

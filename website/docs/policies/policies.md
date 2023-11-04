@@ -43,6 +43,7 @@ metadata:
 spec:
   rules:
     - name: require-team-tag
+      identifier: address
       match:
         any:
         - type: aws_s3_bucket
@@ -59,9 +60,13 @@ spec:
 
 In the example above, every *resource* having `type: aws_s3_bucket` will match, and *payloads* having `name: bypass-me` will be excluded.
 
+## Identifying Payload Entries
+
+A policy rule can contain an optional `identifier` which declares the path to the payload element that uniquely identifies each entry.
+
 ## Context Entries
 
-A policy rule can contain `context` entries are made available to the rule via bindings:
+A policy rule can contain optional `context` entries that are made available to the rule via bindings:
 
 ```yaml
 apiVersion: json.kyverno.io/v1alpha1

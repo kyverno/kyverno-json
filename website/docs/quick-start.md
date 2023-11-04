@@ -1,5 +1,7 @@
 # Quick Start
 
+See [Install](./install.md) for the available options to install the CLI.
+
 ## Validate a Terraform Plan
 
 In this example we will use a Kyverno policy to validate a Terraform plan:
@@ -86,7 +88,7 @@ Loading policies ...
 Loading payload ...
 Pre processing ...
 Running ( evaluating 1 resource against 1 policy ) ...
-- s3 / check-tags / (unknown) FAILED: all[0].check.planned_values.root_module.~.resources[0].values.(keys(tags_all)).(contains(@, 'Team')): Invalid value: false: Expected value: true
+- s3 / check-tags /  FAILED: all[0].check.planned_values.root_module.~.resources[0].values.(keys(tags_all)).(contains(@, 'Team')): Invalid value: false: Expected value: true
 Done
 ```
 
