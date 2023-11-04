@@ -5,10 +5,12 @@ name: Tests
 permissions: {}
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
-      - 'main'
-      - 'release*'
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -26,3 +28,9 @@ jobs:
           cache-dependency-path: go.sum
       - name: Run tests
         run: make tests
+      - name: Upload Report to Codecov
+        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
+        with:
+          file: ./coverage.out
+          fail_ci_if_error: true
+          verbose: true

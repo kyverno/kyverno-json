@@ -1,6 +1,7 @@
 .DS_Store
 .tools
 .gopath
+coverage.out
 /kyverno-json
 /pkg/server/ui/dist/assets/main.wasm
 /website/docs/_playground
