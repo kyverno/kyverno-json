@@ -17,6 +17,7 @@ metadata:
 spec:
   rules:
   - name: delete-checks
+    identifier: "name"
     match:
       all:
         (input.method): "DELETE"
@@ -27,6 +28,7 @@ spec:
 `
 
 func main() {
+	// load policies
 	policies, err := policy.Parse([]byte(policyYAML))
 	if err != nil {
 		panic(err)
@@ -47,27 +49,27 @@ func main() {
 		panic(err)
 	}
 
-	// create a JsonEngineRequest
-	request := jsonengine.JsonEngineRequest{
+	// create a Request
+	request := jsonengine.Request{
 		Resources: []interface{}{payload},
 		Policies:  policies,
 	}
 
-	// create a J
+	// create an engine
 	engine := jsonengine.New()
 
+	// apply polices to get the response
 	responses := engine.Run(context.Background(), request)
 
+	// process the engine response
 	logger := log.Default()
-	for _, resp := range responses {
-		if resp.Error != nil {
-			// ...handle execution error
-			logger.Printf("policy error: %v", resp.Error)
-		}
-
-		if resp.Failure != nil {
-			// ...handle policy failure
-			logger.Printf("policy failure: %v", resp.Failure)
+	for _, r := range responses {
+		if r.Result == jsonengine.StatusFail {
+			logger.Printf("fail: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
+		} else if r.Result == jsonengine.StatusError {
+			logger.Printf("error: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
+		} else {
+			logger.Printf("%s: %s/%s -> %s", r.Result, r.PolicyName, r.RuleName, r.Identifier)
 		}
 	}
 }

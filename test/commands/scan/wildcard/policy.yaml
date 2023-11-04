@@ -5,6 +5,7 @@ metadata:
 spec:
   rules:
     - name: require-team-tag
+      identifier: "name"
       match:
         any:
         - type: aws_s3_bucket

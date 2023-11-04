@@ -12,6 +12,7 @@ spec:
         any:
         - apiVersion: v1
           kind: Pod
+      identifier: "metadata.name"
       assert:
         all:
         - check:

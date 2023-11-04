@@ -15,7 +15,6 @@ func Test_Execute(t *testing.T) {
 		payload       string
 		preprocessors []string
 		policies      []string
-		identifier    string
 		wantErr       bool
 		out           string
 	}{{
@@ -25,26 +24,23 @@ func Test_Execute(t *testing.T) {
 		out:      "../../../test/commands/scan/foo-bar/out.txt",
 		wantErr:  false,
 	}, {
-		name:       "wildcard",
-		payload:    "../../../test/commands/scan/wildcard/payload.json",
-		policies:   []string{"../../../test/commands/scan/wildcard/policy.yaml"},
-		identifier: "name",
-		out:        "../../../test/commands/scan/wildcard/out.txt",
-		wantErr:    false,
+		name:     "wildcard",
+		payload:  "../../../test/commands/scan/wildcard/payload.json",
+		policies: []string{"../../../test/commands/scan/wildcard/policy.yaml"},
+		out:      "../../../test/commands/scan/wildcard/out.txt",
+		wantErr:  false,
 	}, {
-		name:       "pod-no-latest",
-		payload:    "../../../test/commands/scan/pod-no-latest/payload.yaml",
-		policies:   []string{"../../../test/commands/scan/pod-no-latest/policy.yaml"},
-		identifier: "metadata.name",
-		out:        "../../../test/commands/scan/pod-no-latest/out.txt",
-		wantErr:    false,
+		name:     "pod-no-latest",
+		payload:  "../../../test/commands/scan/pod-no-latest/payload.yaml",
+		policies: []string{"../../../test/commands/scan/pod-no-latest/policy.yaml"},
+		out:      "../../../test/commands/scan/pod-no-latest/out.txt",
+		wantErr:  false,
 	}, {
-		name:       "pod-all-latest",
-		payload:    "../../../test/commands/scan/pod-all-latest/payload.yaml",
-		policies:   []string{"../../../test/commands/scan/pod-all-latest/policy.yaml"},
-		identifier: "metadata.name",
-		out:        "../../../test/commands/scan/pod-all-latest/out.txt",
-		wantErr:    false,
+		name:     "pod-all-latest",
+		payload:  "../../../test/commands/scan/pod-all-latest/payload.yaml",
+		policies: []string{"../../../test/commands/scan/pod-all-latest/policy.yaml"},
+		out:      "../../../test/commands/scan/pod-all-latest/out.txt",
+		wantErr:  false,
 	}, {
 		name:     "scripted",
 		payload:  "../../../test/commands/scan/scripted/payload.yaml",
@@ -56,7 +52,6 @@ func Test_Execute(t *testing.T) {
 		payload:       "../../../test/commands/scan/payload-yaml/payload.yaml",
 		preprocessors: []string{"planned_values.root_module.resources"},
 		policies:      []string{"../../../test/commands/scan/payload-yaml/policy.yaml"},
-		identifier:    "address",
 		out:           "../../../test/commands/scan/payload-yaml/out.txt",
 		wantErr:       false,
 	}, {
@@ -64,7 +59,6 @@ func Test_Execute(t *testing.T) {
 		payload:       "../../../test/commands/scan/tf-plan/payload.json",
 		preprocessors: []string{"planned_values.root_module.resources"},
 		policies:      []string{"../../../test/commands/scan/tf-plan/policy.yaml"},
-		identifier:    "address",
 		out:           "../../../test/commands/scan/tf-plan/out.txt",
 		wantErr:       false,
 	}, {
@@ -141,9 +135,6 @@ func Test_Execute(t *testing.T) {
 				args = append(args, "--policy", policy)
 			}
 			args = append(args, "--payload", tt.payload)
-			if tt.identifier != "" {
-				args = append(args, "--identifier", tt.identifier)
-			}
 			cmd.SetArgs(args)
 			out := bytes.NewBufferString("")
 			cmd.SetOut(out)
