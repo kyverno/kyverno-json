@@ -19,16 +19,14 @@ Download the pre-compiled binaries from the [releases page](https://github.com/k
 **clone the repository:**
 
 ```bash
-git clone github.com/kyverno/kyverno-json
+git clone https://github.com/kyverno/kyverno-json.git
 ```
 
 **build the binaries:**
 
 ```bash
 cd kyverno-json
-```
-
-```bash
+go mod tidy
 make build
 ```
 
