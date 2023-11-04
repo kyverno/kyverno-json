@@ -2,7 +2,7 @@
 
 name: Helm install
 
-# permissions: {}
+permissions: {}
 
 on:
   pull_request:
