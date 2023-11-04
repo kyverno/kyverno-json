@@ -2,7 +2,7 @@
 
 name: Helm Release
 
-# permissions: {}
+permissions: {}
 
 on:
   push:

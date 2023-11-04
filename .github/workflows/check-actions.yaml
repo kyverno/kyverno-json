@@ -2,7 +2,7 @@
 
 name: Check actions
 
-# permissions: {}
+permissions: {}
 
 on:
   pull_request:

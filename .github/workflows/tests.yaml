@@ -2,7 +2,7 @@
 
 name: Tests
 
-# permissions: {}
+permissions: {}
 
 on:
   pull_request:

@@ -2,7 +2,7 @@
 
 name: ArtifactHub Lint
 
-# permissions: {}
+permissions: {}
 
 on:
   pull_request:

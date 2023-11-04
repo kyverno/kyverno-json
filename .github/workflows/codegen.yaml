@@ -2,7 +2,7 @@
 
 name: Verify codegen
 
-# permissions: {}
+permissions: {}
 
 on:
   pull_request:

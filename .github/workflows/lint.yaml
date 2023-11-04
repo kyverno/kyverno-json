@@ -2,7 +2,7 @@
 
 name: Lint
 
-# permissions: {}
+permissions: {}
 
 on:
   pull_request:
