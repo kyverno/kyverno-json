@@ -1,6 +1,13 @@
 # categories
-dockerfile:
-  # names
+Dockerfile:
   check-dockerfile:
     policy:   test/commands/scan/dockerfile/policy.yaml
     payload:  test/commands/scan/dockerfile/payload.json
+Terraform:
+  terraform-s3:
+    policy:   test/commands/scan/tf-s3/policy.yaml
+    payload:  test/commands/scan/tf-s3/payload.json
+Kubernetes:
+  pod-no-latest:
+    policy:   test/commands/scan/pod-no-latest/policy.yaml
+    payload:  test/commands/scan/pod-no-latest/payload.yaml
