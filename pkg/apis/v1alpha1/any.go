@@ -22,6 +22,15 @@ func (in *Any) DeepCopyInto(out *Any) {
 	}
 }
 
+func (in *Any) DeepCopy() *Any {
+	if in == nil {
+		return nil
+	}
+	out := new(Any)
+	in.DeepCopyInto(out)
+	return out
+}
+
 func (a *Any) MarshalJSON() ([]byte, error) {
 	return json.Marshal(a.Value)
 }
