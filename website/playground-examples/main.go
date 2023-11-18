@@ -1,11 +1,13 @@
 package main
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"gopkg.in/yaml.v2"
 )
@@ -71,6 +73,21 @@ func main() {
 			})
 		}
 	}
+	slices.SortFunc(examples.Examples, func(a, b Example) int {
+		if c := cmp.Compare(a.Category, b.Category); c != 0 {
+			return c
+		}
+		if c := cmp.Compare(a.Name, b.Name); c != 0 {
+			return c
+		}
+		if c := cmp.Compare(a.Policy, b.Policy); c != 0 {
+			return c
+		}
+		if c := cmp.Compare(a.Payload, b.Payload); c != 0 {
+			return c
+		}
+		return 0
+	})
 	data, err := json.MarshalIndent(&examples, "", "  ")
 	if err != nil {
 		panic(err)
