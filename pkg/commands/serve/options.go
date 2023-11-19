@@ -47,7 +47,7 @@ func (c *options) Run(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	restConfig, err := restutils.RestConfig(c.clusterFlags.kubeConfigOverrides)
+	restConfig, err := restutils.Config(c.clusterFlags.kubeConfigOverrides)
 	if err != nil {
 		return err
 	}
