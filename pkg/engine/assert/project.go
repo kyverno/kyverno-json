@@ -2,7 +2,6 @@ package assert
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
@@ -33,26 +32,28 @@ func project(ctx context.Context, key interface{}, value interface{}, bindings b
 			}, nil
 		} else {
 			if reflectutils.GetKind(value) == reflect.Map {
-				projected := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
-				if !projected.IsValid() {
-					return nil, fmt.Errorf("failed to find the map index `%s`", expression.statement)
+				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
+				var value interface{}
+				if mapValue.IsValid() {
+					value = mapValue.Interface()
 				}
 				return &projection{
 					foreach:     expression.foreach,
 					foreachName: expression.foreachName,
 					binding:     expression.binding,
-					result:      projected.Interface(),
+					result:      value,
 				}, nil
 			}
 		}
 	}
 	if reflectutils.GetKind(value) == reflect.Map {
-		projected := reflect.ValueOf(value).MapIndex(reflect.ValueOf(key))
-		if !projected.IsValid() {
-			return nil, fmt.Errorf("failed to find the map index `%v`", key)
+		mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(key))
+		var value interface{}
+		if mapValue.IsValid() {
+			value = mapValue.Interface()
 		}
 		return &projection{
-			result: projected.Interface(),
+			result: value,
 		}, nil
 	}
 	// TODO is this an error ?
