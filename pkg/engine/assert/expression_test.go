@@ -2,8 +2,9 @@ package assert
 
 import (
 	"context"
-	"reflect"
 	"testing"
+
+	tassert "github.com/stretchr/testify/assert"
 )
 
 func Test_parseExpressionRegex(t *testing.T) {
@@ -170,9 +171,8 @@ func Test_parseExpressionRegex(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := parseExpressionRegex(context.Background(), tt.in); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parseExpressionRegex() = %v, want %v", got, tt.want)
-			}
+			got := parseExpressionRegex(context.Background(), tt.in)
+			tassert.Equal(t, tt.want, got)
 		})
 	}
 }
