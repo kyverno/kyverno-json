@@ -98,7 +98,9 @@ type sliceNode []Assertion
 
 func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
 	var errs field.ErrorList
-	if reflectutils.GetKind(value) != reflect.Slice {
+	if value == nil {
+		errs = append(errs, field.Invalid(path, value, "value is null"))
+	} else if reflectutils.GetKind(value) != reflect.Slice {
 		return nil, field.TypeInvalid(path, value, "expected a slice")
 	} else {
 		valueOf := reflect.ValueOf(value)
