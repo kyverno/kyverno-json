@@ -8,6 +8,10 @@ import (
 func MatchScalar(expected, actual interface{}) (bool, error) {
 	if actual == nil && expected == nil {
 		return true, nil
+	} else if actual == nil && expected != nil {
+		return false, nil
+	} else if actual != nil && expected == nil {
+		return false, nil
 	}
 	if actual == expected {
 		return true, nil
