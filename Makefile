@@ -241,7 +241,8 @@ codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog 
 codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@echo Generate mkdocs website... >&2
 	@$(PIP) install mkdocs
-	@$(PIP) install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin
+	@$(PIP) install --upgrade pip
+	@$(PIP) install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin mike
 	@mkdocs build -f ./website/mkdocs.yaml
 
 .PHONY: codegen-schemas-openapi
@@ -309,6 +310,18 @@ verify-codegen: codegen ## Verify all generated code and docs are up to date
 	@echo 'If this test fails, it is because the git diff is non-empty after running "make codegen".' >&2
 	@echo 'To correct this, locally run "make codegen", commit the changes, and re-run tests.' >&2
 	@git diff --quiet --exit-code -- .
+
+##########
+# MKDOCS #
+##########
+
+.PHONY: mkdocs-serve
+mkdocs-serve: ## Generate and serve mkdocs website
+	@echo Generate and servemkdocs website... >&2
+	@$(PIP) install mkdocs
+	@$(PIP) install --upgrade pip
+	@$(PIP) install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin mike
+	@mkdocs serve -f ./website/mkdocs.yaml
 
 ########
 # TEST #

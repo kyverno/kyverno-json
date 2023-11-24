@@ -17,3 +17,7 @@ Release notes for `TODO`.
 
 ## :guitar: Misc :guitar:
 -->
+
+## :books: Docs :books:
+
+- Added multi version docs support

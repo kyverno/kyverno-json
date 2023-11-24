@@ -15,5 +15,7 @@ Release notes for `TODO`.
 
 ## :wrench: Fixes :wrench:
 
+## :books: Docs :books:
+
 ## :guitar: Misc :guitar:
 -->
