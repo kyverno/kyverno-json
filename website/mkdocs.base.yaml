@@ -20,6 +20,11 @@ strict: true
 extra_css:
 - static/extra.css
 
+# version
+extra:
+  version:
+    provider: mike
+
 theme:
   name: material
   custom_dir: docs/overrides
