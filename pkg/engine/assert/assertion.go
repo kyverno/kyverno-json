@@ -4,9 +4,10 @@ import (
 	"context"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 type Assertion interface {
-	assert(context.Context, *field.Path, interface{}, binding.Bindings) (field.ErrorList, error)
+	assert(context.Context, *field.Path, interface{}, binding.Bindings, ...template.Option) (field.ErrorList, error)
 }
