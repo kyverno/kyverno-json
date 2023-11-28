@@ -35,3 +35,97 @@ func TestAny_DeepCopyInto(t *testing.T) {
 		})
 	}
 }
+
+func TestAny_MarshalJSON(t *testing.T) {
+	tests := []struct {
+		name    string
+		value   interface{}
+		want    []byte
+		wantErr bool
+	}{{
+		name:    "nil",
+		value:   nil,
+		want:    []byte("null"),
+		wantErr: false,
+	}, {
+		name:    "int",
+		value:   42,
+		want:    []byte("42"),
+		wantErr: false,
+	}, {
+		name:    "string",
+		value:   "foo",
+		want:    []byte(`"foo"`),
+		wantErr: false,
+	}, {
+		name:    "map",
+		value:   map[string]interface{}{"foo": 42},
+		want:    []byte(`{"foo":42}`),
+		wantErr: false,
+	}, {
+		name:    "error",
+		value:   func() {},
+		want:    nil,
+		wantErr: true,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := &Any{
+				Value: tt.value,
+			}
+			got, err := a.MarshalJSON()
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestAny_UnmarshalJSON(t *testing.T) {
+	tests := []struct {
+		name    string
+		data    []byte
+		want    *Any
+		wantErr bool
+	}{{
+		name:    "nil",
+		data:    []byte("null"),
+		want:    &Any{},
+		wantErr: false,
+	}, {
+		name:    "int",
+		data:    []byte("42"),
+		want:    &Any{Value: 42.0},
+		wantErr: false,
+	}, {
+		name:    "string",
+		data:    []byte(`"foo"`),
+		want:    &Any{Value: "foo"},
+		wantErr: false,
+	}, {
+		name:    "map",
+		data:    []byte(`{"foo":42}`),
+		want:    &Any{Value: map[string]interface{}{"foo": 42.0}},
+		wantErr: false,
+	}, {
+		name:    "error",
+		data:    []byte(`{"foo":`),
+		want:    nil,
+		wantErr: true,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			a := &Any{}
+			err := a.UnmarshalJSON(tt.data)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, a)
+			}
+		})
+	}
+}
