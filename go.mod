@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/aquilax/truncate v1.0.0
 	github.com/blang/semver/v4 v4.0.0
-	github.com/gin-contrib/cors v1.4.0
+	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmespath-community/go-jmespath v1.1.2-0.20231004164315-78945398586a
@@ -33,7 +33,7 @@ require (
 	github.com/antlr/antlr4/runtime/Go/antlr/v4 v4.0.0-20230305170008-8188dc5388df // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bytedance/sonic v1.10.0 // indirect
+	github.com/bytedance/sonic v1.10.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
@@ -111,7 +111,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
-	golang.org/x/arch v0.4.0 // indirect
+	golang.org/x/arch v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.13.0 // indirect
