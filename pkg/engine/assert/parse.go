@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
@@ -37,10 +38,10 @@ func Parse(ctx context.Context, assertion interface{}) Assertion {
 // it is responsible for projecting the analysed resource and passing the result to the descendant
 type mapNode map[interface{}]Assertion
 
-func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
+func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for k, v := range n {
-		projection, err := project(ctx, k, value, bindings)
+		projection, err := project(ctx, k, value, bindings, opts...)
 		if err != nil {
 			return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
 		} else {
@@ -56,7 +57,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}
 						if projection.foreachName != "" {
 							bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(i))
 						}
-						if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
+						if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
 							return nil, err
 						} else {
 							errs = append(errs, _errs...)
@@ -70,7 +71,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}
 						if projection.foreachName != "" {
 							bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(key))
 						}
-						if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings); err != nil {
+						if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings, opts...); err != nil {
 							return nil, err
 						} else {
 							errs = append(errs, _errs...)
@@ -80,7 +81,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}
 					return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projection.result, "expected a slice or a map")
 				}
 			} else {
-				if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)), projection.result, bindings); err != nil {
+				if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)), projection.result, bindings, opts...); err != nil {
 					return nil, err
 				} else {
 					errs = append(errs, _errs...)
@@ -96,7 +97,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}
 // if lengths match all descendants are evaluated with their corresponding items.
 type sliceNode []Assertion
 
-func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
+func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	if value == nil {
 		errs = append(errs, field.Invalid(path, value, "value is null"))
@@ -108,7 +109,7 @@ func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface
 			errs = append(errs, field.Invalid(path, value, "lengths of slices don't match"))
 		} else {
 			for i := range n {
-				if _errs, err := n[i].assert(ctx, path.Index(i), valueOf.Index(i).Interface(), bindings); err != nil {
+				if _errs, err := n[i].assert(ctx, path.Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
 					return nil, err
 				} else {
 					errs = append(errs, _errs...)
@@ -126,7 +127,7 @@ type scalarNode struct {
 	rhs interface{}
 }
 
-func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings jpbinding.Bindings) (field.ErrorList, error) {
+func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	rhs := n.rhs
 	expression := parseExpression(ctx, rhs)
 	// we only project if the expression uses the engine syntax
@@ -138,7 +139,7 @@ func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interfa
 		if expression.binding != "" {
 			return nil, field.Invalid(path, rhs, "binding is not supported on the RHS")
 		}
-		projected, err := template.Execute(ctx, expression.statement, value, bindings)
+		projected, err := template.Execute(ctx, expression.statement, value, bindings, opts...)
 		if err != nil {
 			return nil, field.InternalError(path, err)
 		}

@@ -14,7 +14,7 @@ import (
 // We should remove this dependency.
 // Either move the Match struct in this package or move this file in a more specific package.
 
-func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual interface{}, bindings binding.Bindings) ([]error, error) {
+func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual interface{}, bindings binding.Bindings, opts ...template.Option) ([]error, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return nil, field.Invalid(path, match, "an empty assert is not valid")
 	} else {
@@ -22,7 +22,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []error
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings)
+				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -31,7 +31,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 					break
 				}
 				if assertion.Message != "" {
-					msg := template.String(ctx, assertion.Message, actual, bindings)
+					msg := template.String(ctx, assertion.Message, actual, bindings, opts...)
 					msg += ": " + checkFails.ToAggregate().Error()
 					fails = append(fails, errors.New(msg))
 				} else {
@@ -46,13 +46,13 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []error
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings)
+				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
 				if len(checkFails) > 0 {
 					if assertion.Message != "" {
-						msg := template.String(ctx, assertion.Message, actual, bindings)
+						msg := template.String(ctx, assertion.Message, actual, bindings, opts...)
 						msg += ": " + checkFails.ToAggregate().Error()
 						fails = append(fails, errors.New(msg))
 					} else {
@@ -66,20 +66,20 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 	}
 }
 
-func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual interface{}, bindings binding.Bindings) (field.ErrorList, error) {
+func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return nil, field.Invalid(path, match, "an empty match is not valid")
 	} else {
 		var errs field.ErrorList
 		if len(match.Any) != 0 {
-			_errs, err := MatchAny(ctx, path.Child("any"), match.Any, actual, bindings)
+			_errs, err := MatchAny(ctx, path.Child("any"), match.Any, actual, bindings, opts...)
 			if err != nil {
 				return errs, err
 			}
 			errs = append(errs, _errs...)
 		}
 		if len(match.All) != 0 {
-			_errs, err := MatchAll(ctx, path.Child("all"), match.All, actual, bindings)
+			_errs, err := MatchAll(ctx, path.Child("all"), match.All, actual, bindings, opts...)
 			if err != nil {
 				return errs, err
 			}
@@ -89,10 +89,10 @@ func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual 
 	}
 }
 
-func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings) (field.ErrorList, error) {
+func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings)
+		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}
@@ -104,10 +104,10 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 	return errs, nil
 }
 
-func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings) (field.ErrorList, error) {
+func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings)
+		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}

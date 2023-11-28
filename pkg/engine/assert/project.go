@@ -16,11 +16,11 @@ type projection struct {
 	result      interface{}
 }
 
-func project(ctx context.Context, key interface{}, value interface{}, bindings binding.Bindings) (*projection, error) {
+func project(ctx context.Context, key interface{}, value interface{}, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
 	expression := parseExpression(ctx, key)
 	if expression != nil {
 		if expression.engine != "" {
-			projected, err := template.Execute(ctx, expression.statement, value, bindings)
+			projected, err := template.Execute(ctx, expression.statement, value, bindings, opts...)
 			if err != nil {
 				return nil, err
 			}

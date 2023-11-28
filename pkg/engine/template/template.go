@@ -14,14 +14,13 @@ import (
 var (
 	variable = regexp.MustCompile(`{{(.*?)}}`)
 	parser   = parsing.NewParser()
-	caller   = interpreter.NewFunctionCaller(GetFunctions(context.Background())...)
 )
 
-func String(ctx context.Context, in string, value interface{}, bindings binding.Bindings) string {
+func String(ctx context.Context, in string, value interface{}, bindings binding.Bindings, opts ...Option) string {
 	groups := variable.FindAllStringSubmatch(in, -1)
 	for _, group := range groups {
 		statement := strings.TrimSpace(group[1])
-		result, err := Execute(ctx, statement, value, bindings)
+		result, err := Execute(ctx, statement, value, bindings, opts...)
 		if err != nil {
 			in = strings.ReplaceAll(in, group[0], fmt.Sprintf("ERR (%s - %s)", statement, err))
 		} else if result == nil {
@@ -35,11 +34,12 @@ func String(ctx context.Context, in string, value interface{}, bindings binding.
 	return in
 }
 
-func Execute(ctx context.Context, statement string, value interface{}, bindings binding.Bindings) (interface{}, error) {
+func Execute(ctx context.Context, statement string, value interface{}, bindings binding.Bindings, opts ...Option) (interface{}, error) {
+	o := buildOptions(opts...)
 	vm := interpreter.NewInterpreter(nil, bindings)
 	compiled, err := parser.Parse(statement)
 	if err != nil {
 		return nil, err
 	}
-	return vm.Execute(compiled, value, interpreter.WithFunctionCaller(caller))
+	return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.functionCaller))
 }
