@@ -22,7 +22,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []error
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				checkFails, err := validate(ctx, path.Index(i).Child("check"), assertion.Check.Value, actual, bindings)
+				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings)
 				if err != nil {
 					return fails, err
 				}
@@ -46,7 +46,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []error
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				checkFails, err := validate(ctx, path.Index(i).Child("check"), assertion.Check.Value, actual, bindings)
+				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings)
 				if err != nil {
 					return fails, err
 				}
@@ -92,7 +92,7 @@ func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual 
 func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := validate(ctx, path.Index(i), assertion.Value, actual, bindings)
+		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings)
 		if err != nil {
 			return errs, err
 		}
@@ -107,7 +107,7 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := validate(ctx, path.Index(i), assertion.Value, actual, bindings)
+		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings)
 		if err != nil {
 			return errs, err
 		}
