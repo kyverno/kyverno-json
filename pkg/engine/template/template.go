@@ -36,10 +36,10 @@ func String(ctx context.Context, in string, value interface{}, bindings binding.
 }
 
 func Execute(ctx context.Context, statement string, value interface{}, bindings binding.Bindings) (interface{}, error) {
-	interpreter := interpreter.NewInterpreter(nil, caller, bindings)
+	vm := interpreter.NewInterpreter(nil, bindings)
 	compiled, err := parser.Parse(statement)
 	if err != nil {
 		return nil, err
 	}
-	return interpreter.Execute(compiled, value)
+	return vm.Execute(compiled, value, interpreter.WithFunctionCaller(caller))
 }
