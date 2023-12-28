@@ -16,18 +16,6 @@ builds:
     ldflags:
       - -s -w -X github.com/kyverno/kyverno-json/pkg/version.BuildVersion={{ .Version }}
 
-signs:
-  - cmd: cosign
-    certificate: '${artifact}.pem'
-    args:
-      - sign-blob
-      - --output-certificate=${certificate}
-      - --output-signature=${signature}
-      - ${artifact}
-      - --yes
-    artifacts: all
-    output: true
-
 kos:
   - build: kyverno-json
     repository: ghcr.io/kyverno/kyverno-json
@@ -40,6 +28,18 @@ kos:
     platforms:
       - all
 
+signs:
+  - cmd: cosign
+    certificate: '${artifact}.pem'
+    args:
+      - sign-blob
+      - --output-certificate=${certificate}
+      - --output-signature=${signature}
+      - ${artifact}
+      - --yes
+    artifacts: all
+    output: true
+
 docker_signs:
   - cmd: cosign
     artifacts: all
@@ -48,6 +48,20 @@ docker_signs:
       - sign
       - ${artifact}
       - --yes
+
+brews:
+  - homepage: https://kyverno.github.io/kyverno-json
+    description: Kyverno for any JSON-compatible payload.
+    repository:
+      owner: kyverno
+      name: kyverno-json
+      branch: brew-{{.Version}}
+      pull_request:
+        enabled: true
+        base:
+          owner: kyverno
+          name: kyverno-json
+          branch: main
 
 archives:
   - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
