@@ -71,11 +71,11 @@ Done
 <span class=w>        </span><span class=nt>any</span><span class=p>:</span>
 <span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
 <span class=w>          </span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Pod</span>
-<span class=w>      </span><span class=nt>validate</span><span class=p>:</span>
-<span class=w>        </span><span class=nt>message</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Pod `{{ metadata.name</span><span class=err> </span><span class="l l-Scalar l-Scalar-Plain">}}` uses an image with tag `latest`</span>
-<span class=w>        </span><span class=nt>assert</span><span class=p>:</span>
-<span class=w>          </span><span class=nt>all</span><span class=p>:</span>
-<span class=w>          </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>spec</span><span class=p>:</span>
+<span class=w>      </span><span class=nt>assert</span><span class=p>:</span>
+<span class=w>        </span><span class=nt>all</span><span class=p>:</span>
+<span class=w>        </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>message</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">Pod `{{ metadata.name }}` uses an image with tag `latest`</span>
+<span class=w>          </span><span class=nt>check</span><span class=p>:</span>
+<span class=w>            </span><span class=nt>spec</span><span class=p>:</span>
 <span class=w>              </span><span class=c1># Iterate over pod containers</span>
 <span class=w>              </span><span class=c1># Note the `~.` modifier, it means we want to iterate over array elements in descendants</span>
 <span class=w>              </span><span class=nt>~.containers</span><span class=p>:</span>
