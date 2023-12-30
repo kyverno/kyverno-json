@@ -135,11 +135,11 @@ spec:
         any:
         - apiVersion: v1
           kind: Pod
-      validate:
-        message: Pod `{{ metadata.name }}` uses an image with tag `latest`
-        assert:
-          all:
-          - spec:
+      assert:
+        all:
+        - message: Pod `{{ metadata.name }}` uses an image with tag `latest`
+          check:
+            spec:
               # Iterate over pod containers
               # Note the `~.` modifier, it means we want to iterate over array elements in descendants
               ~.containers:
