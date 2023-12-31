@@ -1,0 +1,77 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.12.0
+  name: tests.json.kyverno.io
+spec:
+  group: json.kyverno.io
+  names:
+    kind: Tests
+    listKind: TestsList
+    plural: tests
+    singular: tests
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Test declares a test
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          tests:
+            description: Tests are the scenarios to be checked in the test
+            items:
+              description: Test declares a test result  fields
+              properties:
+                labels:
+                  description: Selectors mentions the labels selectors for policies.
+                  items:
+                    type: string
+                  type: array
+                payload:
+                  description: Policy mentions the name of the policy.
+                  type: string
+                policies:
+                  description: Policies mentions the path to kyverno-json policies.
+                  items:
+                    type: string
+                  type: array
+                preprocess:
+                  description: Policy mentions the name of the policy.
+                  items:
+                    type: string
+                  type: array
+                result:
+                  description: Result mentions the result that the user is expecting.
+                    Possible values are pass, fail and skip.
+                  enum:
+                  - pass
+                  - fail
+                  - warn
+                  - error
+                  - skip
+                  type: string
+              required:
+              - labels
+              - payload
+              - policies
+              - preprocess
+              - result
+              type: object
+            type: array
+        type: object
+    served: true
+    storage: true

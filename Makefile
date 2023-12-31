@@ -142,6 +142,11 @@ ko-build: $(KO) ## Build image (with ko)
 	@LDFLAGS=$(LD_FLAGS) KOCACHE=$(KO_CACHE) KO_DOCKER_REPO=$(KO_REGISTRY) \
 		$(KO) build . --preserve-import-paths --tags=$(KO_TAGS) --platform=$(LOCAL_PLATFORM)
 
+.PHONY: test
+test: build ## Test
+	@echo Running tests... >&2
+	@./$(CLI_BIN) test .
+
 ###########
 # CODEGEN #
 ###########

@@ -1,0 +1,17 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: Tests
+metadata:
+  name: kyverno-test.yaml
+tests:
+- policies:
+  - 01-policy.yaml
+  payload: payload.json
+  preprocess:
+  - planned_values.root_module.resources
+  result: pass
+- policies:
+  - 02-policy.yaml
+  payload: payload.json
+  preprocess:
+  - planned_values.root_module.resources
+  result: pass

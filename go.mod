@@ -9,7 +9,9 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmespath-community/go-jmespath v1.1.2-0.20231123142750-72f7c13d265e
+	github.com/kataras/tablewriter v0.0.0-20180708051242-e063d29b7c23
 	github.com/kyverno/kyverno v1.5.0-rc1.0.20231029235953-c96199dee1f6
+	github.com/lensesio/tableprinter v0.0.0-20201125135848-89e81fc956e7
 	github.com/loopfz/gadgeto v0.11.3
 	github.com/nlepage/go-wasm-http-server v1.1.0
 	github.com/spf13/cobra v1.8.0
@@ -42,8 +44,10 @@ require (
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.3 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.11.0 // indirect
 	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
+	github.com/fatih/color v1.15.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
@@ -78,7 +82,9 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -92,6 +98,7 @@ require (
 	github.com/prometheus/client_model v0.4.1-0.20230718164431-9a2bf3000d16 // indirect
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.11.1 // indirect
+	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/smartystreets/goconvey v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

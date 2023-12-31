@@ -1,0 +1,9 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: Tests
+metadata:
+  name: kyverno-test.yaml
+tests:
+- policies:
+  - policy.yaml
+  payload: payload.yaml
+  result: pass
