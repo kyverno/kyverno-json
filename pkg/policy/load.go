@@ -18,7 +18,7 @@ import (
 
 var (
 	gv_v1alpha1               = schema.GroupVersion{Group: "json.kyverno.io", Version: "v1alpha1"}
-	validationPolicy_v1alpha1 = gv_v1alpha1.WithKind("ValidatingPolicy")
+	validatingPolicy_v1alpha1 = gv_v1alpha1.WithKind("ValidatingPolicy")
 )
 
 func Load(path ...string) ([]*v1alpha1.ValidatingPolicy, error) {
@@ -79,7 +79,7 @@ func Parse(content []byte) ([]*v1alpha1.ValidatingPolicy, error) {
 			return nil, err
 		}
 		switch gvk {
-		case validationPolicy_v1alpha1:
+		case validatingPolicy_v1alpha1:
 			policy, err := convert.To[v1alpha1.ValidatingPolicy](untyped)
 			if err != nil {
 				return nil, err

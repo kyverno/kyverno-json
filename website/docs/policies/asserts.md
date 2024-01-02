@@ -201,7 +201,7 @@ spec:
                 ($sum): 10
 ```
 
-Finally, we can always access the current payload, policy and rule being evaluated using the builtin `$payload`, `$policy` and `$rule` bindings. No protection is made to prevent you from overriding those bindings though.
+Finally, we can always access the current payload, policy and rule being evaluated using the built-in `$payload`, `$policy` and `$rule` bindings. No protection is made to prevent you from overriding those bindings though.
 
 
 ## Escaping projection

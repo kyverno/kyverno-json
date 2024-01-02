@@ -2,22 +2,28 @@
 
 Release notes for `TODO`.
 
+
 <!--
-## :bangbang: Breaking chages :bangbang:
+## ‼️ Breaking changes ‼️
 
-## :dizzy: New features :dizzy:
+## ✨ UI changes ✨
 
-## :sparkles: UI changes :sparkles:
+## ⭐ Examples ⭐
 
-## :star: Examples :star:
+## ⛵ Tutorials ⛵
 
-## :boat: Tutorials :boat:
-
-## :wrench: Fixes :wrench:
-
-## :guitar: Misc :guitar:
+## 🎸 Misc 🎸
 -->
 
-## :books: Docs :books:
+## 💫 New features 💫
 
-- Added multi version docs support
+- Kyverno-JSON is now available via brew
+- Added a GitHub action to install Kyverno-JSON
+
+## 🔧 Fixes 🔧
+
+- Fixed an index not found error
+
+## 📚 Docs 📚
+
+- Added multi-version docs support
