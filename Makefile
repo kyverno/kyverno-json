@@ -246,6 +246,7 @@ codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@mkdocs build -f ./website/mkdocs.yaml
 
 .PHONY: codegen-schemas-openapi
+codegen-schemas-openapi: CURRENT_CONTEXT = $(shell kubectl config current-context)
 codegen-schemas-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 	@echo Generate openapi schema... >&2
 	@rm -rf ./.schemas
@@ -257,16 +258,16 @@ codegen-schemas-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 	@kubectl get --raw /openapi/v2 > ./.schemas/openapi/v2/schema.json
 	@kubectl get --raw /openapi/v3/apis/json.kyverno.io/v1alpha1 > ./.schemas/openapi/v3/apis/json.kyverno.io/v1alpha1.json
 	@$(KIND) delete cluster --name schema
+	@kubectl config use-context $(CURRENT_CONTEXT) || true
 
-# This gives an error so temporarily commenting out
-#.PHONY: codegen-schemas-json
-#codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
-#	@$(PIP) install openapi2jsonschema
-#	@rm -rf ./.schemas/json
-#	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
+.PHONY: codegen-schemas-json
+codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
+	@$(PIP) install openapi2jsonschema --no-build-isolation
+	@rm -rf ./.schemas/json
+	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
 
 .PHONY: codegen-schemas
-codegen-schemas: codegen-schemas-openapi ## Generate openapi and json schemas
+codegen-schemas: codegen-schemas-openapi codegen-schemas-json ## Generate openapi and json schemas
 
 .PHONY: codegen-playground-examples
 codegen-playground-examples: ## Generate playground examples

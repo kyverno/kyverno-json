@@ -1,0 +1,63 @@
+{
+  "description": "A scope selector represents the AND of the selectors represented by the scoped-resource selector requirements.",
+  "type": "object",
+  "properties": {
+    "matchExpressions": {
+      "description": "A list of scope selector requirements by scope of the resources.",
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "description": "A scoped-resource selector requirement is a selector that contains values, a scope name, and an operator that relates the scope name and values.",
+        "type": [
+          "object",
+          "null"
+        ],
+        "required": [
+          "scopeName",
+          "operator"
+        ],
+        "properties": {
+          "operator": {
+            "description": "Represents a scope's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist.\n\nPossible enum values:\n - `\"DoesNotExist\"`\n - `\"Exists\"`\n - `\"In\"`\n - `\"NotIn\"`",
+            "type": "string",
+            "enum": [
+              "DoesNotExist",
+              "Exists",
+              "In",
+              "NotIn"
+            ]
+          },
+          "scopeName": {
+            "description": "The name of the scope that the selector applies to.\n\nPossible enum values:\n - `\"BestEffort\"` Match all pod objects that have best effort quality of service\n - `\"CrossNamespacePodAffinity\"` Match all pod objects that have cross-namespace pod (anti)affinity mentioned.\n - `\"NotBestEffort\"` Match all pod objects that do not have best effort quality of service\n - `\"NotTerminating\"` Match all pod objects where spec.activeDeadlineSeconds is nil\n - `\"PriorityClass\"` Match all pod objects that have priority class mentioned\n - `\"Terminating\"` Match all pod objects where spec.activeDeadlineSeconds >=0",
+            "type": "string",
+            "enum": [
+              "BestEffort",
+              "CrossNamespacePodAffinity",
+              "NotBestEffort",
+              "NotTerminating",
+              "PriorityClass",
+              "Terminating"
+            ]
+          },
+          "values": {
+            "description": "An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-kubernetes-map-type": "atomic",
+  "$schema": "http://json-schema.org/schema#"
+}

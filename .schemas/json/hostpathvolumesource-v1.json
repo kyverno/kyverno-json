@@ -1,0 +1,34 @@
+{
+  "description": "Represents a host path mapped into a pod. Host path volumes do not support ownership management or SELinux relabeling.",
+  "type": "object",
+  "required": [
+    "path"
+  ],
+  "properties": {
+    "path": {
+      "description": "path of the directory on the host. If the path is a symlink, it will follow the link to the real path. More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "type": {
+      "description": "type for HostPath Volume Defaults to \"\" More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath\n\nPossible enum values:\n - `\"\"` For backwards compatible, leave it empty if unset\n - `\"BlockDevice\"` A block device must exist at the given path\n - `\"CharDevice\"` A character device must exist at the given path\n - `\"Directory\"` A directory must exist at the given path\n - `\"DirectoryOrCreate\"` If nothing exists at the given path, an empty directory will be created there as needed with file mode 0755, having the same group and ownership with Kubelet.\n - `\"File\"` A file must exist at the given path\n - `\"FileOrCreate\"` If nothing exists at the given path, an empty file will be created there as needed with file mode 0644, having the same group and ownership with Kubelet.\n - `\"Socket\"` A UNIX socket must exist at the given path",
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "",
+        "BlockDevice",
+        "CharDevice",
+        "Directory",
+        "DirectoryOrCreate",
+        "File",
+        "FileOrCreate",
+        "Socket"
+      ]
+    }
+  },
+  "$schema": "http://json-schema.org/schema#"
+}
