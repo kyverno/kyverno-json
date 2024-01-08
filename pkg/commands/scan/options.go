@@ -89,6 +89,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "PASSED")
 		}
 	}
+	out.responses(responses...)
 	out.println("Done")
 	return nil
 }
