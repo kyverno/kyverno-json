@@ -21,11 +21,12 @@ type options struct {
 	preprocessors []string
 	policies      []string
 	selectors     []string
+	output        string
 }
 
 func (c *options) run(cmd *cobra.Command, _ []string) error {
-	out := cmd.OutOrStdout()
-	fmt.Fprintln(out, "Loading policies ...")
+	out := newOutput(cmd.OutOrStdout(), c.output)
+	out.println("Loading policies ...")
 	policies, err := policy.Load(c.policies...)
 	if err != nil {
 		return err
@@ -47,7 +48,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		}
 		policies = filteredPolicies
 	}
-	fmt.Fprintln(out, "Loading payload ...")
+	out.println("Loading payload ...")
 	payload, err := payload.Load(c.payload)
 	if err != nil {
 		return err
@@ -55,7 +56,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	if payload == nil {
 		return errors.New("payload is `null`")
 	}
-	fmt.Fprintln(out, "Pre processing ...")
+	out.println("Pre processing ...")
 	for _, preprocessor := range c.preprocessors {
 		result, err := template.Execute(context.Background(), preprocessor, payload, nil)
 		if err != nil {
@@ -72,7 +73,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	} else {
 		resources = append(resources, payload)
 	}
-	fmt.Fprintln(out, "Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
+	out.println("Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
 	e := jsonengine.New()
 	responses := e.Run(context.Background(), jsonengine.Request{
 		Resources: resources,
@@ -80,14 +81,14 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	})
 	for _, response := range responses {
 		if response.Result == jsonengine.StatusFail {
-			fmt.Fprintln(out, "-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "FAILED:", response.Message)
+			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "FAILED:", response.Message)
 		} else if response.Result == jsonengine.StatusError {
-			fmt.Fprintln(out, "-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "ERROR:", response.Message)
+			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "ERROR:", response.Message)
 		} else {
 			// TODO: handle skip, warn
-			fmt.Fprintln(out, "-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "PASSED")
+			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "PASSED")
 		}
 	}
-	fmt.Fprintln(out, "Done")
+	out.println("Done")
 	return nil
 }
