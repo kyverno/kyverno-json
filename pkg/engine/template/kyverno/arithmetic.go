@@ -11,11 +11,11 @@ import (
 )
 
 type operand interface {
-	Add(interface{}, string) (interface{}, error)
-	Subtract(interface{}) (interface{}, error)
-	Multiply(interface{}) (interface{}, error)
-	Divide(interface{}) (interface{}, error)
-	Modulo(interface{}) (interface{}, error)
+	Add(any, string) (any, error)
+	Subtract(any) (any, error)
+	Multiply(any) (any, error)
+	Divide(any) (any, error)
+	Modulo(any) (any, error)
 }
 
 type quantity struct {
@@ -30,7 +30,7 @@ type scalar struct {
 	float64
 }
 
-func parseArithemticOperand(arguments []interface{}, index int, operator string) (operand, error) {
+func parseArithemticOperand(arguments []any, index int, operator string) (operand, error) {
 	if tmp, err := validateArg(operator, arguments, index, reflect.Float64); err == nil {
 		return scalar{float64: tmp.Float()}, nil
 	} else if tmp, err = validateArg(operator, arguments, index, reflect.String); err == nil {
@@ -43,7 +43,7 @@ func parseArithemticOperand(arguments []interface{}, index int, operator string)
 	return nil, formatError(genericError, operator, "invalid operand")
 }
 
-func parseArithemticOperands(arguments []interface{}, operator string) (operand, operand, error) {
+func parseArithemticOperands(arguments []any, operator string) (operand, operand, error) {
 	left, err := parseArithemticOperand(arguments, 0, operator)
 	if err != nil {
 		return nil, nil, err
@@ -62,7 +62,7 @@ func parseArithemticOperands(arguments []interface{}, operator string) (operand,
 // Scalar   +|- Scalar            -> Scalar
 // Scalar   +|- Quantity|Duration -> error
 
-func (op1 quantity) Add(op2 interface{}, operator string) (interface{}, error) {
+func (op1 quantity) Add(op2 any, operator string) (any, error) {
 	switch v := op2.(type) {
 	case quantity:
 		op1.Quantity.Add(v.Quantity)
@@ -72,7 +72,7 @@ func (op1 quantity) Add(op2 interface{}, operator string) (interface{}, error) {
 	}
 }
 
-func (op1 duration) Add(op2 interface{}, operator string) (interface{}, error) {
+func (op1 duration) Add(op2 any, operator string) (any, error) {
 	switch v := op2.(type) {
 	case duration:
 		return (op1.Duration + v.Duration).String(), nil
@@ -81,7 +81,7 @@ func (op1 duration) Add(op2 interface{}, operator string) (interface{}, error) {
 	}
 }
 
-func (op1 scalar) Add(op2 interface{}, operator string) (interface{}, error) {
+func (op1 scalar) Add(op2 any, operator string) (any, error) {
 	switch v := op2.(type) {
 	case scalar:
 		return op1.float64 + v.float64, nil
@@ -90,7 +90,7 @@ func (op1 scalar) Add(op2 interface{}, operator string) (interface{}, error) {
 	}
 }
 
-func (op1 quantity) Subtract(op2 interface{}) (interface{}, error) {
+func (op1 quantity) Subtract(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case quantity:
 		op1.Quantity.Sub(v.Quantity)
@@ -100,7 +100,7 @@ func (op1 quantity) Subtract(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 duration) Subtract(op2 interface{}) (interface{}, error) {
+func (op1 duration) Subtract(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case duration:
 		return (op1.Duration - v.Duration).String(), nil
@@ -109,7 +109,7 @@ func (op1 duration) Subtract(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 scalar) Subtract(op2 interface{}) (interface{}, error) {
+func (op1 scalar) Subtract(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case scalar:
 		return op1.float64 - v.float64, nil
@@ -128,7 +128,7 @@ func (op1 scalar) Subtract(op2 interface{}) (interface{}, error) {
 // Scalar   * Quantity			-> Quantity
 // Scalar   * Duration			-> Duration
 
-func (op1 quantity) Multiply(op2 interface{}) (interface{}, error) {
+func (op1 quantity) Multiply(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case scalar:
 		q, err := resource.ParseQuantity(fmt.Sprintf("%v", v.float64))
@@ -143,7 +143,7 @@ func (op1 quantity) Multiply(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 duration) Multiply(op2 interface{}) (interface{}, error) {
+func (op1 duration) Multiply(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case scalar:
 		seconds := op1.Seconds() * v.float64
@@ -153,7 +153,7 @@ func (op1 duration) Multiply(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 scalar) Multiply(op2 interface{}) (interface{}, error) {
+func (op1 scalar) Multiply(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case scalar:
 		return op1.float64 * v.float64, nil
@@ -178,7 +178,7 @@ func (op1 scalar) Multiply(op2 interface{}) (interface{}, error) {
 // Scalar   / Quantity			-> error
 // Scalar   / Duration			-> error
 
-func (op1 quantity) Divide(op2 interface{}) (interface{}, error) {
+func (op1 quantity) Divide(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case quantity:
 		divisor := v.AsApproximateFloat64()
@@ -204,7 +204,7 @@ func (op1 quantity) Divide(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 duration) Divide(op2 interface{}) (interface{}, error) {
+func (op1 duration) Divide(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case duration:
 		if v.Seconds() == 0 {
@@ -222,7 +222,7 @@ func (op1 duration) Divide(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 scalar) Divide(op2 interface{}) (interface{}, error) {
+func (op1 scalar) Divide(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case scalar:
 		if v.float64 == 0 {
@@ -243,7 +243,7 @@ func (op1 scalar) Divide(op2 interface{}) (interface{}, error) {
 // Scalar   % Quantity|Duration	-> error
 // Scalar   % Scalar            -> Scalar
 
-func (op1 quantity) Modulo(op2 interface{}) (interface{}, error) {
+func (op1 quantity) Modulo(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case quantity:
 		f1 := op1.ToDec().AsApproximateFloat64()
@@ -265,7 +265,7 @@ func (op1 quantity) Modulo(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 duration) Modulo(op2 interface{}) (interface{}, error) {
+func (op1 duration) Modulo(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case duration:
 		if v.Duration == 0 {
@@ -277,7 +277,7 @@ func (op1 duration) Modulo(op2 interface{}) (interface{}, error) {
 	}
 }
 
-func (op1 scalar) Modulo(op2 interface{}) (interface{}, error) {
+func (op1 scalar) Modulo(op2 any) (any, error) {
 	switch v := op2.(type) {
 	case scalar:
 		val1 := int64(op1.float64)

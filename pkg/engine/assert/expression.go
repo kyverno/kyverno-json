@@ -57,7 +57,7 @@ func parseExpressionRegex(ctx context.Context, in string) *expression {
 	return expression
 }
 
-func parseExpression(ctx context.Context, value interface{}) *expression {
+func parseExpression(ctx context.Context, value any) *expression {
 	if reflectutils.GetKind(value) != reflect.String {
 		return nil
 	}

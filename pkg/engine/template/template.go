@@ -16,7 +16,7 @@ var (
 	parser   = parsing.NewParser()
 )
 
-func String(ctx context.Context, in string, value interface{}, bindings binding.Bindings, opts ...Option) string {
+func String(ctx context.Context, in string, value any, bindings binding.Bindings, opts ...Option) string {
 	groups := variable.FindAllStringSubmatch(in, -1)
 	for _, group := range groups {
 		statement := strings.TrimSpace(group[1])
@@ -34,7 +34,7 @@ func String(ctx context.Context, in string, value interface{}, bindings binding.
 	return in
 }
 
-func Execute(ctx context.Context, statement string, value interface{}, bindings binding.Bindings, opts ...Option) (interface{}, error) {
+func Execute(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
 	o := buildOptions(opts...)
 	vm := interpreter.NewInterpreter(nil, bindings)
 	compiled, err := parser.Parse(statement)

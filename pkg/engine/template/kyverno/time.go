@@ -22,7 +22,7 @@ var (
 	timeTruncate = "time_truncate"
 )
 
-func getTimeArg(f string, arguments []interface{}, index int) (time.Time, error) {
+func getTimeArg(f string, arguments []any, index int) (time.Time, error) {
 	var empty time.Time
 	arg, err := validateArg(f, arguments, index, reflect.String)
 	if err != nil {
@@ -31,7 +31,7 @@ func getTimeArg(f string, arguments []interface{}, index int) (time.Time, error)
 	return time.Parse(time.RFC3339, arg.String())
 }
 
-func getDurationArg(f string, arguments []interface{}, index int) (time.Duration, error) {
+func getDurationArg(f string, arguments []any, index int) (time.Duration, error) {
 	var empty time.Duration
 	arg, err := validateArg(f, arguments, index, reflect.String)
 	if err != nil {
@@ -40,7 +40,7 @@ func getDurationArg(f string, arguments []interface{}, index int) (time.Duration
 	return time.ParseDuration(arg.String())
 }
 
-func jpTimeSince(arguments []interface{}) (interface{}, error) {
+func jpTimeSince(arguments []any) (any, error) {
 	var err error
 	layout, err := validateArg(timeSince, arguments, 0, reflect.String)
 	if err != nil {
@@ -77,15 +77,15 @@ func jpTimeSince(arguments []interface{}) (interface{}, error) {
 	return t2.Sub(t1).String(), nil
 }
 
-func jpTimeNow(arguments []interface{}) (interface{}, error) {
+func jpTimeNow(arguments []any) (any, error) {
 	return time.Now().Format(time.RFC3339), nil
 }
 
-func jpTimeNowUtc(arguments []interface{}) (interface{}, error) {
+func jpTimeNowUtc(arguments []any) (any, error) {
 	return time.Now().UTC().Format(time.RFC3339), nil
 }
 
-func jpTimeToCron(arguments []interface{}) (interface{}, error) {
+func jpTimeToCron(arguments []any) (any, error) {
 	if t, err := getTimeArg(timeToCron, arguments, 0); err != nil {
 		return nil, err
 	} else {
@@ -99,7 +99,7 @@ func jpTimeToCron(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeAdd(arguments []interface{}) (interface{}, error) {
+func jpTimeAdd(arguments []any) (any, error) {
 	if t, err := getTimeArg(timeToCron, arguments, 0); err != nil {
 		return nil, err
 	} else if d, err := getDurationArg(timeToCron, arguments, 1); err != nil {
@@ -109,7 +109,7 @@ func jpTimeAdd(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeParse(arguments []interface{}) (interface{}, error) {
+func jpTimeParse(arguments []any) (any, error) {
 	if layout, err := validateArg(timeParse, arguments, 0, reflect.String); err != nil {
 		return nil, err
 	} else if ts, err := validateArg(timeParse, arguments, 1, reflect.String); err != nil {
@@ -121,7 +121,7 @@ func jpTimeParse(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeUtc(arguments []interface{}) (interface{}, error) {
+func jpTimeUtc(arguments []any) (any, error) {
 	if t, err := getTimeArg(timeUtc, arguments, 0); err != nil {
 		return nil, err
 	} else {
@@ -129,7 +129,7 @@ func jpTimeUtc(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeDiff(arguments []interface{}) (interface{}, error) {
+func jpTimeDiff(arguments []any) (any, error) {
 	if t1, err := getTimeArg(timeDiff, arguments, 0); err != nil {
 		return nil, err
 	} else if t2, err := getTimeArg(timeDiff, arguments, 1); err != nil {
@@ -139,7 +139,7 @@ func jpTimeDiff(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeBefore(arguments []interface{}) (interface{}, error) {
+func jpTimeBefore(arguments []any) (any, error) {
 	if t1, err := getTimeArg(timeBefore, arguments, 0); err != nil {
 		return nil, err
 	} else if t2, err := getTimeArg(timeBefore, arguments, 1); err != nil {
@@ -149,7 +149,7 @@ func jpTimeBefore(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeAfter(arguments []interface{}) (interface{}, error) {
+func jpTimeAfter(arguments []any) (any, error) {
 	if t1, err := getTimeArg(timeAfter, arguments, 0); err != nil {
 		return nil, err
 	} else if t2, err := getTimeArg(timeAfter, arguments, 1); err != nil {
@@ -159,7 +159,7 @@ func jpTimeAfter(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeBetween(arguments []interface{}) (interface{}, error) {
+func jpTimeBetween(arguments []any) (any, error) {
 	if t, err := getTimeArg(timeBetween, arguments, 0); err != nil {
 		return nil, err
 	} else if start, err := getTimeArg(timeBetween, arguments, 1); err != nil {
@@ -171,7 +171,7 @@ func jpTimeBetween(arguments []interface{}) (interface{}, error) {
 	}
 }
 
-func jpTimeTruncate(arguments []interface{}) (interface{}, error) {
+func jpTimeTruncate(arguments []any) (any, error) {
 	if t, err := getTimeArg(timeTruncate, arguments, 0); err != nil {
 		return nil, err
 	} else if d, err := getDurationArg(timeTruncate, arguments, 1); err != nil {

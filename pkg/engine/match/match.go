@@ -8,7 +8,7 @@ import (
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
-func Match(ctx context.Context, expected, actual interface{}) (bool, error) {
+func Match(ctx context.Context, expected, actual any) (bool, error) {
 	if expected != nil {
 		switch reflectutils.GetKind(expected) {
 		case reflect.Slice:

@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-func validateArg(f string, arguments []interface{}, index int, expectedType reflect.Kind) (reflect.Value, error) {
+func validateArg(f string, arguments []any, index int, expectedType reflect.Kind) (reflect.Value, error) {
 	if index >= len(arguments) {
 		return reflect.Value{}, formatError(argOutOfBoundsError, f, index+1, len(arguments))
 	}
