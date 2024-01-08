@@ -13,10 +13,10 @@ type projection struct {
 	foreach     bool
 	foreachName string
 	binding     string
-	result      interface{}
+	result      any
 }
 
-func project(ctx context.Context, key interface{}, value interface{}, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
+func project(ctx context.Context, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
 	expression := parseExpression(ctx, key)
 	if expression != nil {
 		if expression.engine != "" {
@@ -33,7 +33,7 @@ func project(ctx context.Context, key interface{}, value interface{}, bindings b
 		} else {
 			if reflectutils.GetKind(value) == reflect.Map {
 				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
-				var value interface{}
+				var value any
 				if mapValue.IsValid() {
 					value = mapValue.Interface()
 				}
@@ -48,7 +48,7 @@ func project(ctx context.Context, key interface{}, value interface{}, bindings b
 	}
 	if reflectutils.GetKind(value) == reflect.Map {
 		mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(key))
-		var value interface{}
+		var value any
 		if mapValue.IsValid() {
 			value = mapValue.Interface()
 		}

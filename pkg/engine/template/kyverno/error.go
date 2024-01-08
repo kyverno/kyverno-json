@@ -15,8 +15,8 @@ const (
 	nonIntRoundError         = errorPrefix + "Non-integer argument(s) passed for round off"
 )
 
-func formatError(format string, function string, values ...interface{}) error {
-	args := []interface{}{function}
+func formatError(format string, function string, values ...any) error {
+	args := []any{function}
 	args = append(args, values...)
 	return fmt.Errorf(format, args...)
 }

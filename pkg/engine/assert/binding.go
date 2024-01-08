@@ -9,7 +9,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func NewContextBindings(bindings binding.Bindings, value interface{}, entries ...v1alpha1.ContextEntry) binding.Bindings {
+func NewContextBindings(bindings binding.Bindings, value any, entries ...v1alpha1.ContextEntry) binding.Bindings {
 	var path *field.Path
 	path = path.Child("context")
 	for i, entry := range entries {
@@ -18,9 +18,9 @@ func NewContextBindings(bindings binding.Bindings, value interface{}, entries ..
 	return bindings
 }
 
-func NewContextBinding(path *field.Path, bindings binding.Bindings, value interface{}, entry v1alpha1.ContextEntry) binding.Binding {
+func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, entry v1alpha1.ContextEntry) binding.Binding {
 	return template.NewLazyBinding(
-		func() (interface{}, error) {
+		func() (any, error) {
 			expression := parseExpression(context.TODO(), entry.Variable.Value)
 			if expression != nil && expression.engine != "" {
 				if expression.foreach {

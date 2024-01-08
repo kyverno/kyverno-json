@@ -11,7 +11,7 @@ package jmespath
 // 	testCases := []struct {
 // 		name           string
 // 		test           string
-// 		expectedResult interface{}
+// 		expectedResult any
 // 		err            bool
 // 		retFloat       bool
 // 	}{
@@ -110,7 +110,7 @@ package jmespath
 // 	testCases := []struct {
 // 		name           string
 // 		test           string
-// 		expectedResult interface{}
+// 		expectedResult any
 // 		err            bool
 // 		retFloat       bool
 // 	}{
@@ -256,7 +256,7 @@ package jmespath
 // 	testCases := []struct {
 // 		name           string
 // 		test           string
-// 		expectedResult interface{}
+// 		expectedResult any
 // 		err            bool
 // 		retFloat       bool
 // 	}{
@@ -355,7 +355,7 @@ package jmespath
 // 	testCases := []struct {
 // 		name           string
 // 		test           string
-// 		expectedResult interface{}
+// 		expectedResult any
 // 		err            bool
 // 		retFloat       bool
 // 	}{
@@ -454,7 +454,7 @@ package jmespath
 // 	testCases := []struct {
 // 		name           string
 // 		test           string
-// 		expectedResult interface{}
+// 		expectedResult any
 // 		err            bool
 // 		retFloat       bool
 // 	}{
@@ -616,7 +616,7 @@ package jmespath
 // 	testCases := []struct {
 // 		name           string
 // 		test           string
-// 		expectedResult interface{}
+// 		expectedResult any
 // 		err            bool
 // 		retFloat       bool
 // 	}{
@@ -772,7 +772,7 @@ package jmespath
 // 	testCases := []struct {
 // 		name           string
 // 		test           string
-// 		expectedResult interface{}
+// 		expectedResult any
 // 		err            bool
 // 		retFloat       bool
 // 	}{
@@ -842,13 +842,13 @@ package jmespath
 // 		float64 float64
 // 	}
 // 	type args struct {
-// 		op2 interface{}
+// 		op2 any
 // 	}
 // 	tests := []struct {
 // 		name    string
 // 		fields  fields
 // 		args    args
-// 		want    interface{}
+// 		want    any
 // 		wantErr bool
 // 	}{{
 // 		fields: fields{
@@ -878,7 +878,7 @@ package jmespath
 
 // func TestParseArithemticOperands(t *testing.T) {
 // 	type args struct {
-// 		arguments []interface{}
+// 		arguments []any
 // 		operator  string
 // 	}
 // 	tests := []struct {
@@ -889,7 +889,7 @@ package jmespath
 // 		wantErr bool
 // 	}{{
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				true,
 // 				1.0,
 // 			},
@@ -897,7 +897,7 @@ package jmespath
 // 		wantErr: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				1.0,
 // 				true,
 // 			},

@@ -195,7 +195,7 @@ package jmespath
 // 	}
 // 	type args struct {
 // 		f         string
-// 		arguments []interface{}
+// 		arguments []any
 // 		index     int
 // 	}
 // 	tests := []struct {
@@ -206,7 +206,7 @@ package jmespath
 // 	}{{
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
 // 			index: 0,
@@ -215,7 +215,7 @@ package jmespath
 // 	}, {
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
 // 			index: 1,
@@ -224,7 +224,7 @@ package jmespath
 // 	}, {
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				1,
 // 			},
 // 			index: 0,
@@ -233,7 +233,7 @@ package jmespath
 // 	}, {
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"",
 // 			},
 // 			index: 0,
@@ -264,7 +264,7 @@ package jmespath
 // 	}
 // 	type args struct {
 // 		f         string
-// 		arguments []interface{}
+// 		arguments []any
 // 		index     int
 // 	}
 // 	tests := []struct {
@@ -275,7 +275,7 @@ package jmespath
 // 	}{{
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"20s",
 // 			},
 // 			index: 0,
@@ -284,7 +284,7 @@ package jmespath
 // 	}, {
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"20s",
 // 			},
 // 			index: 1,
@@ -293,7 +293,7 @@ package jmespath
 // 	}, {
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				1,
 // 			},
 // 			index: 0,
@@ -302,7 +302,7 @@ package jmespath
 // 	}, {
 // 		args: args{
 // 			f: "test",
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"",
 // 			},
 // 			index: 0,
@@ -325,16 +325,16 @@ package jmespath
 
 // func Test_jpTimeBefore(t *testing.T) {
 // 	type args struct {
-// 		arguments []interface{}
+// 		arguments []any
 // 	}
 // 	tests := []struct {
 // 		name    string
 // 		args    args
-// 		want    interface{}
+// 		want    any
 // 		wantErr bool
 // 	}{{
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T16:04:05-07:00",
 // 			},
@@ -342,7 +342,7 @@ package jmespath
 // 		want: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
@@ -350,7 +350,7 @@ package jmespath
 // 		want: false,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T16:04:05-07:00",
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
@@ -358,7 +358,7 @@ package jmespath
 // 		want: false,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				1,
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
@@ -366,7 +366,7 @@ package jmespath
 // 		wantErr: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				1,
 // 			},
@@ -389,16 +389,16 @@ package jmespath
 
 // func Test_jpTimeAfter(t *testing.T) {
 // 	type args struct {
-// 		arguments []interface{}
+// 		arguments []any
 // 	}
 // 	tests := []struct {
 // 		name    string
 // 		args    args
-// 		want    interface{}
+// 		want    any
 // 		wantErr bool
 // 	}{{
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T16:04:05-07:00",
 // 			},
@@ -406,7 +406,7 @@ package jmespath
 // 		want: false,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
@@ -414,7 +414,7 @@ package jmespath
 // 		want: false,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T16:04:05-07:00",
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
@@ -422,7 +422,7 @@ package jmespath
 // 		want: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				1,
 // 				"2021-01-02T15:04:05-07:00",
 // 			},
@@ -430,7 +430,7 @@ package jmespath
 // 		wantErr: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				1,
 // 			},
@@ -453,16 +453,16 @@ package jmespath
 
 // func Test_jpTimeBetween(t *testing.T) {
 // 	type args struct {
-// 		arguments []interface{}
+// 		arguments []any
 // 	}
 // 	tests := []struct {
 // 		name    string
 // 		args    args
-// 		want    interface{}
+// 		want    any
 // 		wantErr bool
 // 	}{{
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T17:04:05-07:00",
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T18:04:05-07:00",
@@ -471,7 +471,7 @@ package jmespath
 // 		want: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T18:04:05-07:00",
@@ -480,7 +480,7 @@ package jmespath
 // 		want: false,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T18:04:05-07:00",
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T18:04:05-07:00",
@@ -489,7 +489,7 @@ package jmespath
 // 		want: false,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				1,
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T18:04:05-07:00",
@@ -498,7 +498,7 @@ package jmespath
 // 		wantErr: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				1,
 // 				"2021-01-02T18:04:05-07:00",
@@ -507,7 +507,7 @@ package jmespath
 // 		wantErr: true,
 // 	}, {
 // 		args: args{
-// 			arguments: []interface{}{
+// 			arguments: []any{
 // 				"2021-01-02T15:04:05-07:00",
 // 				"2021-01-02T18:04:05-07:00",
 // 				1,

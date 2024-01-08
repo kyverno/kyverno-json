@@ -14,7 +14,7 @@ import (
 // We should remove this dependency.
 // Either move the Match struct in this package or move this file in a more specific package.
 
-func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual interface{}, bindings binding.Bindings, opts ...template.Option) ([]error, error) {
+func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]error, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return nil, field.Invalid(path, match, "an empty assert is not valid")
 	} else {
@@ -66,7 +66,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 	}
 }
 
-func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return nil, field.Invalid(path, match, "an empty match is not valid")
 	} else {
@@ -89,7 +89,7 @@ func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual 
 	}
 }
 
-func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
 		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings, opts...)
@@ -104,7 +104,7 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 	return errs, nil
 }
 
-func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
 		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings, opts...)

@@ -6,24 +6,24 @@ import (
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 )
 
-type resolverFunc = func() (interface{}, error)
+type resolverFunc = func() (any, error)
 
 type lazyBinding struct {
 	resolver resolverFunc
 }
 
-func (b *lazyBinding) Value() (interface{}, error) {
+func (b *lazyBinding) Value() (any, error) {
 	return b.resolver()
 }
 
 func NewLazyBinding(resolver resolverFunc) binding.Binding {
 	binding := &lazyBinding{}
 	lock := &sync.Mutex{}
-	binding.resolver = func() (interface{}, error) {
+	binding.resolver = func() (any, error) {
 		lock.Lock()
 		defer lock.Unlock()
 		value, err := resolver()
-		binding.resolver = func() (interface{}, error) {
+		binding.resolver = func() (any, error) {
 			return value, err
 		}
 		return binding.resolver()
@@ -31,8 +31,8 @@ func NewLazyBinding(resolver resolverFunc) binding.Binding {
 	return binding
 }
 
-func NewLazyBindingWithValue(value interface{}) binding.Binding {
-	return NewLazyBinding(func() (interface{}, error) {
+func NewLazyBindingWithValue(value any) binding.Binding {
+	return NewLazyBinding(func() (any, error) {
 		return value, nil
 	})
 }

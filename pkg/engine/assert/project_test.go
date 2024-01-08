@@ -11,15 +11,15 @@ import (
 func Test_project(t *testing.T) {
 	tests := []struct {
 		name     string
-		key      interface{}
-		value    interface{}
+		key      any
+		value    any
 		bindings binding.Bindings
 		want     *projection
 		wantErr  bool
 	}{{
 		name: "map index not found",
 		key:  "foo",
-		value: map[string]interface{}{
+		value: map[string]any{
 			"bar": 42,
 		},
 		bindings: nil,

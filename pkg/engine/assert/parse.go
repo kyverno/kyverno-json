@@ -13,7 +13,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func Parse(ctx context.Context, assertion interface{}) Assertion {
+func Parse(ctx context.Context, assertion any) Assertion {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
 		node := sliceNode{}
@@ -36,9 +36,9 @@ func Parse(ctx context.Context, assertion interface{}) Assertion {
 
 // mapNode is the assertion type represented by a map.
 // it is responsible for projecting the analysed resource and passing the result to the descendant
-type mapNode map[interface{}]Assertion
+type mapNode map[any]Assertion
 
-func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func (n mapNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for k, v := range n {
 		projection, err := project(ctx, k, value, bindings, opts...)
@@ -97,7 +97,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value interface{}
 // if lengths match all descendants are evaluated with their corresponding items.
 type sliceNode []Assertion
 
-func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func (n sliceNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	if value == nil {
 		errs = append(errs, field.Invalid(path, value, "value is null"))
@@ -124,10 +124,10 @@ func (n sliceNode) assert(ctx context.Context, path *field.Path, value interface
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
 type scalarNode struct {
-	rhs interface{}
+	rhs any
 }
 
-func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interface{}, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func (n *scalarNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	rhs := n.rhs
 	expression := parseExpression(ctx, rhs)
 	// we only project if the expression uses the engine syntax
@@ -154,7 +154,7 @@ func (n *scalarNode) assert(ctx context.Context, path *field.Path, value interfa
 	return errs, nil
 }
 
-func expectValueMessage(value interface{}) string {
+func expectValueMessage(value any) string {
 	switch t := value.(type) {
 	case int64, int32, float64, float32, bool:
 		// use simple printer for simple types
