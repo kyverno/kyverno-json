@@ -1,4 +1,4 @@
-package assert
+package matching
 
 import (
 	"context"
@@ -6,13 +6,10 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
-
-// TODO: this is the only file we reference the apis package.
-// We should remove this dependency.
-// Either move the Match struct in this package or move this file in a more specific package.
 
 func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]error, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
@@ -22,7 +19,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []error
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
+				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -46,7 +43,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []error
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				checkFails, err := assert(ctx, path.Index(i).Child("check"), Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
+				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -92,7 +89,7 @@ func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual 
 func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings, opts...)
+		_errs, err := assert.Assert(ctx, path.Index(i), assert.Parse(ctx, assertion.Value), actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}
@@ -107,7 +104,7 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := assert(ctx, path.Index(i), Parse(ctx, assertion.Value), actual, bindings, opts...)
+		_errs, err := assert.Assert(ctx, path.Index(i), assert.Parse(ctx, assertion.Value), actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}

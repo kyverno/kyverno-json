@@ -11,6 +11,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/loop"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/matching"
 	"go.uber.org/multierr"
 )
 
@@ -73,7 +74,7 @@ func New() engine.Engine[Request, RuleResponse] {
 	}
 	inner := builder.
 		Function(func(ctx context.Context, r request) RuleResponse {
-			errs, err := assert.MatchAssert(ctx, nil, r.rule.Assert, r.value, r.bindings)
+			errs, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.value, r.bindings)
 			response := buildResponse(r, errs, err)
 			return response
 		}).
@@ -81,7 +82,7 @@ func New() engine.Engine[Request, RuleResponse] {
 			if r.rule.Exclude == nil {
 				return true
 			}
-			errs, err := assert.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
+			errs, err := matching.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
 			// TODO: handle error and skip
 			return err == nil && len(errs) != 0
 		}).
@@ -89,7 +90,7 @@ func New() engine.Engine[Request, RuleResponse] {
 			if r.rule.Match == nil {
 				return true
 			}
-			errs, err := assert.Match(ctx, nil, r.rule.Match, r.value, r.bindings)
+			errs, err := matching.Match(ctx, nil, r.rule.Match, r.value, r.bindings)
 			// TODO: handle error and skip
 			return err == nil && len(errs) == 0
 		})
