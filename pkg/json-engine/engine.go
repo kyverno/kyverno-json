@@ -8,6 +8,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
+	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/matching"
 )
 
@@ -27,9 +28,10 @@ type PolicyResponse struct {
 }
 
 type RuleResponse struct {
-	Rule    v1alpha1.ValidatingRule
-	Result  PolicyResult
-	Message string
+	Rule       v1alpha1.ValidatingRule
+	Identifier string
+	Result     PolicyResult
+	Message    string
 }
 
 // PolicyResult specifies state of a policy result
@@ -42,13 +44,6 @@ const (
 	StatusError PolicyResult = "error"
 	StatusSkip  PolicyResult = "skip"
 )
-
-// type request struct {
-// 	policy   *v1alpha1.ValidatingPolicy
-// 	rule     v1alpha1.ValidatingRule
-// 	value    interface{}
-// 	bindings jpbinding.Bindings
-// }
 
 func New() engine.Engine[Request, Response] {
 	type ruleRequest struct {
@@ -87,11 +82,32 @@ func New() engine.Engine[Request, Response] {
 			if err != nil {
 				// TODO return error
 			}
-			for _, err := range errs {
-				fmt.Println(err)
-				// TODO return fail
+			if len(errs) == 0 {
+				return []RuleResponse{{
+					Rule:    r.rule,
+					Result:  StatusPass,
+					Message: "",
+				}}
 			}
-			return nil
+			identifier := ""
+			if r.rule.Identifier != "" {
+				result, subjectErr := template.Execute(context.Background(), r.rule.Identifier, r.value, nil)
+				if subjectErr != nil {
+					identifier = fmt.Sprintf("(error: %s)", subjectErr)
+				} else {
+					identifier = fmt.Sprint(result)
+				}
+			}
+			var failures []RuleResponse
+			for _, err := range errs {
+				failures = append(failures, RuleResponse{
+					Rule:       r.rule,
+					Identifier: identifier,
+					Result:     StatusFail,
+					Message:    err.Error(),
+				})
+			}
+			return failures
 		})
 	policyEngine := builder.
 		Function(func(ctx context.Context, r policyRequest) PolicyResponse {

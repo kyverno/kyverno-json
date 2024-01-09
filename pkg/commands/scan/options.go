@@ -82,16 +82,20 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 			Policies: policies,
 		}))
 	}
-	// for _, response := range responses {
-	// 	if response.Result == jsonengine.StatusFail {
-	// 		out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "FAILED:", response.Message)
-	// 	} else if response.Result == jsonengine.StatusError {
-	// 		out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "ERROR:", response.Message)
-	// 	} else {
-	// 		// TODO: handle skip, warn
-	// 		out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "PASSED")
-	// 	}
-	// }
+	for _, response := range responses {
+		for _, policy := range response.Policies {
+			for _, rule := range policy.Rules {
+				if rule.Result == jsonengine.StatusFail {
+					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "FAILED:", rule.Message)
+				} else if rule.Result == jsonengine.StatusError {
+					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "ERROR:", rule.Message)
+				} else {
+					// TODO: handle skip, warn
+					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "PASSED")
+				}
+			}
+		}
+	}
 	out.responses(responses...)
 	out.println("Done")
 	return nil
