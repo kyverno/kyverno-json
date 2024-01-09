@@ -6,10 +6,12 @@ import (
 
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/matching"
+	"go.uber.org/multierr"
 )
 
 type Request struct {
@@ -48,18 +50,20 @@ const (
 func New() engine.Engine[Request, Response] {
 	type ruleRequest struct {
 		rule     v1alpha1.ValidatingRule
-		value    any
+		resource any
 		bindings jpbinding.Bindings
 	}
 	type policyRequest struct {
 		policy   *v1alpha1.ValidatingPolicy
-		value    any
+		resource any
 		bindings jpbinding.Bindings
 	}
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
-			if r.rule.Match == nil {
-				errs, err := matching.Match(ctx, nil, r.rule.Match, r.value, r.bindings)
+			bindings := r.bindings.Register("$rule", jpbinding.NewBinding(r.rule))
+			bindings = binding.NewContextBindings(bindings, r.resource, r.rule.Context...)
+			if r.rule.Match != nil {
+				errs, err := matching.Match(ctx, nil, r.rule.Match, r.resource, bindings)
 				if err != nil {
 					// TODO return error
 				}
@@ -69,7 +73,7 @@ func New() engine.Engine[Request, Response] {
 				}
 			}
 			if r.rule.Exclude != nil {
-				errs, err := matching.Match(ctx, nil, r.rule.Exclude, r.value, r.bindings)
+				errs, err := matching.Match(ctx, nil, r.rule.Exclude, r.resource, bindings)
 				if err != nil {
 					// TODO return error
 				}
@@ -78,64 +82,75 @@ func New() engine.Engine[Request, Response] {
 					return nil
 				}
 			}
-			errs, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.value, r.bindings)
+			errs, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.resource, bindings)
 			if err != nil {
 				// TODO return error
 			}
-			if len(errs) == 0 {
-				return []RuleResponse{{
-					Rule:    r.rule,
-					Result:  StatusPass,
-					Message: "",
-				}}
-			}
 			identifier := ""
 			if r.rule.Identifier != "" {
-				result, subjectErr := template.Execute(context.Background(), r.rule.Identifier, r.value, nil)
+				result, subjectErr := template.Execute(context.Background(), r.rule.Identifier, r.resource, nil)
 				if subjectErr != nil {
 					identifier = fmt.Sprintf("(error: %s)", subjectErr)
 				} else {
 					identifier = fmt.Sprint(result)
 				}
 			}
-			var failures []RuleResponse
-			for _, err := range errs {
-				failures = append(failures, RuleResponse{
+			if len(errs) == 0 {
+				return []RuleResponse{{
 					Rule:       r.rule,
 					Identifier: identifier,
-					Result:     StatusFail,
-					Message:    err.Error(),
-				})
+					Result:     StatusPass,
+					Message:    "",
+				}}
 			}
-			return failures
+			return []RuleResponse{{
+				Rule:       r.rule,
+				Identifier: identifier,
+				Result:     StatusFail,
+				Message:    multierr.Combine(errs...).Error(),
+			}}
+			// var failures []RuleResponse
+			// 	for _, err := range errs {
+			// 		failures = append(failures, RuleResponse{
+			// 			Rule:       r.rule,
+			// 			Identifier: identifier,
+			// 			Result:     StatusFail,
+			// 			Message:    err.Error(),
+			// 		})
+			// 	}
+			// 	return failures
 		})
 	policyEngine := builder.
 		Function(func(ctx context.Context, r policyRequest) PolicyResponse {
 			response := PolicyResponse{
 				Policy: r.policy,
 			}
+			bindings := r.bindings.Register("$policy", jpbinding.NewBinding(r.policy))
 			for _, rule := range r.policy.Spec.Rules {
 				response.Rules = append(response.Rules, ruleEngine.Run(ctx, ruleRequest{
-					rule:  rule,
-					value: r.value,
+					rule:     rule,
+					resource: r.resource,
+					bindings: bindings.Register("$rule", jpbinding.NewBinding(rule)),
 				})...)
 			}
 			return response
 		})
-	e := builder.
+	resourceEngine := builder.
 		Function(func(ctx context.Context, r Request) Response {
 			response := Response{
 				Resource: r.Resource,
 			}
+			bindings := jpbinding.NewBindings().Register("$payload", jpbinding.NewBinding(r.Resource))
 			for _, policy := range r.Policies {
 				response.Policies = append(response.Policies, policyEngine.Run(ctx, policyRequest{
-					policy: policy,
-					value:  r.Resource,
+					policy:   policy,
+					resource: r.Resource,
+					bindings: bindings,
 				}))
 			}
 			return response
 		})
-	return e
+	return resourceEngine
 	// looper := func(r Request) []request {
 	// 	var requests []request
 	// 	bindings := jpbinding.NewBindings()
