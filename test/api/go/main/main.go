@@ -63,13 +63,15 @@ func main() {
 
 	// process the engine response
 	logger := log.Default()
-	for _, r := range responses {
-		if r.Result == jsonengine.StatusFail {
-			logger.Printf("fail: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
-		} else if r.Result == jsonengine.StatusError {
-			logger.Printf("error: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
-		} else {
-			logger.Printf("%s: %s/%s -> %s", r.Result, r.PolicyName, r.RuleName, r.Identifier)
-		}
-	}
+
+	logger.Println(responses)
+	// for _, r := range responses {
+	// 	if r.Result == jsonengine.StatusFail {
+	// 		logger.Printf("fail: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
+	// 	} else if r.Result == jsonengine.StatusError {
+	// 		logger.Printf("error: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
+	// 	} else {
+	// 		logger.Printf("%s: %s/%s -> %s", r.Result, r.PolicyName, r.RuleName, r.Identifier)
+	// 	}
+	// }
 }

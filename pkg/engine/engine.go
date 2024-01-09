@@ -9,5 +9,5 @@ import (
 // - explain
 
 type Engine[TREQUEST any, TRESPONSE any] interface {
-	Run(context.Context, TREQUEST) []TRESPONSE
+	Run(context.Context, TREQUEST) TRESPONSE
 }

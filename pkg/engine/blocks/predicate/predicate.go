@@ -11,9 +11,10 @@ type predicate[TREQUEST any, TRESPONSE any] struct {
 	predicate func(context.Context, TREQUEST) bool
 }
 
-func (b *predicate[TREQUEST, TRESPONSE]) Run(ctx context.Context, request TREQUEST) []TRESPONSE {
+func (b *predicate[TREQUEST, TRESPONSE]) Run(ctx context.Context, request TREQUEST) TRESPONSE {
 	if !b.predicate(ctx, request) {
-		return nil
+		var none TRESPONSE
+		return none
 	}
 	return b.inner.Run(ctx, request)
 }

@@ -52,14 +52,14 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 		}
 		// run engine
 		e := jsonengine.New()
-		var results []jsonengine.RuleResponse
+		var results []jsonengine.Response
 		for _, resource := range resources {
 			results = append(results, e.Run(context.Background(), jsonengine.Request{
 				Resource: resource,
 				Policies: pols,
-			})...)
+			}))
 		}
 		// TODO: return HTTP 403 for policy failure and HTTP 406 for policy errors
-		return &jsonengine.Response{Results: results}, nil
+		return nil, nil
 	}, http.StatusOK), nil
 }

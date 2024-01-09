@@ -75,23 +75,23 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	out.println("Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
 	e := jsonengine.New()
-	var responses []jsonengine.RuleResponse
+	var responses []jsonengine.Response
 	for _, resource := range resources {
 		responses = append(responses, e.Run(context.Background(), jsonengine.Request{
 			Resource: resource,
 			Policies: policies,
-		})...)
+		}))
 	}
-	for _, response := range responses {
-		if response.Result == jsonengine.StatusFail {
-			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "FAILED:", response.Message)
-		} else if response.Result == jsonengine.StatusError {
-			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "ERROR:", response.Message)
-		} else {
-			// TODO: handle skip, warn
-			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "PASSED")
-		}
-	}
+	// for _, response := range responses {
+	// 	if response.Result == jsonengine.StatusFail {
+	// 		out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "FAILED:", response.Message)
+	// 	} else if response.Result == jsonengine.StatusError {
+	// 		out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "ERROR:", response.Message)
+	// 	} else {
+	// 		// TODO: handle skip, warn
+	// 		out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "PASSED")
+	// 	}
+	// }
 	out.responses(responses...)
 	out.println("Done")
 	return nil

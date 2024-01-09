@@ -17,8 +17,8 @@ func new[TREQUEST any, TRESPONSE any](engine engine.Engine[TREQUEST, TRESPONSE])
 	return Engine[TREQUEST, TRESPONSE]{engine}
 }
 
-func Constant[TREQUEST any, TRESPONSE any](responses ...TRESPONSE) Engine[TREQUEST, TRESPONSE] {
-	return new(constant.New[TREQUEST](responses...))
+func Constant[TREQUEST any, TRESPONSE any](response TRESPONSE) Engine[TREQUEST, TRESPONSE] {
+	return new(constant.New[TREQUEST](response))
 }
 
 func (inner Engine[TREQUEST, TRESPONSE]) Predicate(condition func(context.Context, TREQUEST) bool) Engine[TREQUEST, TRESPONSE] {
