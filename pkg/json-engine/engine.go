@@ -6,8 +6,8 @@ import (
 
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine"
-	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/blocks/loop"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
@@ -60,7 +60,7 @@ func New() engine.Engine[Request, RuleResponse] {
 				bindings = bindings.Register("$policy", jpbinding.NewBinding(policy))
 				for _, rule := range policy.Spec.Rules {
 					bindings = bindings.Register("$rule", jpbinding.NewBinding(rule))
-					bindings = assert.NewContextBindings(bindings, resource, rule.Context...)
+					bindings = binding.NewContextBindings(bindings, resource, rule.Context...)
 					requests = append(requests, request{
 						policy:   policy,
 						rule:     rule,
