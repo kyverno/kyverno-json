@@ -51,8 +51,8 @@ func main() {
 
 	// create a Request
 	request := jsonengine.Request{
-		Resources: []interface{}{payload},
-		Policies:  policies,
+		Resource: payload,
+		Policies: policies,
 	}
 
 	// create an engine
