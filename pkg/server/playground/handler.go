@@ -56,10 +56,13 @@ func newHandler() (gin.HandlerFunc, error) {
 		}
 		// run engine
 		e := jsonengine.New()
-		results := e.Run(context.Background(), jsonengine.Request{
-			Resources: resources,
-			Policies:  []*v1alpha1.ValidatingPolicy{&policy},
-		})
+		var results []jsonengine.RuleResponse
+		for _, resource := range resources {
+			results = append(results, e.Run(context.Background(), jsonengine.Request{
+				Resource: resource,
+				Policies: []*v1alpha1.ValidatingPolicy{&policy},
+			})...)
+		}
 		return &jsonengine.Response{Results: results}, nil
 	}, http.StatusOK), nil
 }

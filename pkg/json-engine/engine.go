@@ -16,8 +16,8 @@ import (
 )
 
 type Request struct {
-	Resources []interface{}
-	Policies  []*v1alpha1.ValidatingPolicy
+	Resource interface{}
+	Policies []*v1alpha1.ValidatingPolicy
 }
 
 type Response struct {
@@ -54,20 +54,18 @@ func New() engine.Engine[Request, RuleResponse] {
 	looper := func(r Request) []request {
 		var requests []request
 		bindings := jpbinding.NewBindings()
-		for _, resource := range r.Resources {
-			bindings = bindings.Register("$payload", jpbinding.NewBinding(resource))
-			for _, policy := range r.Policies {
-				bindings = bindings.Register("$policy", jpbinding.NewBinding(policy))
-				for _, rule := range policy.Spec.Rules {
-					bindings = bindings.Register("$rule", jpbinding.NewBinding(rule))
-					bindings = binding.NewContextBindings(bindings, resource, rule.Context...)
-					requests = append(requests, request{
-						policy:   policy,
-						rule:     rule,
-						value:    resource,
-						bindings: bindings,
-					})
-				}
+		bindings = bindings.Register("$payload", jpbinding.NewBinding(r.Resource))
+		for _, policy := range r.Policies {
+			bindings = bindings.Register("$policy", jpbinding.NewBinding(policy))
+			for _, rule := range policy.Spec.Rules {
+				bindings = bindings.Register("$rule", jpbinding.NewBinding(rule))
+				bindings = binding.NewContextBindings(bindings, r.Resource, rule.Context...)
+				requests = append(requests, request{
+					policy:   policy,
+					rule:     rule,
+					value:    r.Resource,
+					bindings: bindings,
+				})
 			}
 		}
 		return requests

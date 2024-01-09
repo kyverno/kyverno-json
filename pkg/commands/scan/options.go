@@ -75,10 +75,13 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	out.println("Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
 	e := jsonengine.New()
-	responses := e.Run(context.Background(), jsonengine.Request{
-		Resources: resources,
-		Policies:  policies,
-	})
+	var responses []jsonengine.RuleResponse
+	for _, resource := range resources {
+		responses = append(responses, e.Run(context.Background(), jsonengine.Request{
+			Resource: resource,
+			Policies: policies,
+		})...)
+	}
 	for _, response := range responses {
 		if response.Result == jsonengine.StatusFail {
 			out.println("-", response.PolicyName, "/", response.RuleName, "/", response.Identifier, "FAILED:", response.Message)
