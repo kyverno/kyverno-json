@@ -44,7 +44,7 @@ func main() {
 		}
 	}`
 
-	var payload interface{}
+	var payload any
 	if err := json.Unmarshal([]byte(requestJSON), &payload); err != nil {
 		panic(err)
 	}

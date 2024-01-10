@@ -145,7 +145,7 @@ func main() {
 			panic(err)
 		}
 		defer mkdocs.Close()
-		if err := template.Execute(mkdocs, map[string]interface{}{
+		if err := template.Execute(mkdocs, map[string]any{
 			"Policies": pols,
 		}); err != nil {
 			panic(err)

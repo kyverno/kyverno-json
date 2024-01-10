@@ -58,14 +58,14 @@ func main() {
 		}
 	}`
 
-	var payload interface{}
+	var payload any
 	if err := json.Unmarshal([]byte(requestJSON), &payload); err != nil {
 		panic(err)
 	}
 
 	// create a JsonEngineRequest
 	request := jsonengine.JsonEngineRequest{
-		Resources: []interface{}{payload},
+		Resources: []any{payload},
 		Policies:  policies,
 	}
 
