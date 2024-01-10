@@ -11,7 +11,6 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/matching"
-	"go.uber.org/multierr"
 )
 
 type Request struct {
@@ -32,8 +31,8 @@ type PolicyResponse struct {
 type RuleResponse struct {
 	Rule       v1alpha1.ValidatingRule
 	Identifier string
-	Result     PolicyResult
-	Message    string
+	Error      error
+	Violations []error
 }
 
 // PolicyResult specifies state of a policy result
@@ -77,8 +76,7 @@ func New() engine.Engine[Request, Response] {
 					return []RuleResponse{{
 						Rule:       r.rule,
 						Identifier: identifier,
-						Result:     StatusError,
-						Message:    err.Error(),
+						Error:      err,
 					}}
 				}
 				// didn't match
@@ -92,8 +90,7 @@ func New() engine.Engine[Request, Response] {
 					return []RuleResponse{{
 						Rule:       r.rule,
 						Identifier: identifier,
-						Result:     StatusError,
-						Message:    err.Error(),
+						Error:      err,
 					}}
 				}
 				// matched
@@ -101,39 +98,19 @@ func New() engine.Engine[Request, Response] {
 					return nil
 				}
 			}
-			errs, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.resource, bindings)
+			violations, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.resource, bindings)
 			if err != nil {
 				return []RuleResponse{{
 					Rule:       r.rule,
 					Identifier: identifier,
-					Result:     StatusError,
-					Message:    err.Error(),
-				}}
-			}
-			if len(errs) == 0 {
-				return []RuleResponse{{
-					Rule:       r.rule,
-					Identifier: identifier,
-					Result:     StatusPass,
-					Message:    "",
+					Error:      err,
 				}}
 			}
 			return []RuleResponse{{
 				Rule:       r.rule,
 				Identifier: identifier,
-				Result:     StatusFail,
-				Message:    multierr.Combine(errs...).Error(),
+				Violations: violations,
 			}}
-			// var failures []RuleResponse
-			// 	for _, err := range errs {
-			// 		failures = append(failures, RuleResponse{
-			// 			Rule:       r.rule,
-			// 			Identifier: identifier,
-			// 			Result:     StatusFail,
-			// 			Message:    err.Error(),
-			// 		})
-			// 	}
-			// 	return failures
 		})
 	policyEngine := builder.
 		Function(func(ctx context.Context, r policyRequest) PolicyResponse {
