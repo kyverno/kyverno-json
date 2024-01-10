@@ -25,7 +25,7 @@ func TestAny_DeepCopyInto(t *testing.T) {
 		out:  &Any{nil},
 	}, {
 		name: "slice",
-		in:   &Any{[]interface{}{42, "string"}},
+		in:   &Any{[]any{42, "string"}},
 		out:  &Any{nil},
 	}}
 	for _, tt := range tests {
@@ -39,7 +39,7 @@ func TestAny_DeepCopyInto(t *testing.T) {
 func TestAny_MarshalJSON(t *testing.T) {
 	tests := []struct {
 		name    string
-		value   interface{}
+		value   any
 		want    []byte
 		wantErr bool
 	}{{
@@ -59,7 +59,7 @@ func TestAny_MarshalJSON(t *testing.T) {
 		wantErr: false,
 	}, {
 		name:    "map",
-		value:   map[string]interface{}{"foo": 42},
+		value:   map[string]any{"foo": 42},
 		want:    []byte(`{"foo":42}`),
 		wantErr: false,
 	}, {
@@ -108,7 +108,7 @@ func TestAny_UnmarshalJSON(t *testing.T) {
 	}, {
 		name:    "map",
 		data:    []byte(`{"foo":42}`),
-		want:    &Any{Value: map[string]interface{}{"foo": 42.0}},
+		want:    &Any{Value: map[string]any{"foo": 42.0}},
 		wantErr: false,
 	}, {
 		name:    "error",

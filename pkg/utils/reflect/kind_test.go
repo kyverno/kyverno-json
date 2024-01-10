@@ -8,7 +8,7 @@ import (
 func TestGetKind(t *testing.T) {
 	tests := []struct {
 		name  string
-		value interface{}
+		value any
 		want  reflect.Kind
 	}{{
 		name:  "nil",
@@ -32,11 +32,11 @@ func TestGetKind(t *testing.T) {
 		want:  reflect.String,
 	}, {
 		name:  "map",
-		value: map[interface{}]interface{}{},
+		value: map[any]any{},
 		want:  reflect.Map,
 	}, {
 		name:  "slice",
-		value: []interface{}{},
+		value: []any{},
 		want:  reflect.Slice,
 	}}
 	for _, tt := range tests {

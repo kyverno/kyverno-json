@@ -11,12 +11,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func Load(path string) (interface{}, error) {
+func Load(path string) (any, error) {
 	content, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
-	var payload interface{}
+	var payload any
 	switch {
 	case file.IsJson(path):
 		if err := json.Unmarshal(content, &payload); err != nil {
@@ -27,9 +27,9 @@ func Load(path string) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		var objects []interface{}
+		var objects []any
 		for _, document := range documents {
-			var object map[string]interface{}
+			var object map[string]any
 			if err := yaml.Unmarshal(document, &object); err != nil {
 				return nil, err
 			}

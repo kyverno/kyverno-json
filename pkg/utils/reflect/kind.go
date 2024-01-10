@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-func GetKind(value interface{}) reflect.Kind {
+func GetKind(value any) reflect.Kind {
 	if value == nil {
 		return reflect.Invalid
 	}

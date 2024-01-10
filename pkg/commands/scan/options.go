@@ -67,8 +67,8 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		}
 		payload = result
 	}
-	var resources []interface{}
-	if slice, ok := payload.([]interface{}); ok {
+	var resources []any
+	if slice, ok := payload.([]any); ok {
 		resources = slice
 	} else {
 		resources = append(resources, payload)

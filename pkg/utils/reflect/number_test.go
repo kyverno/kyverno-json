@@ -8,7 +8,7 @@ import (
 func TestToNumber(t *testing.T) {
 	tests := []struct {
 		name   string
-		value  interface{}
+		value  any
 		want   float64
 		wantOk bool
 	}{{

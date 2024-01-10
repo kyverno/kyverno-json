@@ -14,7 +14,7 @@ import (
 )
 
 func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
-	return tonic.Handler(func(ctx *gin.Context, in *Request) (*jsonengine.Response, error) {
+	return tonic.Handler(func(ctx *gin.Context, in *Request) ([]jsonengine.Response, error) {
 		// check input
 		if in == nil {
 			return nil, errors.New("input is null")
@@ -35,8 +35,8 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 			payload = result
 		}
 		// load resources
-		var resources []interface{}
-		if slice, ok := payload.([]interface{}); ok {
+		var resources []any
+		if slice, ok := payload.([]any); ok {
 			resources = slice
 		} else {
 			resources = append(resources, payload)
@@ -60,6 +60,6 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 			}))
 		}
 		// TODO: return HTTP 403 for policy failure and HTTP 406 for policy errors
-		return nil, nil
+		return results, nil
 	}, http.StatusOK), nil
 }

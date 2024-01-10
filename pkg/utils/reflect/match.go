@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func MatchScalar(expected, actual interface{}) (bool, error) {
+func MatchScalar(expected, actual any) (bool, error) {
 	if actual == nil && expected == nil {
 		return true, nil
 	} else if actual == nil && expected != nil {

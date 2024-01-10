@@ -60,7 +60,7 @@ func TestLoad(t *testing.T) {
 					Name: "pod-no-latest",
 					Match: &v1alpha1.Match{
 						Any: []v1alpha1.Any{{
-							Value: map[string]interface{}{
+							Value: map[string]any{
 								"apiVersion": "v1",
 								"kind":       "Pod",
 							},
@@ -69,10 +69,10 @@ func TestLoad(t *testing.T) {
 					Assert: &v1alpha1.Assert{
 						All: []v1alpha1.Assertion{{
 							Check: v1alpha1.Any{
-								Value: map[string]interface{}{
-									"spec": map[string]interface{}{
-										"~foo.containers->foos": map[string]interface{}{
-											"(at($foos, $foo).image)->foo": map[string]interface{}{
+								Value: map[string]any{
+									"spec": map[string]any{
+										"~foo.containers->foos": map[string]any{
+											"(at($foos, $foo).image)->foo": map[string]any{
 												"(contains($foo, ':'))":        true,
 												"(ends_with($foo, ':latest'))": false,
 											},

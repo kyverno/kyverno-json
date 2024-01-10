@@ -54,7 +54,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `Value` | `interface{}` |  | :white_check_mark: | <p>Value contains the value of the Any object.</p> |
+| `Value` | `any` |  | :white_check_mark: | <p>Value contains the value of the Any object.</p> |
 
 ## `Assert`     {#json-kyverno-io-v1alpha1-Assert}
 
