@@ -34,7 +34,7 @@ func load(file string) string {
 		if err != nil {
 			panic(err)
 		}
-		var obj interface{}
+		var obj any
 		if err := json.Unmarshal(content, &obj); err != nil {
 			panic(err)
 		}

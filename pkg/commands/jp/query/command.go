@@ -126,21 +126,21 @@ func loadQueries(cmd *cobra.Command, args []string, files []string) ([]string, e
 	return queries, nil
 }
 
-func readInput(cmd *cobra.Command) (interface{}, error) {
+func readInput(cmd *cobra.Command) (any, error) {
 	fmt.Fprintln(cmd.OutOrStdout(), "Reading from terminal input.")
 	fmt.Fprintln(cmd.OutOrStdout(), "Enter input object and hit Ctrl+D.")
 	data, err := readFile(cmd.InOrStdin())
 	if err != nil {
 		return nil, err
 	}
-	var input interface{}
+	var input any
 	if err := yaml.Unmarshal(data, &input); err != nil {
 		return nil, fmt.Errorf("error parsing input json: %w", err)
 	}
 	return input, nil
 }
 
-func loadInput(cmd *cobra.Command, file string) (interface{}, error) {
+func loadInput(cmd *cobra.Command, file string) (any, error) {
 	if file == "" {
 		return nil, nil
 	}
@@ -148,14 +148,14 @@ func loadInput(cmd *cobra.Command, file string) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var input interface{}
+	var input any
 	if err := yaml.Unmarshal(data, &input); err != nil {
 		return nil, fmt.Errorf("error parsing input json: %w", err)
 	}
 	return input, nil
 }
 
-func evaluate(input interface{}, query string) (interface{}, error) {
+func evaluate(input any, query string) (any, error) {
 	result, err := template.Execute(context.Background(), query, input, nil)
 	if err != nil {
 		if syntaxError, ok := err.(parsing.SyntaxError); ok {
@@ -166,7 +166,7 @@ func evaluate(input interface{}, query string) (interface{}, error) {
 	return result, nil
 }
 
-func printResult(cmd *cobra.Command, query string, result interface{}, unquoted bool, compact bool) error {
+func printResult(cmd *cobra.Command, query string, result any, unquoted bool, compact bool) error {
 	converted, isString := result.(string)
 	fmt.Fprintln(cmd.OutOrStdout(), "#", query)
 	if unquoted && isString {

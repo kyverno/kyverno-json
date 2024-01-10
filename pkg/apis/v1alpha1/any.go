@@ -13,7 +13,7 @@ type Any struct {
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Schemaless
 	// +optional
-	Value interface{} `json:",inline"`
+	Value any `json:",inline"`
 }
 
 func (in *Any) DeepCopyInto(out *Any) {
@@ -36,7 +36,7 @@ func (a *Any) MarshalJSON() ([]byte, error) {
 }
 
 func (a *Any) UnmarshalJSON(data []byte) error {
-	var v interface{}
+	var v any
 	err := json.Unmarshal(data, &v)
 	if err != nil {
 		return err

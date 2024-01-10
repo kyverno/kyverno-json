@@ -10,11 +10,12 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
+	"github.com/kyverno/kyverno-json/pkg/server/model"
 	"github.com/loopfz/gadgeto/tonic"
 )
 
 func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
-	return tonic.Handler(func(ctx *gin.Context, in *Request) (*jsonengine.Response, error) {
+	return tonic.Handler(func(ctx *gin.Context, in *Request) (*model.Response, error) {
 		// check input
 		if in == nil {
 			return nil, errors.New("input is null")
@@ -35,8 +36,8 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 			payload = result
 		}
 		// load resources
-		var resources []interface{}
-		if slice, ok := payload.([]interface{}); ok {
+		var resources []any
+		if slice, ok := payload.([]any); ok {
 			resources = slice
 		} else {
 			resources = append(resources, payload)
@@ -52,14 +53,15 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 		}
 		// run engine
 		e := jsonengine.New()
-		var results []jsonengine.RuleResponse
+		var results []jsonengine.Response
 		for _, resource := range resources {
 			results = append(results, e.Run(context.Background(), jsonengine.Request{
 				Resource: resource,
 				Policies: pols,
-			})...)
+			}))
 		}
 		// TODO: return HTTP 403 for policy failure and HTTP 406 for policy errors
-		return &jsonengine.Response{Results: results}, nil
+		response := model.MakeResponse(results...)
+		return &response, nil
 	}, http.StatusOK), nil
 }

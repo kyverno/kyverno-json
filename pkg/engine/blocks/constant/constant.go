@@ -7,15 +7,15 @@ import (
 )
 
 type constant[TREQUEST any, TRESPONSE any] struct {
-	responses []TRESPONSE
+	response TRESPONSE
 }
 
-func (b *constant[TREQUEST, TRESPONSE]) Run(_ context.Context, _ TREQUEST) []TRESPONSE {
-	return b.responses
+func (b *constant[TREQUEST, TRESPONSE]) Run(_ context.Context, _ TREQUEST) TRESPONSE {
+	return b.response
 }
 
-func New[TREQUEST any, TRESPONSE any](responses ...TRESPONSE) engine.Engine[TREQUEST, TRESPONSE] {
+func New[TREQUEST any, TRESPONSE any](response TRESPONSE) engine.Engine[TREQUEST, TRESPONSE] {
 	return &constant[TREQUEST, TRESPONSE]{
-		responses: responses,
+		response: response,
 	}
 }

@@ -10,7 +10,7 @@ import (
 
 type output interface {
 	println(args ...any)
-	responses(responses ...jsonengine.RuleResponse)
+	responses(responses ...jsonengine.Response)
 }
 
 type textOutput struct {
@@ -21,7 +21,7 @@ func (t *textOutput) println(args ...any) {
 	fmt.Fprintln(t.out, args...)
 }
 
-func (t *textOutput) responses(responses ...jsonengine.RuleResponse) {
+func (t *textOutput) responses(responses ...jsonengine.Response) {
 }
 
 type jsonOutput struct {
@@ -31,8 +31,8 @@ type jsonOutput struct {
 func (t *jsonOutput) println(args ...any) {
 }
 
-func (t *jsonOutput) responses(responses ...jsonengine.RuleResponse) {
-	payload, err := json.MarshalIndent(&jsonengine.Response{Results: responses}, "", "  ")
+func (t *jsonOutput) responses(responses ...jsonengine.Response) {
+	payload, err := json.MarshalIndent(responses, "", "  ")
 	if err != nil {
 		fmt.Fprintln(t.out, err)
 	} else {
