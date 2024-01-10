@@ -45,14 +45,14 @@ go<span class=w> </span>get<span class=w> </span>github.com/kyverno/kyverno-json
 <span class=s>        }</span>
 <span class=s>    }`</span>
 
-<span class=w>    </span><span class=kd>var</span><span class=w> </span><span class=nx>payload</span><span class=w> </span><span class=kd>interface</span><span class=p>{}</span>
+<span class=w>    </span><span class=kd>var</span><span class=w> </span><span class=nx>payload</span><span class=w> </span><span class=kt>any</span>
 <span class=w>    </span><span class=k>if</span><span class=w> </span><span class=nx>err</span><span class=w> </span><span class=o>:=</span><span class=w> </span><span class=nx>json</span><span class=p>.</span><span class=nx>Unmarshal</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=nx>requestJSON</span><span class=p>),</span><span class=w> </span><span class=o>&amp;</span><span class=nx>payload</span><span class=p>);</span><span class=w> </span><span class=nx>err</span><span class=w> </span><span class=o>!=</span><span class=w> </span><span class=kc>nil</span><span class=w> </span><span class=p>{</span>
 <span class=w>        </span><span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
 <span class=w>    </span><span class=p>}</span>
 
 <span class=w>    </span><span class=c1>// create a JsonEngineRequest</span>
 <span class=w>    </span><span class=nx>request</span><span class=w> </span><span class=o>:=</span><span class=w> </span><span class=nx>jsonengine</span><span class=p>.</span><span class=nx>JsonEngineRequest</span><span class=p>{</span>
-<span class=w>        </span><span class=nx>Resources</span><span class=p>:</span><span class=w> </span><span class=p>[]</span><span class=kd>interface</span><span class=p>{}{</span><span class=nx>payload</span><span class=p>},</span>
+<span class=w>        </span><span class=nx>Resources</span><span class=p>:</span><span class=w> </span><span class=p>[]</span><span class=kt>any</span><span class=p>{</span><span class=nx>payload</span><span class=p>},</span>
 <span class=w>        </span><span class=nx>Policies</span><span class=p>:</span><span class=w>  </span><span class=nx>policies</span><span class=p>,</span>
 <span class=w>    </span><span class=p>}</span>
 
