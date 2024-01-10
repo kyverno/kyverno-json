@@ -7,6 +7,7 @@ import (
 
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/policy"
+	"go.uber.org/multierr"
 )
 
 const policyYAML = `
@@ -66,12 +67,12 @@ func main() {
 
 	for _, policy := range response.Policies {
 		for _, rule := range policy.Rules {
-			if rule.Result == jsonengine.StatusFail {
-				logger.Printf("fail: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Message)
-			} else if rule.Result == jsonengine.StatusError {
-				logger.Printf("error: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Message)
+			if rule.Error != nil {
+				logger.Printf("error: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Error)
+			} else if len(rule.Violations) != 0 {
+				logger.Printf("fail: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, multierr.Combine(rule.Violations...))
 			} else {
-				logger.Printf("%s: %s/%s -> %s", rule.Result, policy.Policy.Name, rule.Rule.Name, rule.Identifier)
+				logger.Printf("pass: %s/%s -> %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier)
 			}
 		}
 	}

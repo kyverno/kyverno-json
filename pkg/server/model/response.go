@@ -2,6 +2,7 @@ package model
 
 import (
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
+	"go.uber.org/multierr"
 )
 
 type Response struct {
@@ -25,12 +26,32 @@ func MakeResponse(from ...jsonengine.Response) Response {
 					PolicyName: policy.Policy.Name,
 					RuleName:   rule.Rule.Name,
 					Identifier: rule.Identifier,
-					Result:     rule.Result,
-					Message:    rule.Message,
+					Result:     makeResult(rule),
+					Message:    makeMessage(rule),
 				}
 				response.Results = append(response.Results, ruleResponse)
 			}
 		}
 	}
 	return response
+}
+
+func makeResult(rule jsonengine.RuleResponse) jsonengine.PolicyResult {
+	if rule.Error != nil {
+		return jsonengine.StatusError
+	}
+	if len(rule.Violations) != 0 {
+		return jsonengine.StatusFail
+	}
+	return jsonengine.StatusPass
+}
+
+func makeMessage(rule jsonengine.RuleResponse) string {
+	if rule.Error != nil {
+		return rule.Error.Error()
+	}
+	if len(rule.Violations) != 0 {
+		return multierr.Combine(rule.Violations...).Error()
+	}
+	return ""
 }

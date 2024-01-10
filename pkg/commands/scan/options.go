@@ -13,6 +13,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/policy"
 	"github.com/kyverno/kyverno/ext/output/pluralize"
 	"github.com/spf13/cobra"
+	"go.uber.org/multierr"
 	"k8s.io/apimachinery/pkg/labels"
 )
 
@@ -85,10 +86,10 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	for _, response := range responses {
 		for _, policy := range response.Policies {
 			for _, rule := range policy.Rules {
-				if rule.Result == jsonengine.StatusFail {
-					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "FAILED:", rule.Message)
-				} else if rule.Result == jsonengine.StatusError {
-					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "ERROR:", rule.Message)
+				if rule.Error != nil {
+					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "ERROR:", rule.Error.Error())
+				} else if len(rule.Violations) != 0 {
+					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "FAILED:", multierr.Combine(rule.Violations...).Error())
 				} else {
 					// TODO: handle skip, warn
 					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "PASSED")
