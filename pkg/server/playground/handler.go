@@ -10,12 +10,13 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
+	"github.com/kyverno/kyverno-json/pkg/server/model"
 	"github.com/loopfz/gadgeto/tonic"
 	"sigs.k8s.io/yaml"
 )
 
 func newHandler() (gin.HandlerFunc, error) {
-	return tonic.Handler(func(ctx *gin.Context, in *Request) ([]jsonengine.Response, error) {
+	return tonic.Handler(func(ctx *gin.Context, in *Request) (*model.Response, error) {
 		// check input
 		if in == nil {
 			return nil, errors.New("input is null")
@@ -63,6 +64,7 @@ func newHandler() (gin.HandlerFunc, error) {
 				Policies: []*v1alpha1.ValidatingPolicy{&policy},
 			}))
 		}
-		return results, nil
+		response := model.MakeResponse(results...)
+		return &response, nil
 	}, http.StatusOK), nil
 }
