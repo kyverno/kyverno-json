@@ -59,19 +59,20 @@ func main() {
 	engine := jsonengine.New()
 
 	// apply polices to get the response
-	responses := engine.Run(context.Background(), request)
+	response := engine.Run(context.Background(), request)
 
 	// process the engine response
 	logger := log.Default()
 
-	logger.Println(responses)
-	// for _, r := range responses {
-	// 	if r.Result == jsonengine.StatusFail {
-	// 		logger.Printf("fail: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
-	// 	} else if r.Result == jsonengine.StatusError {
-	// 		logger.Printf("error: %s/%s -> %s: %s", r.PolicyName, r.RuleName, r.Identifier, r.Message)
-	// 	} else {
-	// 		logger.Printf("%s: %s/%s -> %s", r.Result, r.PolicyName, r.RuleName, r.Identifier)
-	// 	}
-	// }
+	for _, policy := range response.Policies {
+		for _, rule := range policy.Rules {
+			if rule.Result == jsonengine.StatusFail {
+				logger.Printf("fail: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Message)
+			} else if rule.Result == jsonengine.StatusError {
+				logger.Printf("error: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Message)
+			} else {
+				logger.Printf("%s: %s/%s -> %s", rule.Result, policy.Policy.Name, rule.Rule.Name, rule.Identifier)
+			}
+		}
+	}
 }
