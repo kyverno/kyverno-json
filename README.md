@@ -14,17 +14,17 @@ Use Kyverno's powerful, declarative, low-code policies to validate any runtime o
 
 Run `kyverno-json` as a CLI, or a web application with a REST API. Or, integrate as a Golang library.
 
-**WARNING: ⚠️ Kyverno JSON is in early development and changes may not be backwards compatible.**
+**WARNING: ⚠️ Kyverno JSON is in early development and changes may not be backward compatible.**
 
 ## 📙 Documentation
 
 Documentation is available at: https://kyverno.github.io/kyverno-json
 
-👉 **[Quick Start](https://kyverno.github.io/kyverno-json/quick-start/)**
+👉 **[Quick Start](https://kyverno.github.io/kyverno-json/latest/quick-start/)**
 
-👉 **[Sample Policies](https://kyverno.github.io/kyverno-json/catalog/)**
+👉 **[Sample Policies](https://kyverno.github.io/kyverno-json/latest/catalog/)**
 
-👉 **[Playground](https://kyverno.github.io/kyverno-json/playground/)**
+👉 **[Playground](https://kyverno.github.io/kyverno-json/latest/playground/)**
 
 ## 🙋‍♂️ Getting Help
 
@@ -40,7 +40,7 @@ We are here to help!
 
 Thanks for your interest in contributing to Kyverno! Here are some steps to help get you started:
 
-✔ Look through the [good first issues](https://github.com/kyverno/kyverno-json/labels/good%20first%20issue) list. Add a comment with `/assign` to request assignment of the issue.
+✔ Look through the [good first issues](https://github.com/kyverno/kyverno-json/labels/good%20first%20issue) list. Add a comment with `/assign` to request the assignment of the issue.
 
 ✔ Check out the Kyverno [Community page](https://kyverno.io/community/) for other ways to get involved.
 
