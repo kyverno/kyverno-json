@@ -8,7 +8,7 @@ require (
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jinzhu/copier v0.4.0
-	github.com/jmespath-community/go-jmespath v1.1.2-0.20231123142750-72f7c13d265e
+	github.com/jmespath-community/go-jmespath v1.1.2-0.20240117150817-e430401a2172
 	github.com/kyverno/kyverno v1.5.0-rc1.0.20231029235953-c96199dee1f6
 	github.com/loopfz/gadgeto v0.11.3
 	github.com/nlepage/go-wasm-http-server v1.1.0
