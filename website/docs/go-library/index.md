@@ -69,7 +69,7 @@ func main() {
 		Policies:  policies,
 	}
 
-	// create a J
+	// create a new json engine
 	engine := jsonengine.New()
 
 	responses := engine.Run(context.Background(), request)
