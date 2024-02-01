@@ -136,5 +136,3 @@ require (
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 )
-
-replace github.com/kyverno/kyverno => github.com/kyverno/kyverno v1.5.0-rc1.0.20240131222814-231e7a681e66
