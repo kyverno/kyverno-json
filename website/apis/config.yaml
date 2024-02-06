@@ -38,4 +38,4 @@ apis:
   - name: kyverno-json
     title: KyvernoJson (v1alpha1)
     package: github.com/kyverno/kyverno-json
-    path: pkg/apis/v1alpha1
+    path: pkg/apis/policy/v1alpha1

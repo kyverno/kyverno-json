@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "github.com/kyverno/kyverno-json/pkg/client/clientset/versioned"
-	jsonv1alpha1 "github.com/kyverno/kyverno-json/pkg/client/clientset/versioned/typed/apis/v1alpha1"
-	fakejsonv1alpha1 "github.com/kyverno/kyverno-json/pkg/client/clientset/versioned/typed/apis/v1alpha1/fake"
+	jsonv1alpha1 "github.com/kyverno/kyverno-json/pkg/client/clientset/versioned/typed/policy/v1alpha1"
+	fakejsonv1alpha1 "github.com/kyverno/kyverno-json/pkg/client/clientset/versioned/typed/policy/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/discovery"

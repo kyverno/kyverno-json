@@ -148,9 +148,8 @@ ko-build: $(KO) ## Build image (with ko)
 
 GOPATH_SHIM                 := ${PWD}/.gopath
 PACKAGE_SHIM                := $(GOPATH_SHIM)/src/$(PACKAGE)
-INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
+INPUT_DIRS                  := $(PACKAGE)/pkg/apis/policy/v1alpha1
 CRDS_PATH                   := ${PWD}/.crds
-INPUT_DIRS                  := $(PACKAGE)/pkg/apis/v1alpha1
 OUT_PACKAGE                 := $(PACKAGE)/pkg/client
 CLIENTSET_PACKAGE           := $(OUT_PACKAGE)/clientset
 LISTERS_PACKAGE             := $(OUT_PACKAGE)/listers
