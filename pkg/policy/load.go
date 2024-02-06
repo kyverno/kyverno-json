@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/data"
 	fileinfo "github.com/kyverno/kyverno/ext/file-info"
 	"github.com/kyverno/kyverno/ext/resource/convert"

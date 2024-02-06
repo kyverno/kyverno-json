@@ -24,8 +24,8 @@ import (
 	time "time"
 
 	versioned "github.com/kyverno/kyverno-json/pkg/client/clientset/versioned"
-	apis "github.com/kyverno/kyverno-json/pkg/client/informers/externalversions/apis"
 	internalinterfaces "github.com/kyverno/kyverno-json/pkg/client/informers/externalversions/internalinterfaces"
+	policy "github.com/kyverno/kyverno-json/pkg/client/informers/externalversions/policy"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -243,9 +243,9 @@ type SharedInformerFactory interface {
 	// client.
 	InformerFor(obj runtime.Object, newFunc internalinterfaces.NewInformerFunc) cache.SharedIndexInformer
 
-	Json() apis.Interface
+	Json() policy.Interface
 }
 
-func (f *sharedInformerFactory) Json() apis.Interface {
-	return apis.New(f, f.namespace, f.tweakListOptions)
+func (f *sharedInformerFactory) Json() policy.Interface {
+	return policy.New(f, f.namespace, f.tweakListOptions)
 }

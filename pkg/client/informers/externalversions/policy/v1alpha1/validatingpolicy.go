@@ -22,10 +22,10 @@ import (
 	"context"
 	time "time"
 
-	apisv1alpha1 "github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	policyv1alpha1 "github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	versioned "github.com/kyverno/kyverno-json/pkg/client/clientset/versioned"
 	internalinterfaces "github.com/kyverno/kyverno-json/pkg/client/informers/externalversions/internalinterfaces"
-	v1alpha1 "github.com/kyverno/kyverno-json/pkg/client/listers/apis/v1alpha1"
+	v1alpha1 "github.com/kyverno/kyverno-json/pkg/client/listers/policy/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -70,7 +70,7 @@ func NewFilteredValidatingPolicyInformer(client versioned.Interface, resyncPerio
 				return client.JsonV1alpha1().ValidatingPolicies().Watch(context.TODO(), options)
 			},
 		},
-		&apisv1alpha1.ValidatingPolicy{},
+		&policyv1alpha1.ValidatingPolicy{},
 		resyncPeriod,
 		indexers,
 	)
@@ -81,7 +81,7 @@ func (f *validatingPolicyInformer) defaultInformer(client versioned.Interface, r
 }
 
 func (f *validatingPolicyInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&apisv1alpha1.ValidatingPolicy{}, f.defaultInformer)
+	return f.factory.InformerFor(&policyv1alpha1.ValidatingPolicy{}, f.defaultInformer)
 }
 
 func (f *validatingPolicyInformer) Lister() v1alpha1.ValidatingPolicyLister {

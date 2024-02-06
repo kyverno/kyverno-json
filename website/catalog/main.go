@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/catalog"
 	"github.com/kyverno/kyverno-json/pkg/policy"
 	fileinfo "github.com/kyverno/kyverno/ext/file-info"
