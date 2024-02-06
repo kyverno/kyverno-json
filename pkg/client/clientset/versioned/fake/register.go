@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	jsonv1alpha1 "github.com/kyverno/kyverno-json/pkg/apis/v1alpha1"
+	jsonv1alpha1 "github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
