@@ -30,6 +30,26 @@ You can install with `go install` with:
 ```bash
 go install github.com/kyverno/kyverno-json@latest
 ```
+## Running with Docker 
+
+Kyverno-JSON is also available as a Docker image which you can pull and run:
+
+```bash
+docker pull ghcr.io/kyverno/kyverno-json:<version>
+```
+
+!!! info
+
+    Since kyverno-JSON relies on files for its operation (like ValidatingPolicy definitions), you will need to bind mount the necessary directories when running it via Docker.
+
+
+```bash
+$ docker run --rm                       \
+    -v /path/on/host:/path/in/container \
+    ghcr.io/kyverno/kyverno-json:<version>  \
+    <kyverno-json-command>
+```
+
 
 ## Build from the source code
 
