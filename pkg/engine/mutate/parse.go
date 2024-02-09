@@ -40,14 +40,14 @@ func (n mapNode) mutate(ctx context.Context, path *field.Path, value any, bindin
 	out := map[any]any{}
 	for k, v := range n {
 		// TODO: very simple implementation
-		var value any
+		var projection any
 		if value != nil {
 			mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(k))
-			if !mapValue.IsValid() {
-				value = mapValue.Interface()
+			if mapValue.IsValid() {
+				projection = mapValue.Interface()
 			}
 		}
-		if inner, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), value, bindings, opts...); err != nil {
+		if inner, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), projection, bindings, opts...); err != nil {
 			return nil, err
 		} else {
 			out[k] = inner
