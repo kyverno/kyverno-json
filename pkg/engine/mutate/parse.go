@@ -40,12 +40,13 @@ func (n mapNode) mutate(ctx context.Context, path *field.Path, value any, bindin
 	out := map[any]any{}
 	for k, v := range n {
 		// TODO: very simple implementation
-		mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(k))
-		if !mapValue.IsValid() {
-			continue
+		var value any
+		if value != nil {
+			mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(k))
+			if !mapValue.IsValid() {
+				value = mapValue.Interface()
+			}
 		}
-		value := mapValue.Interface()
-		// TODO: does it make sense to take valueOf.Index(i).Interface() here ?
 		if inner, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), value, bindings, opts...); err != nil {
 			return nil, err
 		} else {
