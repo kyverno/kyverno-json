@@ -39,66 +39,11 @@ type mapNode map[any]Mutation
 func (n mapNode) mutate(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
 	out := map[any]any{}
 	for k, v := range n {
-		// TODO: very simple implementation
-		var projection any
-		if value != nil {
-			mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(k))
-			if mapValue.IsValid() {
-				projection = mapValue.Interface()
-			}
-		}
-		if inner, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), projection, bindings, opts...); err != nil {
+		inner, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), value, bindings, opts...)
+		if err != nil {
 			return nil, err
-		} else {
-			out[k] = inner
 		}
-		// projection, err := project(ctx, k, value, bindings, opts...)
-		// if err != nil {
-		// 	return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
-		// } else {
-		// 	if projection.binding != "" {
-		// 		bindings = bindings.Register("$"+projection.binding, jpbinding.NewBinding(projection.result))
-		// 	}
-		// 	if projection.foreach {
-		// 		projectedKind := reflectutils.GetKind(projection.result)
-		// 		if projectedKind == reflect.Slice {
-		// 			valueOf := reflect.ValueOf(projection.result)
-		// 			for i := 0; i < valueOf.Len(); i++ {
-		// 				bindings := bindings
-		// 				if projection.foreachName != "" {
-		// 					bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(i))
-		// 				}
-		// 				if _errs, err := v.mutate(ctx, path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
-		// 					return nil, err
-		// 				} else {
-		// 					errs = append(errs, _errs...)
-		// 				}
-		// 			}
-		// 		} else if projectedKind == reflect.Map {
-		// 			iter := reflect.ValueOf(projection.result).MapRange()
-		// 			for iter.Next() {
-		// 				key := iter.Key().Interface()
-		// 				bindings := bindings
-		// 				if projection.foreachName != "" {
-		// 					bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(key))
-		// 				}
-		// 				if _errs, err := v.mutate(ctx, path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings, opts...); err != nil {
-		// 					return nil, err
-		// 				} else {
-		// 					errs = append(errs, _errs...)
-		// 				}
-		// 			}
-		// 		} else {
-		// 			return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projection.result, "expected a slice or a map")
-		// 		}
-		// 	} else {
-		// 		if _errs, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), projection.result, bindings, opts...); err != nil {
-		// 			return nil, err
-		// 		} else {
-		// 			errs = append(errs, _errs...)
-		// 		}
-		// 	}
-		// }
+		out[k] = inner
 	}
 	return out, nil
 }
@@ -115,14 +60,12 @@ func (n sliceNode) mutate(ctx context.Context, path *field.Path, value any, bind
 		return nil, field.TypeInvalid(path, value, "expected a slice")
 	} else {
 		var out []any
-		valueOf := reflect.ValueOf(value)
 		for i := range n {
-			// TODO: does it make sense to take valueOf.Index(i).Interface() here ?
-			if inner, err := n[i].mutate(ctx, path.Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
+			inner, err := n[i].mutate(ctx, path.Index(i), value, bindings, opts...)
+			if err != nil {
 				return nil, err
-			} else {
-				out = append(out, inner)
 			}
+			out = append(out, inner)
 		}
 		return out, nil
 	}
