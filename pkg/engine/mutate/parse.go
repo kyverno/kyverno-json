@@ -39,7 +39,14 @@ type mapNode map[any]Mutation
 func (n mapNode) mutate(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
 	out := map[any]any{}
 	for k, v := range n {
-		inner, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), value, bindings, opts...)
+		var projection any
+		if value != nil {
+			mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(k))
+			if mapValue.IsValid() {
+				projection = mapValue.Interface()
+			}
+		}
+		inner, err := v.mutate(ctx, path.Child(fmt.Sprint(k)), projection, bindings, opts...)
 		if err != nil {
 			return nil, err
 		}
@@ -54,14 +61,19 @@ func (n mapNode) mutate(ctx context.Context, path *field.Path, value any, bindin
 type sliceNode []Mutation
 
 func (n sliceNode) mutate(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
-	if value == nil {
-		return nil, nil
-	} else if reflectutils.GetKind(value) != reflect.Slice {
-		return nil, field.TypeInvalid(path, value, "expected a slice")
+	if value != nil && reflectutils.GetKind(value) != reflect.Slice && reflectutils.GetKind(value) != reflect.Array {
+		return nil, field.TypeInvalid(path, value, "expected a slice or array")
 	} else {
 		var out []any
 		for i := range n {
-			inner, err := n[i].mutate(ctx, path.Index(i), value, bindings, opts...)
+			var projection any
+			if value != nil {
+				valueOf := reflect.ValueOf(value)
+				if i < valueOf.Len() {
+					projection = valueOf.Index(i).Interface()
+				}
+			}
+			inner, err := n[i].mutate(ctx, path.Index(i), projection, bindings, opts...)
 			if err != nil {
 				return nil, err
 			}
