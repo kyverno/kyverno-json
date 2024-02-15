@@ -23,7 +23,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	gotest.tools v2.2.0+incompatible
-	k8s.io/apimachinery v0.29.1
+	k8s.io/apimachinery v0.29.2
 	k8s.io/client-go v0.29.1
 	sigs.k8s.io/kubectl-validate v0.0.2-0.20240102223437-fe143bcde89f
 	sigs.k8s.io/yaml v1.4.0
