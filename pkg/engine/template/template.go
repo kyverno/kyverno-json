@@ -11,10 +11,7 @@ import (
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 )
 
-var (
-	variable = regexp.MustCompile(`{{(.*?)}}`)
-	parser   = parsing.NewParser()
-)
+var variable = regexp.MustCompile(`{{(.*?)}}`)
 
 func String(ctx context.Context, in string, value any, bindings binding.Bindings, opts ...Option) string {
 	groups := variable.FindAllStringSubmatch(in, -1)
@@ -37,6 +34,7 @@ func String(ctx context.Context, in string, value any, bindings binding.Bindings
 func Execute(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
 	o := buildOptions(opts...)
 	vm := interpreter.NewInterpreter(nil, bindings)
+	parser := parsing.NewParser()
 	compiled, err := parser.Parse(statement)
 	if err != nil {
 		return nil, err
