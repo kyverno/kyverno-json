@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"strings"
 
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/policy"
-	"go.uber.org/multierr"
 )
 
 const policyYAML = `
@@ -70,7 +70,7 @@ func main() {
 			if rule.Error != nil {
 				logger.Printf("error: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Error)
 			} else if len(rule.Violations) != 0 {
-				logger.Printf("fail: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, multierr.Combine(rule.Violations...))
+				logger.Printf("fail: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, strings.Join(rule.Violations, "; "))
 			} else {
 				logger.Printf("pass: %s/%s -> %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier)
 			}
