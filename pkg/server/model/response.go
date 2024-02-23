@@ -1,8 +1,6 @@
 package model
 
 import (
-	"strings"
-
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 )
 
@@ -52,7 +50,7 @@ func makeMessage(rule jsonengine.RuleResponse) string {
 		return rule.Error.Error()
 	}
 	if len(rule.Violations) != 0 {
-		return strings.Join(rule.Violations, "; ")
+		return rule.Violations.Error()
 	}
 	return ""
 }
