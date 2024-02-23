@@ -32,7 +32,7 @@ func (t *jsonOutput) println(args ...any) {
 }
 
 func (t *jsonOutput) responses(responses ...jsonengine.Response) {
-	payload, err := json.MarshalIndent(responses, "", "  ")
+	payload, err := json.MarshalIndent(ToReports(responses...), "", "  ")
 	if err != nil {
 		fmt.Fprintln(t.out, err)
 	} else {

@@ -2,6 +2,7 @@ package matching
 
 import (
 	"context"
+	"strings"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
@@ -10,12 +11,39 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]string, error) {
+type Result struct {
+	field.ErrorList
+	Message string
+}
+
+func (r Result) Error() string {
+	var lines []string
+	if r.Message != "" {
+		lines = append(lines, "-> "+r.Message)
+	}
+	for _, err := range r.ErrorList {
+		lines = append(lines, " -> "+err.Error())
+	}
+	return strings.Join(lines, "\n")
+}
+
+type Results []Result
+
+func (r Results) Error() string {
+	var lines []string
+	for _, err := range r {
+		lines = append(lines, err.Error())
+	}
+	return strings.Join(lines, "\n")
+}
+
+// func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]error, error) {
+func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]Result, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return nil, field.Invalid(path, match, "an empty assert is not valid")
 	} else {
 		if len(match.Any) != 0 {
-			var fails []string
+			var fails []Result
 			path := path.Child("any")
 			for i, assertion := range match.Any {
 				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
@@ -26,20 +54,20 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 					fails = nil
 					break
 				}
-				if assertion.Message != "" {
-					msg := template.String(ctx, assertion.Message, actual, bindings, opts...)
-					msg += ": " + checkFails.ToAggregate().Error()
-					fails = append(fails, msg)
-				} else {
-					fails = append(fails, checkFails.ToAggregate().Error())
+				fail := Result{
+					ErrorList: checkFails,
 				}
+				if assertion.Message != "" {
+					fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+				}
+				fails = append(fails, fail)
 			}
 			if fails != nil {
 				return fails, nil
 			}
 		}
 		if len(match.All) != 0 {
-			var fails []string
+			var fails []Result
 			path := path.Child("all")
 			for i, assertion := range match.All {
 				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
@@ -47,13 +75,13 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 					return fails, err
 				}
 				if len(checkFails) > 0 {
-					if assertion.Message != "" {
-						msg := template.String(ctx, assertion.Message, actual, bindings, opts...)
-						msg += ": " + checkFails.ToAggregate().Error()
-						fails = append(fails, msg)
-					} else {
-						fails = append(fails, checkFails.ToAggregate().Error())
+					fail := Result{
+						ErrorList: checkFails,
 					}
+					if assertion.Message != "" {
+						fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+					}
+					fails = append(fails, fail)
 				}
 			}
 			return fails, nil
