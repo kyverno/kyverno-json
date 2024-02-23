@@ -32,7 +32,7 @@ type RuleResponse struct {
 	Rule       v1alpha1.ValidatingRule
 	Identifier string
 	Error      error
-	Violations []error
+	Violations []string
 }
 
 // PolicyResult specifies state of a policy result

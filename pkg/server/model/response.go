@@ -1,8 +1,9 @@
 package model
 
 import (
+	"strings"
+
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
-	"go.uber.org/multierr"
 )
 
 type Response struct {
@@ -51,7 +52,7 @@ func makeMessage(rule jsonengine.RuleResponse) string {
 		return rule.Error.Error()
 	}
 	if len(rule.Violations) != 0 {
-		return multierr.Combine(rule.Violations...).Error()
+		return strings.Join(rule.Violations, "; ")
 	}
 	return ""
 }
