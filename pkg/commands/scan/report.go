@@ -28,10 +28,10 @@ type ViolationReport struct {
 }
 
 type ErrorReport struct {
-	Type     string `json:"type,omitempty"`
-	Field    string `json:"field,omitempty"`
-	BadValue any    `json:"badValue,omitempty"`
-	Detail   string `json:"detail,omitempty"`
+	Type   string `json:"type,omitempty"`
+	Field  string `json:"field,omitempty"`
+	Value  any    `json:"value,omitempty"`
+	Detail string `json:"detail,omitempty"`
 }
 
 func ToReport(response jsonengine.Response) Report {
@@ -57,10 +57,10 @@ func ToReport(response jsonengine.Response) Report {
 				for _, err := range violation.ErrorList {
 					if err != nil {
 						violationReport.Errors = append(violationReport.Errors, ErrorReport{
-							Type:     string(err.Type),
-							Field:    err.Field,
-							BadValue: err.BadValue,
-							Detail:   err.Detail,
+							Type:   string(err.Type),
+							Field:  err.Field,
+							Value:  err.BadValue,
+							Detail: err.Detail,
 						})
 					}
 				}
