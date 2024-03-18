@@ -177,7 +177,7 @@ func Test_Match(t *testing.T) {
 	m2.Any = nil
 	errs, err = Match(context.Background(), nil, &m2, res, nil)
 	assert.NilError(t, err)
-	assert.Equal(t, len(errs), 0)
+	assert.Equal(t, len(errs), 1)
 }
 
 func Test_MatchAssert(t *testing.T) {

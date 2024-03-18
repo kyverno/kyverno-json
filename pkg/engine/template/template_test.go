@@ -9,39 +9,37 @@ import (
 	"gotest.tools/assert"
 )
 
-var (
-	resourceRaw = `
-	{
-		"apiVersion": "v1",
-		"kind": "Pod",
-		"metadata": {
-			"name": "webserver"
-		},
-		"spec": {
-			"containers": [
-				{
-					"name": "webserver-3",
-					"image": "nginx:latest",
-					"ports": [
-						{
-							"containerPort": 80
-						}
-					]
-				},
-				{
-					"name": "webserver-4",
-					"image": "nginx:latest",
-					"ports": [
-						{
-							"containerPort": 80
-						}
-					]
-				}
-			]
-		}
+var resourceRaw = `
+{
+	"apiVersion": "v1",
+	"kind": "Pod",
+	"metadata": {
+		"name": "webserver"
+	},
+	"spec": {
+		"containers": [
+			{
+				"name": "webserver-3",
+				"image": "nginx:latest",
+				"ports": [
+					{
+						"containerPort": 80
+					}
+				]
+			},
+			{
+				"name": "webserver-4",
+				"image": "nginx:latest",
+				"ports": [
+					{
+						"containerPort": 80
+					}
+				]
+			}
+		]
 	}
-	`
-)
+}
+`
 
 func Test_Execute(t *testing.T) {
 	bindings := jpbinding.NewBindings()

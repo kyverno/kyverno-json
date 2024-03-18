@@ -11,25 +11,23 @@ import (
 	"gotest.tools/assert"
 )
 
-var (
-	resp = jsonengine.Response{
-		Policies: []jsonengine.PolicyResponse{
-			{
-				Rules: []jsonengine.RuleResponse{
-					{
-						Identifier: "test-identifier",
-						Error:      errors.New("test-error"),
-						Violations: matching.Results{
-							{
-								Message: "test-message",
-							},
+var resp = jsonengine.Response{
+	Policies: []jsonengine.PolicyResponse{
+		{
+			Rules: []jsonengine.RuleResponse{
+				{
+					Identifier: "test-identifier",
+					Error:      errors.New("test-error"),
+					Violations: matching.Results{
+						{
+							Message: "test-message",
 						},
 					},
 				},
 			},
 		},
-	}
-)
+	},
+}
 
 func Test_OutputJSON(t *testing.T) {
 	var buff bytes.Buffer

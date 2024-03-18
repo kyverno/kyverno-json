@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
-
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"gotest.tools/assert"
 )
