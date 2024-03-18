@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
+//nolint:errname
 type Result struct {
 	field.ErrorList
 	Message string
@@ -27,6 +28,7 @@ func (r Result) Error() string {
 	return strings.Join(lines, "\n")
 }
 
+//nolint:errname
 type Results []Result
 
 func (r Results) Error() string {
