@@ -11,6 +11,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Load takes file paths and returns payloads present in the filesystem
 func Load(path string) (any, error) {
 	content, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {

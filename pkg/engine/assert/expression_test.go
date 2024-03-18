@@ -68,6 +68,15 @@ func Test_parseExpressionRegex(t *testing.T) {
 			engine:      "jp",
 		},
 	}, {
+		name: "foreach simple field",
+		in:   "(jp:test)",
+		want: &expression{
+			foreach:     false,
+			foreachName: "",
+			statement:   "test",
+			engine:      "jp",
+		},
+	}, {
 		name: "foreach nested field",
 		in:   "~.(test.test)",
 		want: &expression{
