@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/payload"
@@ -58,7 +59,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	out.println("Pre processing ...")
 	for _, preprocessor := range c.preprocessors {
-		result, err := template.Execute(context.Background(), preprocessor, payload, nil)
+		result, err := template.Execute(context.Background(), preprocessor, payload, binding.New())
 		if err != nil {
 			return err
 		}
