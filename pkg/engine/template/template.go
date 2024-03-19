@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
+	"github.com/kyverno/kyverno-json/pkg/binding"
 )
 
 var variable = regexp.MustCompile(`{{(.*?)}}`)
@@ -33,11 +33,34 @@ func String(ctx context.Context, in string, value any, bindings binding.Bindings
 
 func Execute(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
 	o := buildOptions(opts...)
-	vm := interpreter.NewInterpreter(nil, bindings)
-	parser := parsing.NewParser()
-	compiled, err := parser.Parse(statement)
-	if err != nil {
-		return nil, err
+	if o.engine == "jp" {
+		vm := interpreter.NewInterpreter(nil, bindings.JmespathBinding())
+		parser := parsing.NewParser()
+		compiled, err := parser.Parse(statement)
+		if err != nil {
+			return nil, err
+		}
+		return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.functionCaller))
+	} else if o.engine == "cel" {
+		env, data, err := bindings.CELEnv()
+		if err != nil {
+			return nil, err
+		}
+
+		ast, iss := env.Compile(statement)
+		if iss.Err() != nil {
+			return nil, iss.Err()
+		}
+
+		prg, err := env.Program(ast)
+		if err != nil {
+			return nil, err
+		}
+		out, _, err := prg.Eval(data)
+		if err != nil {
+			return nil, err
+		}
+		return out.Value, nil
 	}
-	return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.functionCaller))
+	return nil, fmt.Errorf("invalid engine type")
 }

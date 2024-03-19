@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
@@ -38,7 +38,7 @@ func Parse(ctx context.Context, assertion any) Assertion {
 // it is responsible for projecting the analysed resource and passing the result to the descendant
 type mapNode map[any]Assertion
 
-func (n mapNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func (n mapNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Binding, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for k, v := range n {
 		projection, err := project(ctx, k, value, bindings, opts...)
