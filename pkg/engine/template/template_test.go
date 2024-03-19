@@ -54,6 +54,12 @@ func Test_Execute(t *testing.T) {
 	assert.NilError(t, err)
 	assert.Equal(t, val.(bool), true)
 
+	val, err = Execute(context.Background(), "spec.containers", payload, bindings)
+	assert.NilError(t, err)
+	v := val.([]interface{})
+	assert.Equal(t, len(v), 2)
+	assert.Equal(t, v[0].(map[string]interface{})["name"].(string), "webserver-3")
+
 	val, err = Execute(context.Background(), "contains($allowedContainerNames, 'bad')", payload, bindings)
 	assert.NilError(t, err)
 	assert.Equal(t, val.(bool), false)
