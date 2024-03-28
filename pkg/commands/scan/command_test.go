@@ -121,6 +121,12 @@ func Test_Execute(t *testing.T) {
 		policies:      []string{"../../../test/commands/scan/tf-ecs-task-definition/policy.yaml"},
 		out:           "../../../test/commands/scan/tf-ecs-task-definition/out.txt",
 		wantErr:       false,
+	}, {
+		name:     "binding",
+		payload:  "../../../test/commands/scan/binding/payload.json",
+		policies: []string{"../../../test/commands/scan/binding/policy.yaml"},
+		out:      "../../../test/commands/scan/binding/out.txt",
+		wantErr:  false,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

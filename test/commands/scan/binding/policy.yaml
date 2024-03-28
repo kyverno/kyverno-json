@@ -1,0 +1,12 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: check-reference-json
+spec:
+  rules:
+    - name: check-reference-json
+      assert:
+        all:
+          - check:
+              (node1.outerkey1)->ref:
+                ($ref == node2.outerkey1): true

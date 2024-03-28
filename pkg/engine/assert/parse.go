@@ -47,6 +47,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value any, bindin
 		} else {
 			if projection.binding != "" {
 				bindings = bindings.Register("$"+projection.binding, jpbinding.NewBinding(projection.result))
+				projection.result = value // the result should point to the current value after creating a binding
 			}
 			if projection.foreach {
 				projectedKind := reflectutils.GetKind(projection.result)

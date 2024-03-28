@@ -1,0 +1,14 @@
+{
+  "node1": {
+    "outerkey1": "value1",
+    "outerkey2": {
+      "innerkey1": "innervalue1"
+    }
+  },
+  "node2": {
+    "outerkey1": "value1",
+    "outerkey2": {
+      "innerkey1": "innervalue1"
+    }
+  }
+}
