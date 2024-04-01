@@ -15,7 +15,7 @@ require (
 	github.com/loopfz/gadgeto v0.11.3
 	github.com/nlepage/go-wasm-http-server v1.1.0
 	github.com/spf13/cobra v1.8.0
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	github.com/zach-klippenstein/goregen v0.0.0-20160303162051-795b5e3961ea
 	golang.org/x/crypto v0.19.0
 	gopkg.in/inf.v0 v0.9.1
