@@ -11,7 +11,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmespath-community/go-jmespath v1.1.2-0.20240117150817-e430401a2172
-	github.com/kyverno/kyverno v1.12.0-rc.3
+	github.com/kyverno/kyverno v1.12.0-rc.4
 	github.com/loopfz/gadgeto v0.11.3
 	github.com/nlepage/go-wasm-http-server v1.1.0
 	github.com/spf13/cobra v1.8.0
