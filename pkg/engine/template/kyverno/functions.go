@@ -22,7 +22,7 @@ import (
 	trunc "github.com/aquilax/truncate"
 	"github.com/blang/semver/v4"
 	gojmespath "github.com/jmespath-community/go-jmespath/pkg/functions"
-	"github.com/kyverno/kyverno/ext/wildcard"
+	"github.com/kyverno/pkg/ext/wildcard"
 	regen "github.com/zach-klippenstein/goregen"
 	"golang.org/x/crypto/cryptobyte"
 	cryptobyte_asn1 "golang.org/x/crypto/cryptobyte/asn1"
