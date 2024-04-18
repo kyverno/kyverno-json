@@ -11,7 +11,7 @@ import (
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/payload"
 	"github.com/kyverno/kyverno-json/pkg/policy"
-	"github.com/kyverno/kyverno/ext/output/pluralize"
+	"github.com/kyverno/pkg/ext/output/pluralize"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/labels"
 )
