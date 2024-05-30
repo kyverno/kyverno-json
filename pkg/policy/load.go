@@ -69,7 +69,7 @@ func Parse(content []byte) ([]*v1alpha1.ValidatingPolicy, error) {
 	}
 	var policies []*v1alpha1.ValidatingPolicy
 	// TODO: no need to allocate a validator every time
-	loader, err := loader.New(openapiclient.NewLocalCRDFiles(data.Crds(), data.CrdsFolder))
+	loader, err := loader.New(openapiclient.NewLocalCRDFiles(data.Crds()))
 	if err != nil {
 		return nil, err
 	}
