@@ -11,7 +11,7 @@ on:
       - 'release*'
 
 jobs:
-  required:
+  check-actions:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

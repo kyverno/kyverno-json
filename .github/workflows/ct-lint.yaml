@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  required:
+  ct-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
