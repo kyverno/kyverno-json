@@ -8,7 +8,8 @@ import (
 )
 
 func TestCrds(t *testing.T) {
-	data := Crds()
+	data, err := Crds()
+	assert.NoError(t, err)
 	{
 		file, err := fs.Stat(data, "crds/json.kyverno.io_validatingpolicies.yaml")
 		assert.NoError(t, err)

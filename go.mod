@@ -1,8 +1,6 @@
 module github.com/kyverno/kyverno-json
 
-go 1.22.0
-
-toolchain go1.22.2
+go 1.22.2
 
 require (
 	github.com/aquilax/truncate v1.0.0
