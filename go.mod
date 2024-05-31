@@ -10,7 +10,7 @@ require (
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmespath-community/go-jmespath v1.1.2-0.20240117150817-e430401a2172
 	github.com/kyverno/pkg/ext v0.0.0-20240418121121-df8add26c55c
-	github.com/loopfz/gadgeto v0.11.3
+	github.com/loopfz/gadgeto v0.11.4
 	github.com/nlepage/go-wasm-http-server v1.1.0
 	github.com/spf13/cobra v1.8.0
 	github.com/stretchr/testify v1.9.0
