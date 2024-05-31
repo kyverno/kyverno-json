@@ -5,20 +5,20 @@
 class KyvernoJson < Formula
   desc "Kyverno for any JSON-compatible payload."
   homepage "https://kyverno.github.io/kyverno-json"
-  version "0.0.2"
+  version "0.0.3-beta.1"
 
   on_macos do
-    if Hardware::CPU.arm?
-      url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.2/kyverno-json_darwin_arm64.tar.gz"
-      sha256 "732203f163892f672a095828ec1d8c81875b1848fbae74d39e350cae95b92bc6"
+    on_intel do
+      url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.3-beta.1/kyverno-json_darwin_amd64.tar.gz"
+      sha256 "aa7e68de634c640bbc64e9fec52ca4f1baf86ec9184ccc71fbdde22c7f22551e"
 
       def install
         bin.install "kyverno-json"
       end
     end
-    if Hardware::CPU.intel?
-      url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.2/kyverno-json_darwin_amd64.tar.gz"
-      sha256 "911e7d51f45028c5349c2669d10a503fad1d5f1d1f87edccc9cccbfc2e531835"
+    on_arm do
+      url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.3-beta.1/kyverno-json_darwin_arm64.tar.gz"
+      sha256 "980067d6d901b1a3a57f126a02b17cead151d58eb289d0dae9016e1cd22be9c6"
 
       def install
         bin.install "kyverno-json"
@@ -27,20 +27,24 @@ class KyvernoJson < Formula
   end
 
   on_linux do
-    if Hardware::CPU.intel?
-      url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.2/kyverno-json_linux_amd64.tar.gz"
-      sha256 "9cb5d41b19024f9a081c74a18d3149d831593bdcb0472f91ef95e1779291a4a2"
+    on_intel do
+      if Hardware::CPU.is_64_bit?
+        url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.3-beta.1/kyverno-json_linux_amd64.tar.gz"
+        sha256 "2b67d915ec90ce0bb37df1a8c631dd5ae03c789eedbfa5a57e9abde09f6132f9"
 
-      def install
-        bin.install "kyverno-json"
+        def install
+          bin.install "kyverno-json"
+        end
       end
     end
-    if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.2/kyverno-json_linux_arm64.tar.gz"
-      sha256 "b18f3609385f4b8ffdaf465ed13eff830618bfe763dca2610a11f9904b00499b"
+    on_arm do
+      if Hardware::CPU.is_64_bit?
+        url "https://github.com/kyverno/kyverno-json/releases/download/v0.0.3-beta.1/kyverno-json_linux_arm64.tar.gz"
+        sha256 "6013ed62e7abab01d6a484fba94e3a512dd7ac06804ebdef00826c4a1513a046"
 
-      def install
-        bin.install "kyverno-json"
+        def install
+          bin.install "kyverno-json"
+        end
       end
     end
   end
