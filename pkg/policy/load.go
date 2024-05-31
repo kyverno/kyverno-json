@@ -8,10 +8,10 @@ import (
 
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/data"
-	fileinfo "github.com/kyverno/kyverno/ext/file-info"
-	"github.com/kyverno/kyverno/ext/resource/convert"
-	"github.com/kyverno/kyverno/ext/resource/loader"
-	yamlutils "github.com/kyverno/kyverno/ext/yaml"
+	fileinfo "github.com/kyverno/pkg/ext/file-info"
+	"github.com/kyverno/pkg/ext/resource/convert"
+	"github.com/kyverno/pkg/ext/resource/loader"
+	yamlutils "github.com/kyverno/pkg/ext/yaml"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/kubectl-validate/pkg/openapiclient"
 )
@@ -67,12 +67,16 @@ func Parse(content []byte) ([]*v1alpha1.ValidatingPolicy, error) {
 	if err != nil {
 		return nil, err
 	}
-	var policies []*v1alpha1.ValidatingPolicy
 	// TODO: no need to allocate a validator every time
-	loader, err := loader.New(openapiclient.NewLocalCRDFiles(data.Crds(), data.CrdsFolder))
+	crds, err := data.Crds()
 	if err != nil {
 		return nil, err
 	}
+	loader, err := loader.New(openapiclient.NewLocalCRDFiles(crds))
+	if err != nil {
+		return nil, err
+	}
+	var policies []*v1alpha1.ValidatingPolicy
 	for _, document := range documents {
 		gvk, untyped, err := loader.Load(document)
 		if err != nil {
