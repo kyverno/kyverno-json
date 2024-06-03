@@ -2,6 +2,7 @@
 .tools
 .gopath
 coverage.out
+dist/
 /kyverno-json
 /pkg/server/ui/dist/assets/main.wasm
 /website/docs/_playground

@@ -3,7 +3,7 @@ package functions
 import (
 	"errors"
 
-	"github.com/kyverno/kyverno/ext/wildcard"
+	"github.com/kyverno/pkg/ext/wildcard"
 )
 
 func jpfWildcard(arguments []any) (any, error) {
