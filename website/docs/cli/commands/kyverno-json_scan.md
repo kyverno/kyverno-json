@@ -13,6 +13,7 @@ kyverno-json scan [flags]
 ### Options
 
 ```
+      --bindings string       Bindings file (json or yaml file). Top level keys will be interpreted as bindings names.
   -h, --help                  help for scan
       --labels strings        Labels selectors for policies
       --output string         Output format (text or json) (default "text")

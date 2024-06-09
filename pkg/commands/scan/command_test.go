@@ -12,6 +12,7 @@ import (
 func Test_Execute(t *testing.T) {
 	tests := []struct {
 		name          string
+		bindings      string
 		payload       string
 		preprocessors []string
 		policies      []string
@@ -28,6 +29,13 @@ func Test_Execute(t *testing.T) {
 		payload:  "../../../test/commands/scan/wildcard/payload.json",
 		policies: []string{"../../../test/commands/scan/wildcard/policy.yaml"},
 		out:      "../../../test/commands/scan/wildcard/out.txt",
+		wantErr:  false,
+	}, {
+		name:     "bindings",
+		bindings: "../../../test/commands/scan/bindings/bindings.yaml",
+		payload:  "../../../test/commands/scan/bindings/payload.yaml",
+		policies: []string{"../../../test/commands/scan/bindings/policy.yaml"},
+		out:      "../../../test/commands/scan/bindings/out.txt",
 		wantErr:  false,
 	}, {
 		name:     "pod-no-latest",
@@ -135,6 +143,9 @@ func Test_Execute(t *testing.T) {
 				args = append(args, "--policy", policy)
 			}
 			args = append(args, "--payload", tt.payload)
+			if tt.bindings != "" {
+				args = append(args, "--bindings", tt.bindings)
+			}
 			cmd.SetArgs(args)
 			out := bytes.NewBufferString("")
 			cmd.SetOut(out)

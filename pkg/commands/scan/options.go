@@ -17,6 +17,7 @@ import (
 )
 
 type options struct {
+	bindings      string
 	payload       string
 	preprocessors []string
 	policies      []string
@@ -47,6 +48,24 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 			}
 		}
 		policies = filteredPolicies
+	}
+	var bindings map[string]any
+	if c.bindings != "" {
+		out.println("Loading bindings ...")
+		payload, err := payload.Load(c.bindings)
+		if err != nil {
+			return err
+		}
+		if payload != nil {
+			if m, ok := payload.(map[string]any); ok {
+				bindings = m
+				for key, value := range bindings {
+					out.println("-", key, "->", value)
+				}
+			} else {
+				return errors.New("bindings are not a map[string]any object")
+			}
+		}
 	}
 	out.println("Loading payload ...")
 	payload, err := payload.Load(c.payload)
@@ -80,6 +99,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		responses = append(responses, e.Run(context.Background(), jsonengine.Request{
 			Resource: resource,
 			Policies: policies,
+			Bindings: bindings,
 		}))
 	}
 	for _, response := range responses {

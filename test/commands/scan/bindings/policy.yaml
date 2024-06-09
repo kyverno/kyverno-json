@@ -1,0 +1,15 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: test
+spec:
+  rules:
+    - name: foo-bar-4
+      match:
+        all:
+        - ($foo): bar
+      assert:
+        all:
+        - check:
+            foo:
+              bar: 4
