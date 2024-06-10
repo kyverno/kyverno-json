@@ -42,7 +42,7 @@ HELM_VERSION                       := v3.10.1
 KO                                 := $(TOOLS_DIR)/ko
 KO_VERSION                         := v0.14.1
 TOOLS                              := $(CLIENT_GEN) $(LISTER_GEN) $(INFORMER_GEN) $(REGISTER_GEN) $(DEEPCOPY_GEN) $(CONTROLLER_GEN) $(REFERENCE_DOCS) $(KIND) $(HELM) $(KO)
-PIP                                ?= pip3
+PIP                                ?= pip
 ifeq ($(GOOS), darwin)
 SED                                := gsed
 else
@@ -239,9 +239,7 @@ codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog 
 .PHONY: codegen-mkdocs
 codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@echo Generate mkdocs website... >&2
-	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install mkdocs
-	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install --upgrade pip
-	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin mike
+	@$(PIP) install -r requirements.txt
 	@mkdocs build -f ./website/mkdocs.yaml
 
 .PHONY: codegen-schemas-openapi
@@ -261,8 +259,7 @@ codegen-schemas-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 
 .PHONY: codegen-schemas-json
 codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
-	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install -U pip setuptools 
-	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install openapi2jsonschema --no-build-isolation
+	@$(PIP) install -r requirements.txt
 	@rm -rf ./.schemas/json
 	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
 
@@ -319,9 +316,7 @@ verify-codegen: codegen ## Verify all generated code and docs are up to date
 .PHONY: mkdocs-serve
 mkdocs-serve: ## Generate and serve mkdocs website
 	@echo Generate and servemkdocs website... >&2
-	@$(PIP) install mkdocs
-	@$(PIP) install --upgrade pip
-	@$(PIP) install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin mike
+	@$(PIP) install -r requirements.txt
 	@mkdocs serve -f ./website/mkdocs.yaml
 
 ########
