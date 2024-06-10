@@ -440,6 +440,34 @@
                         }
                       }
                     },
+                    "feedback": {
+                      "description": "Feedback declares rule feedback entries.",
+                      "type": [
+                        "array",
+                        "null"
+                      ],
+                      "items": {
+                        "description": "Feedback contains a feedback entry.",
+                        "type": [
+                          "object",
+                          "null"
+                        ],
+                        "required": [
+                          "name",
+                          "value"
+                        ],
+                        "properties": {
+                          "name": {
+                            "description": "Name is the feedback entry name.",
+                            "type": "string"
+                          },
+                          "value": {
+                            "description": "Value is the feedback entry value (a JMESPath expression).",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
                     "identifier": {
                       "description": "Identifier declares a JMESPath expression to extract a name from the payload.",
                       "type": [
