@@ -3,6 +3,7 @@ package jsonengine
 import (
 	"context"
 	"fmt"
+	"time"
 
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
@@ -16,6 +17,7 @@ import (
 type Request struct {
 	Resource any
 	Policies []*v1alpha1.ValidatingPolicy
+	Bindings map[string]any
 }
 
 type Response struct {
@@ -30,6 +32,7 @@ type PolicyResponse struct {
 
 type RuleResponse struct {
 	Rule       v1alpha1.ValidatingRule
+	Timestamp  time.Time
 	Identifier string
 	Error      error
 	Violations matching.Results
@@ -75,6 +78,7 @@ func New() engine.Engine[Request, Response] {
 				if err != nil {
 					return []RuleResponse{{
 						Rule:       r.rule,
+						Timestamp:  time.Now(),
 						Identifier: identifier,
 						Error:      err,
 					}}
@@ -89,6 +93,7 @@ func New() engine.Engine[Request, Response] {
 				if err != nil {
 					return []RuleResponse{{
 						Rule:       r.rule,
+						Timestamp:  time.Now(),
 						Identifier: identifier,
 						Error:      err,
 					}}
@@ -102,12 +107,14 @@ func New() engine.Engine[Request, Response] {
 			if err != nil {
 				return []RuleResponse{{
 					Rule:       r.rule,
+					Timestamp:  time.Now(),
 					Identifier: identifier,
 					Error:      err,
 				}}
 			}
 			return []RuleResponse{{
 				Rule:       r.rule,
+				Timestamp:  time.Now(),
 				Identifier: identifier,
 				Violations: violations,
 			}}
@@ -132,7 +139,11 @@ func New() engine.Engine[Request, Response] {
 			response := Response{
 				Resource: r.Resource,
 			}
-			bindings := jpbinding.NewBindings().Register("$payload", jpbinding.NewBinding(r.Resource))
+			bindings := jpbinding.NewBindings()
+			for k, v := range r.Bindings {
+				bindings = bindings.Register("$"+k, jpbinding.NewBinding(v))
+			}
+			bindings = bindings.Register("$payload", jpbinding.NewBinding(r.Resource))
 			for _, policy := range r.Policies {
 				response.Policies = append(response.Policies, policyEngine.Run(ctx, policyRequest{
 					policy:   policy,
