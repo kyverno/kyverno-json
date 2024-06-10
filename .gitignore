@@ -1,6 +1,7 @@
-.DS_Store
-.tools
-.gopath
+.DS_Store/
+.gopath/
+.tools/
+.venv/
 coverage.out
 dist/
 /kyverno-json
