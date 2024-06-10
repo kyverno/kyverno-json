@@ -131,6 +131,23 @@ spec:
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
                       type: object
+                    feedback:
+                      description: Feedback declares rule feedback entries.
+                      items:
+                        description: Feedback contains a feedback entry.
+                        properties:
+                          name:
+                            description: Name is the feedback entry name.
+                            type: string
+                          value:
+                            description: Value is the feedback entry value (a JMESPath
+                              expression).
+                            type: string
+                        required:
+                        - name
+                        - value
+                        type: object
+                      type: array
                     identifier:
                       description: Identifier declares a JMESPath expression to extract
                         a name from the payload.
