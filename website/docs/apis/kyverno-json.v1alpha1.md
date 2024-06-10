@@ -98,6 +98,20 @@ auto_generated: true
 | `name` | `string` | :white_check_mark: |  | <p>Name is the entry name.</p> |
 | `variable` | [`Any`](#json-kyverno-io-v1alpha1-Any) |  |  | <p>Variable defines an arbitrary variable.</p> |
 
+## `Feedback`     {#json-kyverno-io-v1alpha1-Feedback}
+
+**Appears in:**
+    
+- [ValidatingRule](#json-kyverno-io-v1alpha1-ValidatingRule)
+
+<p>Feedback contains a feedback entry.</p>
+
+
+| Field | Type | Required | Inline | Description |
+|---|---|---|---|---|
+| `name` | `string` | :white_check_mark: |  | <p>Name is the feedback entry name.</p> |
+| `value` | `string` | :white_check_mark: |  | <p>Value is the feedback entry value (a JMESPath expression).</p> |
+
 ## `Match`     {#json-kyverno-io-v1alpha1-Match}
 
 **Appears in:**
@@ -141,6 +155,7 @@ auto_generated: true
 | `match` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Match defines when this policy rule should be applied.</p> |
 | `exclude` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Exclude defines when this policy rule should not be applied.</p> |
 | `identifier` | `string` |  |  | <p>Identifier declares a JMESPath expression to extract a name from the payload.</p> |
+| `feedback` | [`[]Feedback`](#json-kyverno-io-v1alpha1-Feedback) |  |  | <p>Feedback declares rule feedback entries.</p> |
 | `assert` | [`Assert`](#json-kyverno-io-v1alpha1-Assert) | :white_check_mark: |  | <p>Assert is used to validate matching resources.</p> |
 
   

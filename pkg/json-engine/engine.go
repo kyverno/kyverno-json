@@ -34,8 +34,14 @@ type RuleResponse struct {
 	Rule       v1alpha1.ValidatingRule
 	Timestamp  time.Time
 	Identifier string
+	Feedback   map[string]Feedback
 	Error      error
 	Violations matching.Results
+}
+
+type Feedback struct {
+	Error error
+	Value any
 }
 
 // PolicyResult specifies state of a policy result
@@ -103,12 +109,29 @@ func New() engine.Engine[Request, Response] {
 					return nil
 				}
 			}
+			var feedback map[string]Feedback
+			for _, f := range r.rule.Feedback {
+				result, err := template.Execute(context.Background(), f.Value, r.resource, bindings)
+				if feedback == nil {
+					feedback = map[string]Feedback{}
+				}
+				if err != nil {
+					feedback[f.Name] = Feedback{
+						Error: err,
+					}
+				} else {
+					feedback[f.Name] = Feedback{
+						Value: result,
+					}
+				}
+			}
 			violations, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.resource, bindings)
 			if err != nil {
 				return []RuleResponse{{
 					Rule:       r.rule,
 					Timestamp:  time.Now(),
 					Identifier: identifier,
+					Feedback:   feedback,
 					Error:      err,
 				}}
 			}
@@ -116,6 +139,7 @@ func New() engine.Engine[Request, Response] {
 				Rule:       r.rule,
 				Timestamp:  time.Now(),
 				Identifier: identifier,
+				Feedback:   feedback,
 				Violations: violations,
 			}}
 		})

@@ -239,9 +239,9 @@ codegen-docs: codegen-api-docs codegen-cli-docs codegen-jp-docs codegen-catalog 
 .PHONY: codegen-mkdocs
 codegen-mkdocs: codegen-docs ## Generate mkdocs website
 	@echo Generate mkdocs website... >&2
-	@$(PIP) install mkdocs
-	@$(PIP) install --upgrade pip
-	@$(PIP) install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin mike
+	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install mkdocs
+	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install --upgrade pip
+	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install -U mkdocs-material mkdocs-redirects mkdocs-minify-plugin mkdocs-include-markdown-plugin lunr mkdocs-rss-plugin mike
 	@mkdocs build -f ./website/mkdocs.yaml
 
 .PHONY: codegen-schemas-openapi
@@ -261,7 +261,8 @@ codegen-schemas-openapi: $(KIND) $(HELM) ## Generate openapi schemas (v2 and v3)
 
 .PHONY: codegen-schemas-json
 codegen-schemas-json: codegen-schemas-openapi ## Generate json schemas
-	@$(PIP) install openapi2jsonschema --no-build-isolation
+	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install -U pip setuptools 
+	@PIP_BREAK_SYSTEM_PACKAGES=1 $(PIP) install openapi2jsonschema --no-build-isolation
 	@rm -rf ./.schemas/json
 	@openapi2jsonschema ./.schemas/openapi/v2/schema.json --kubernetes --stand-alone --expanded -o ./.schemas/json
 

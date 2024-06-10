@@ -22,6 +22,10 @@ type ValidatingRule struct {
 	// +optional
 	Identifier string `json:"identifier,omitempty"`
 
+	// Feedback declares rule feedback entries.
+	// +optional
+	Feedback []Feedback `json:"feedback,omitempty"`
+
 	// Assert is used to validate matching resources.
 	Assert *Assert `json:"assert"`
 }
