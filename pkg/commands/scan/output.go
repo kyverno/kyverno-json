@@ -40,6 +40,7 @@ func (t *jsonOutput) responses(responses ...jsonengine.Response) {
 	}
 }
 
+// newOutput returns an interface to print output in various output formats (text, json)
 func newOutput(out io.Writer, format string) output {
 	if format == "json" {
 		return &jsonOutput{out: out}
