@@ -18,7 +18,7 @@ func Load(path string) (any, error) {
 	}
 	var payload any
 	switch {
-	case file.IsJson(path):
+	case file.IsJson(path) || json.Valid(content):
 		if err := json.Unmarshal(content, &payload); err != nil {
 			return nil, err
 		}
