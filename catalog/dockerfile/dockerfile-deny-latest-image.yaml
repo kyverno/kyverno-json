@@ -1,18 +1,24 @@
 apiVersion: json.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
-  name: dockerfile-deny-latest-image-tag
-  labels:
-    dockerfile.tags.kyverno.io: 'dockerfile'
   annotations:
+    description.policy.kyverno.io: This Policy ensures that no image uses the latest
+      tag in Dockerfile or not use tag at all.
     title.policy.kyverno.io: Dockerfile latest image tag not allowed
-    description.policy.kyverno.io: This Policy ensures that no image uses the latest tag in Dockerfile.
+  creationTimestamp: null
+  labels:
+    dockerfile.tags.kyverno.io: dockerfile
+  name: dockerfile-deny-latest-image-tag
 spec:
   rules:
-    - name: check-latest-tag
-      assert:
-        all:
-        - message: "Latest tag is not allowed"
-          check:
-            ~.(Stages[].From.Image):
-              (contains(@, ':latest')): false
+  - assert:
+      all:
+      - check:
+          ~.(Stages[].From.Image):
+            (contains(@, ':latest')): false
+        message: Latest tag is not allowed
+      - check:
+          ~.(Stages[].From.Image):
+            (!contains(@, ':')): false
+        message: Image without tag is not allowed
+    name: check-latest-tag
