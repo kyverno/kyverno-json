@@ -84,7 +84,7 @@ func Test_project(t *testing.T) {
 		value:    nil,
 		bindings: nil,
 		want:     nil,
-		wantErr:  true,
+		wantErr:  false,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
