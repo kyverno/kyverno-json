@@ -52,7 +52,7 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value any, bindin
 		if err != nil {
 			return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
 		} else if projection == nil {
-			errs = append(errs, field.Required(path.Child(fmt.Sprint(k)), "projection is not valid"))
+			errs = append(errs, field.Required(path.Child(fmt.Sprint(k)), "field not found in the input object"))
 		} else {
 			if projection.binding != "" {
 				bindings = bindings.Register("$"+projection.binding, jpbinding.NewBinding(projection.result))
