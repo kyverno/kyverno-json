@@ -51,6 +51,8 @@ func (n mapNode) assert(ctx context.Context, path *field.Path, value any, bindin
 		projection, err := project(ctx, k, value, bindings, opts...)
 		if err != nil {
 			return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
+		} else if projection == nil {
+			errs = append(errs, field.Required(path.Child(fmt.Sprint(k)), "projection is not valid"))
 		} else {
 			if projection.binding != "" {
 				bindings = bindings.Register("$"+projection.binding, jpbinding.NewBinding(projection.result))
