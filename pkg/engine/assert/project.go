@@ -32,7 +32,9 @@ func project(ctx context.Context, key any, value any, bindings binding.Bindings,
 				result:      projected,
 			}, nil
 		} else {
-			if reflectutils.GetKind(value) == reflect.Map {
+			if value == nil {
+				return nil, nil
+			} else if reflectutils.GetKind(value) == reflect.Map {
 				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
 				if !mapValue.IsValid() {
 					return nil, nil
