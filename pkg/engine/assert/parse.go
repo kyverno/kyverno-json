@@ -40,10 +40,19 @@ type mapNode map[any]Assertion
 
 func (n mapNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
+	// if we assert against an empty object, value is expected to be not nil
+	if len(n) == 0 {
+		if value == nil {
+			errs = append(errs, field.Invalid(path, value, "invalid value, must not be null"))
+		}
+		return errs, nil
+	}
 	for k, v := range n {
 		projection, err := project(ctx, k, value, bindings, opts...)
 		if err != nil {
 			return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
+		} else if projection == nil {
+			errs = append(errs, field.Required(path.Child(fmt.Sprint(k)), "field not found in the input object"))
 		} else {
 			if projection.binding != "" {
 				bindings = bindings.Register("$"+projection.binding, jpbinding.NewBinding(projection.result))

@@ -2,6 +2,7 @@ package assert
 
 import (
 	"context"
+	"errors"
 	"reflect"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
@@ -31,33 +32,30 @@ func project(ctx context.Context, key any, value any, bindings binding.Bindings,
 				result:      projected,
 			}, nil
 		} else {
-			if reflectutils.GetKind(value) == reflect.Map {
+			if value == nil {
+				return nil, nil
+			} else if reflectutils.GetKind(value) == reflect.Map {
 				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
-				var value any
-				if mapValue.IsValid() {
-					value = mapValue.Interface()
+				if !mapValue.IsValid() {
+					return nil, nil
 				}
 				return &projection{
 					foreach:     expression.foreach,
 					foreachName: expression.foreachName,
 					binding:     expression.binding,
-					result:      value,
+					result:      mapValue.Interface(),
 				}, nil
 			}
 		}
 	}
 	if reflectutils.GetKind(value) == reflect.Map {
 		mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(key))
-		var value any
-		if mapValue.IsValid() {
-			value = mapValue.Interface()
+		if !mapValue.IsValid() {
+			return nil, nil
 		}
 		return &projection{
-			result: value,
+			result: mapValue.Interface(),
 		}, nil
 	}
-	// TODO is this an error ?
-	return &projection{
-		result: value,
-	}, nil
+	return nil, errors.New("projection not recognized")
 }
