@@ -21,6 +21,7 @@ var (
 	validatingPolicy_v1alpha1 = gv_v1alpha1.WithKind("ValidatingPolicy")
 )
 
+// Load takes file paths and returns Validating policies from filesystem
 func Load(path ...string) ([]*v1alpha1.ValidatingPolicy, error) {
 	var policies []*v1alpha1.ValidatingPolicy
 	for _, path := range path {
