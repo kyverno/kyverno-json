@@ -27,7 +27,8 @@
                   "string",
                   "null"
                 ]
-              }
+              },
+              "x-kubernetes-list-type": "atomic"
             }
           }
         },
@@ -74,7 +75,8 @@
                     "type": "string"
                   }
                 }
-              }
+              },
+              "x-kubernetes-list-type": "atomic"
             },
             "path": {
               "description": "Path to access on the HTTP server.",
@@ -109,6 +111,23 @@
                 "HTTP",
                 "HTTPS"
               ]
+            }
+          }
+        },
+        "sleep": {
+          "description": "SleepAction describes a \"sleep\" action.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "seconds"
+          ],
+          "properties": {
+            "seconds": {
+              "description": "Seconds is the number of seconds to sleep.",
+              "type": "integer",
+              "format": "int64"
             }
           }
         },
@@ -174,7 +193,8 @@
                   "string",
                   "null"
                 ]
-              }
+              },
+              "x-kubernetes-list-type": "atomic"
             }
           }
         },
@@ -221,7 +241,8 @@
                     "type": "string"
                   }
                 }
-              }
+              },
+              "x-kubernetes-list-type": "atomic"
             },
             "path": {
               "description": "Path to access on the HTTP server.",
@@ -256,6 +277,23 @@
                 "HTTP",
                 "HTTPS"
               ]
+            }
+          }
+        },
+        "sleep": {
+          "description": "SleepAction describes a \"sleep\" action.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "required": [
+            "seconds"
+          ],
+          "properties": {
+            "seconds": {
+              "description": "Seconds is the number of seconds to sleep.",
+              "type": "integer",
+              "format": "int64"
             }
           }
         },

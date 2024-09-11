@@ -32,7 +32,8 @@
           "string",
           "null"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "nonResourceAttributes": {
       "description": "NonResourceAttributes includes the authorization attributes available for non-resource requests to the Authorizer interface",

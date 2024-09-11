@@ -80,7 +80,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "versions": {
       "description": "versions are the versions supported in this group.",
@@ -108,7 +109,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     }
   },
   "x-kubernetes-group-version-kind": [

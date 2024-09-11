@@ -38,7 +38,8 @@
             "type": "string"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "path": {
       "description": "Path to access on the HTTP server.",

@@ -16,7 +16,8 @@
           "string",
           "null"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "boundObjectRef": {
       "description": "BoundObjectReference is a reference to an object that a token is bound to.",

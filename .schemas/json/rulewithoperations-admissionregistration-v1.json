@@ -40,6 +40,13 @@
         "type": [
           "string",
           "null"
+        ],
+        "enum": [
+          "*",
+          "CONNECT",
+          "CREATE",
+          "DELETE",
+          "UPDATE"
         ]
       },
       "x-kubernetes-list-type": "atomic"

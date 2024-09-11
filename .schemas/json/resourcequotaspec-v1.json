@@ -82,10 +82,12 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         }
       },
       "x-kubernetes-map-type": "atomic"
@@ -100,8 +102,17 @@
         "type": [
           "string",
           "null"
+        ],
+        "enum": [
+          "BestEffort",
+          "CrossNamespacePodAffinity",
+          "NotBestEffort",
+          "NotTerminating",
+          "PriorityClass",
+          "Terminating"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     }
   },
   "$schema": "http://json-schema.org/schema#"

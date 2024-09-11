@@ -12,8 +12,15 @@
         "type": [
           "string",
           "null"
+        ],
+        "enum": [
+          "ReadOnlyMany",
+          "ReadWriteMany",
+          "ReadWriteOnce",
+          "ReadWriteOncePod"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "dataSource": {
       "description": "TypedLocalObjectReference contains enough information to let you locate the typed referenced object inside the same namespace.",
@@ -79,39 +86,12 @@
       }
     },
     "resources": {
-      "description": "ResourceRequirements describes the compute resource requirements.",
+      "description": "VolumeResourceRequirements describes the storage resource requirements for a volume.",
       "type": [
         "object",
         "null"
       ],
       "properties": {
-        "claims": {
-          "description": "Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.\n\nThis is an alpha field and requires enabling the DynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers.",
-          "type": [
-            "array",
-            "null"
-          ],
-          "items": {
-            "description": "ResourceClaim references one entry in PodSpec.ResourceClaims.",
-            "type": [
-              "object",
-              "null"
-            ],
-            "required": [
-              "name"
-            ],
-            "properties": {
-              "name": {
-                "description": "Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.",
-                "type": "string"
-              }
-            }
-          },
-          "x-kubernetes-list-map-keys": [
-            "name"
-          ],
-          "x-kubernetes-list-type": "map"
-        },
         "limits": {
           "description": "Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
           "type": [
@@ -203,10 +183,12 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "matchLabels": {
           "description": "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed.",
@@ -226,6 +208,13 @@
     },
     "storageClassName": {
       "description": "storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "volumeAttributesClassName": {
+      "description": "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass will be applied to the claim but it's not allowed to reset this field to empty string once it is set. If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass will be set by the persistentvolume controller if it exists. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/ (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.",
       "type": [
         "string",
         "null"

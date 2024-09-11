@@ -6,7 +6,7 @@
 
 ORG                                ?= kyverno
 PACKAGE                            ?= github.com/$(ORG)/kyverno-json
-KIND_IMAGE                         ?= kindest/node:v1.28.0
+KIND_IMAGE                         ?= kindest/node:v1.30.0
 KIND_NAME                          ?= kind
 GIT_SHA                            := $(shell git rev-parse HEAD)
 GOOS                               ?= $(shell go env GOOS)
