@@ -67,10 +67,12 @@
                           "string",
                           "null"
                         ]
-                      }
+                      },
+                      "x-kubernetes-list-type": "atomic"
                     }
                   }
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "matchFields": {
                 "description": "A list of node selector requirements by node's fields.",
@@ -116,10 +118,12 @@
                           "string",
                           "null"
                         ]
-                      }
+                      },
+                      "x-kubernetes-list-type": "atomic"
                     }
                   }
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             },
             "x-kubernetes-map-type": "atomic"
@@ -130,7 +134,8 @@
             "format": "int32"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "requiredDuringSchedulingIgnoredDuringExecution": {
       "description": "A node selector represents the union of the results of one or more label queries over a set of nodes; that is, it represents the OR of the selectors represented by the node selector terms.",
@@ -196,10 +201,12 @@
                           "string",
                           "null"
                         ]
-                      }
+                      },
+                      "x-kubernetes-list-type": "atomic"
                     }
                   }
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "matchFields": {
                 "description": "A list of node selector requirements by node's fields.",
@@ -245,14 +252,17 @@
                           "string",
                           "null"
                         ]
-                      }
+                      },
+                      "x-kubernetes-list-type": "atomic"
                     }
                   }
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             },
             "x-kubernetes-map-type": "atomic"
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         }
       },
       "x-kubernetes-map-type": "atomic"

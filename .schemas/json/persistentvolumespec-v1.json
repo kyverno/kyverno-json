@@ -12,8 +12,15 @@
         "type": [
           "string",
           "null"
+        ],
+        "enum": [
+          "ReadOnlyMany",
+          "ReadWriteMany",
+          "ReadWriteOnce",
+          "ReadWriteOncePod"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "awsElasticBlockStore": {
       "description": "Represents a Persistent Disk resource in AWS.\n\nAn AWS EBS disk must exist before mounting to a container. The disk must also be in the same AWS zone as the kubelet. An AWS EBS disk can only be mounted as read/write once. AWS EBS volumes support ownership management and SELinux relabeling.",
@@ -188,7 +195,8 @@
               "string",
               "null"
             ]
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "path": {
           "description": "path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /",
@@ -565,7 +573,8 @@
               "string",
               "null"
             ]
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "wwids": {
           "description": "wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.",
@@ -578,7 +587,8 @@
               "string",
               "null"
             ]
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         }
       }
     },
@@ -845,7 +855,8 @@
               "string",
               "null"
             ]
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "readOnly": {
           "description": "readOnly here will force the ReadOnly setting in VolumeMounts. Defaults to false.",
@@ -918,7 +929,8 @@
           "string",
           "null"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "nfs": {
       "description": "Represents an NFS mount that lasts the lifetime of a pod. NFS volumes do not support ownership management or SELinux relabeling.",
@@ -1019,10 +1031,12 @@
                               "string",
                               "null"
                             ]
-                          }
+                          },
+                          "x-kubernetes-list-type": "atomic"
                         }
                       }
-                    }
+                    },
+                    "x-kubernetes-list-type": "atomic"
                   },
                   "matchFields": {
                     "description": "A list of node selector requirements by node's fields.",
@@ -1068,14 +1082,17 @@
                               "string",
                               "null"
                             ]
-                          }
+                          },
+                          "x-kubernetes-list-type": "atomic"
                         }
                       }
-                    }
+                    },
+                    "x-kubernetes-list-type": "atomic"
                   }
                 },
                 "x-kubernetes-map-type": "atomic"
-              }
+              },
+              "x-kubernetes-list-type": "atomic"
             }
           },
           "x-kubernetes-map-type": "atomic"
@@ -1233,7 +1250,8 @@
               "string",
               "null"
             ]
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "pool": {
           "description": "pool is the rados pool name. Default is rbd. More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it",
@@ -1476,6 +1494,13 @@
           ]
         }
       }
+    },
+    "volumeAttributesClassName": {
+      "description": "Name of VolumeAttributesClass to which this persistent volume belongs. Empty value is not allowed. When this field is not set, it indicates that this volume does not belong to any VolumeAttributesClass. This field is mutable and can be changed by the CSI driver after a volume has been updated successfully to a new class. For an unbound PersistentVolume, the volumeAttributesClassName will be matched with unbound PersistentVolumeClaims during the binding process. This is an alpha field and requires enabling VolumeAttributesClass feature.",
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "volumeMode": {
       "description": "volumeMode defines if a volume is intended to be used with a formatted filesystem or to remain in raw block state. Value of Filesystem is implied when not included in spec.\n\nPossible enum values:\n - `\"Block\"` means the volume will not be formatted with a filesystem and will remain a raw block device.\n - `\"Filesystem\"` means the volume will be or is formatted with a filesystem.",

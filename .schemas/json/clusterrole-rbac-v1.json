@@ -58,10 +58,12 @@
                           "string",
                           "null"
                         ]
-                      }
+                      },
+                      "x-kubernetes-list-type": "atomic"
                     }
                   }
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "matchLabels": {
                 "description": "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed.",
@@ -78,7 +80,8 @@
               }
             },
             "x-kubernetes-map-type": "atomic"
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         }
       }
     },
@@ -158,6 +161,7 @@
               "null"
             ]
           },
+          "x-kubernetes-list-type": "set",
           "x-kubernetes-patch-strategy": "merge"
         },
         "generateName": {
@@ -252,7 +256,8 @@
                 "format": "date-time"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "name": {
           "description": "Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names",
@@ -320,6 +325,10 @@
             },
             "x-kubernetes-map-type": "atomic"
           },
+          "x-kubernetes-list-map-keys": [
+            "uid"
+          ],
+          "x-kubernetes-list-type": "map",
           "x-kubernetes-patch-merge-key": "uid",
           "x-kubernetes-patch-strategy": "merge"
         },
@@ -373,7 +382,8 @@
                 "string",
                 "null"
               ]
-            }
+            },
+            "x-kubernetes-list-type": "atomic"
           },
           "nonResourceURLs": {
             "description": "NonResourceURLs is a set of partial urls that a user should have access to.  *s are allowed, but only as the full, final step in the path Since non-resource URLs are not namespaced, this field is only applicable for ClusterRoles referenced from a ClusterRoleBinding. Rules can either apply to API resources (such as \"pods\" or \"secrets\") or non-resource URL paths (such as \"/api\"),  but not both.",
@@ -386,7 +396,8 @@
                 "string",
                 "null"
               ]
-            }
+            },
+            "x-kubernetes-list-type": "atomic"
           },
           "resourceNames": {
             "description": "ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.",
@@ -399,7 +410,8 @@
                 "string",
                 "null"
               ]
-            }
+            },
+            "x-kubernetes-list-type": "atomic"
           },
           "resources": {
             "description": "Resources is a list of resources this rule applies to. '*' represents all resources.",
@@ -412,7 +424,8 @@
                 "string",
                 "null"
               ]
-            }
+            },
+            "x-kubernetes-list-type": "atomic"
           },
           "verbs": {
             "description": "Verbs is a list of Verbs that apply to ALL the ResourceKinds contained in this rule. '*' represents all verbs.",
@@ -422,10 +435,12 @@
                 "string",
                 "null"
               ]
-            }
+            },
+            "x-kubernetes-list-type": "atomic"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     }
   },
   "x-kubernetes-group-version-kind": [

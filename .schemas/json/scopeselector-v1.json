@@ -52,10 +52,12 @@
                 "string",
                 "null"
               ]
-            }
+            },
+            "x-kubernetes-list-type": "atomic"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     }
   },
   "x-kubernetes-map-type": "atomic",

@@ -45,7 +45,8 @@
           "string",
           "null"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     }
   },
   "$schema": "http://json-schema.org/schema#"

@@ -16,7 +16,8 @@
           "string",
           "null"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "verbs": {
       "description": "Verb is a list of kubernetes non-resource API verbs, like: get, post, put, delete, patch, head, options.  \"*\" means all.",
@@ -29,7 +30,8 @@
           "string",
           "null"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     }
   },
   "$schema": "http://json-schema.org/schema#"

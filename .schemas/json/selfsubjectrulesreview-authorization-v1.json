@@ -81,6 +81,7 @@
               "null"
             ]
           },
+          "x-kubernetes-list-type": "set",
           "x-kubernetes-patch-strategy": "merge"
         },
         "generateName": {
@@ -175,7 +176,8 @@
                 "format": "date-time"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "name": {
           "description": "Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names",
@@ -243,6 +245,10 @@
             },
             "x-kubernetes-map-type": "atomic"
           },
+          "x-kubernetes-list-map-keys": [
+            "uid"
+          ],
+          "x-kubernetes-list-type": "map",
           "x-kubernetes-patch-merge-key": "uid",
           "x-kubernetes-patch-strategy": "merge"
         },
@@ -332,7 +338,8 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "verbs": {
                 "description": "Verb is a list of kubernetes non-resource API verbs, like: get, post, put, delete, patch, head, options.  \"*\" means all.",
@@ -342,10 +349,12 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "resourceRules": {
           "description": "ResourceRules is the list of actions the subject is allowed to perform on resources. The list ordering isn't significant, may contain duplicates, and possibly be incomplete.",
@@ -371,7 +380,8 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "resourceNames": {
                 "description": "ResourceNames is an optional white list of names that the rule applies to.  An empty set means that everything is allowed.  \"*\" means all.",
@@ -384,7 +394,8 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "resources": {
                 "description": "Resources is a list of resources this rule applies to.  \"*\" means all in the specified apiGroups.\n \"*/foo\" represents the subresource 'foo' for all resources in the specified apiGroups.",
@@ -397,7 +408,8 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "verbs": {
                 "description": "Verb is a list of kubernetes resource API verbs, like: get, list, watch, create, update, delete, proxy.  \"*\" means all.",
@@ -407,10 +419,12 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         }
       }
     }

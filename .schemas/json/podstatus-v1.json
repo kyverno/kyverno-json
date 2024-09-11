@@ -59,6 +59,10 @@
           }
         }
       },
+      "x-kubernetes-list-map-keys": [
+        "type"
+      ],
+      "x-kubernetes-list-type": "map",
       "x-kubernetes-patch-merge-key": "type",
       "x-kubernetes-patch-strategy": "merge"
     },
@@ -443,9 +447,58 @@
                 }
               }
             }
+          },
+          "volumeMounts": {
+            "description": "Status of volume mounts.",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "description": "VolumeMountStatus shows status of volume mounts.",
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "name",
+                "mountPath"
+              ],
+              "properties": {
+                "mountPath": {
+                  "description": "MountPath corresponds to the original VolumeMount.",
+                  "type": "string"
+                },
+                "name": {
+                  "description": "Name corresponds to the name of the original VolumeMount.",
+                  "type": "string"
+                },
+                "readOnly": {
+                  "description": "ReadOnly corresponds to the original VolumeMount.",
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "recursiveReadOnly": {
+                  "description": "RecursiveReadOnly must be set to Disabled, Enabled, or unspecified (for non-readonly mounts). An IfPossible value in the original VolumeMount must be translated to Disabled or Enabled, depending on the mount result.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "x-kubernetes-list-map-keys": [
+              "mountPath"
+            ],
+            "x-kubernetes-list-type": "map",
+            "x-kubernetes-patch-merge-key": "mountPath",
+            "x-kubernetes-patch-strategy": "merge"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "ephemeralContainerStatuses": {
       "description": "Status for any ephemeral containers that have run in this pod.",
@@ -828,9 +881,58 @@
                 }
               }
             }
+          },
+          "volumeMounts": {
+            "description": "Status of volume mounts.",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "description": "VolumeMountStatus shows status of volume mounts.",
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "name",
+                "mountPath"
+              ],
+              "properties": {
+                "mountPath": {
+                  "description": "MountPath corresponds to the original VolumeMount.",
+                  "type": "string"
+                },
+                "name": {
+                  "description": "Name corresponds to the name of the original VolumeMount.",
+                  "type": "string"
+                },
+                "readOnly": {
+                  "description": "ReadOnly corresponds to the original VolumeMount.",
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "recursiveReadOnly": {
+                  "description": "RecursiveReadOnly must be set to Disabled, Enabled, or unspecified (for non-readonly mounts). An IfPossible value in the original VolumeMount must be translated to Disabled or Enabled, depending on the mount result.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "x-kubernetes-list-map-keys": [
+              "mountPath"
+            ],
+            "x-kubernetes-list-type": "map",
+            "x-kubernetes-patch-merge-key": "mountPath",
+            "x-kubernetes-patch-strategy": "merge"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "hostIP": {
       "description": "hostIP holds the IP address of the host to which the pod is assigned. Empty if the pod has not started yet. A pod can be assigned to a node that has a problem in kubelet which in turns mean that HostIP will not be updated even if there is a node is assigned to pod",
@@ -1246,9 +1348,58 @@
                 }
               }
             }
+          },
+          "volumeMounts": {
+            "description": "Status of volume mounts.",
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "description": "VolumeMountStatus shows status of volume mounts.",
+              "type": [
+                "object",
+                "null"
+              ],
+              "required": [
+                "name",
+                "mountPath"
+              ],
+              "properties": {
+                "mountPath": {
+                  "description": "MountPath corresponds to the original VolumeMount.",
+                  "type": "string"
+                },
+                "name": {
+                  "description": "Name corresponds to the name of the original VolumeMount.",
+                  "type": "string"
+                },
+                "readOnly": {
+                  "description": "ReadOnly corresponds to the original VolumeMount.",
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "recursiveReadOnly": {
+                  "description": "RecursiveReadOnly must be set to Disabled, Enabled, or unspecified (for non-readonly mounts). An IfPossible value in the original VolumeMount must be translated to Disabled or Enabled, depending on the mount result.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "x-kubernetes-list-map-keys": [
+              "mountPath"
+            ],
+            "x-kubernetes-list-type": "map",
+            "x-kubernetes-patch-merge-key": "mountPath",
+            "x-kubernetes-patch-strategy": "merge"
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "message": {
       "description": "A human readable message indicating details about why the pod is in this condition.",
@@ -1307,6 +1458,10 @@
           }
         }
       },
+      "x-kubernetes-list-map-keys": [
+        "ip"
+      ],
+      "x-kubernetes-list-type": "map",
       "x-kubernetes-patch-merge-key": "ip",
       "x-kubernetes-patch-strategy": "merge"
     },

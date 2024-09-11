@@ -66,10 +66,12 @@
                           "string",
                           "null"
                         ]
-                      }
+                      },
+                      "x-kubernetes-list-type": "atomic"
                     }
                   }
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               },
               "matchFields": {
                 "description": "A list of node selector requirements by node's fields.",
@@ -115,14 +117,17 @@
                           "string",
                           "null"
                         ]
-                      }
+                      },
+                      "x-kubernetes-list-type": "atomic"
                     }
                   }
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             },
             "x-kubernetes-map-type": "atomic"
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         }
       },
       "x-kubernetes-map-type": "atomic"

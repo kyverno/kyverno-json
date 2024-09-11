@@ -60,7 +60,7 @@
             "events.k8s.io/v1",
             "events.k8s.io/v1beta1",
             "extensions/v1beta1",
-            "flowcontrol.apiserver.k8s.io/v1alpha1",
+            "flowcontrol.apiserver.k8s.io/v1",
             "flowcontrol.apiserver.k8s.io/v1beta1",
             "flowcontrol.apiserver.k8s.io/v1beta2",
             "flowcontrol.apiserver.k8s.io/v1beta3",
@@ -83,7 +83,8 @@
             "scheduling.k8s.io/v1beta1",
             "storage.k8s.io/v1",
             "storage.k8s.io/v1alpha1",
-            "storage.k8s.io/v1beta1"
+            "storage.k8s.io/v1beta1",
+            "storagemigration.k8s.io/v1alpha1"
           ]
         },
         "dryRun": {
@@ -97,7 +98,8 @@
               "string",
               "null"
             ]
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "gracePeriodSeconds": {
           "description": "The duration in seconds before the object should be deleted. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period for the specified type will be used. Defaults to a per object value if not specified. zero means delete immediately.",
@@ -329,7 +331,7 @@
         {
           "group": "flowcontrol.apiserver.k8s.io",
           "kind": "DeleteOptions",
-          "version": "v1alpha1"
+          "version": "v1"
         },
         {
           "group": "flowcontrol.apiserver.k8s.io",
@@ -445,6 +447,11 @@
           "group": "storage.k8s.io",
           "kind": "DeleteOptions",
           "version": "v1beta1"
+        },
+        {
+          "group": "storagemigration.k8s.io",
+          "kind": "DeleteOptions",
+          "version": "v1alpha1"
         }
       ]
     },
@@ -514,6 +521,7 @@
               "null"
             ]
           },
+          "x-kubernetes-list-type": "set",
           "x-kubernetes-patch-strategy": "merge"
         },
         "generateName": {
@@ -608,7 +616,8 @@
                 "format": "date-time"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "name": {
           "description": "Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names",
@@ -676,6 +685,10 @@
             },
             "x-kubernetes-map-type": "atomic"
           },
+          "x-kubernetes-list-map-keys": [
+            "uid"
+          ],
+          "x-kubernetes-list-type": "map",
           "x-kubernetes-patch-merge-key": "uid",
           "x-kubernetes-patch-strategy": "merge"
         },

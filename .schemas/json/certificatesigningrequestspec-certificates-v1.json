@@ -80,6 +80,31 @@
         "type": [
           "string",
           "null"
+        ],
+        "enum": [
+          "any",
+          "cert sign",
+          "client auth",
+          "code signing",
+          "content commitment",
+          "crl sign",
+          "data encipherment",
+          "decipher only",
+          "digital signature",
+          "email protection",
+          "encipher only",
+          "ipsec end system",
+          "ipsec tunnel",
+          "ipsec user",
+          "key agreement",
+          "key encipherment",
+          "microsoft sgc",
+          "netscape sgc",
+          "ocsp signing",
+          "s/mime",
+          "server auth",
+          "signing",
+          "timestamping"
         ]
       },
       "x-kubernetes-list-type": "atomic"

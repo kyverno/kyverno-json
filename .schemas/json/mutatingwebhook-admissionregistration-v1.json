@@ -19,7 +19,8 @@
           "string",
           "null"
         ]
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "clientConfig": {
       "description": "WebhookClientConfig contains the information to make a TLS connection with the webhook",
@@ -93,7 +94,7 @@
       ]
     },
     "matchConditions": {
-      "description": "MatchConditions is a list of conditions that must be met for a request to be sent to this webhook. Match conditions filter requests that have already been matched by the rules, namespaceSelector, and objectSelector. An empty list of matchConditions matches all requests. There are a maximum of 64 match conditions allowed.\n\nThe exact matching logic is (in order):\n  1. If ANY matchCondition evaluates to FALSE, the webhook is skipped.\n  2. If ALL matchConditions evaluate to TRUE, the webhook is called.\n  3. If any matchCondition evaluates to an error (but none are FALSE):\n     - If failurePolicy=Fail, reject the request\n     - If failurePolicy=Ignore, the error is ignored and the webhook is skipped\n\nThis is a beta feature and managed by the AdmissionWebhookMatchConditions feature gate.",
+      "description": "MatchConditions is a list of conditions that must be met for a request to be sent to this webhook. Match conditions filter requests that have already been matched by the rules, namespaceSelector, and objectSelector. An empty list of matchConditions matches all requests. There are a maximum of 64 match conditions allowed.\n\nThe exact matching logic is (in order):\n  1. If ANY matchCondition evaluates to FALSE, the webhook is skipped.\n  2. If ALL matchConditions evaluate to TRUE, the webhook is called.\n  3. If any matchCondition evaluates to an error (but none are FALSE):\n     - If failurePolicy=Fail, reject the request\n     - If failurePolicy=Ignore, the error is ignored and the webhook is skipped",
       "type": [
         "array",
         "null"
@@ -187,10 +188,12 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "matchLabels": {
           "description": "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed.",
@@ -251,10 +254,12 @@
                     "string",
                     "null"
                   ]
-                }
+                },
+                "x-kubernetes-list-type": "atomic"
               }
             }
-          }
+          },
+          "x-kubernetes-list-type": "atomic"
         },
         "matchLabels": {
           "description": "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed.",
@@ -334,6 +339,13 @@
               "type": [
                 "string",
                 "null"
+              ],
+              "enum": [
+                "*",
+                "CONNECT",
+                "CREATE",
+                "DELETE",
+                "UPDATE"
               ]
             },
             "x-kubernetes-list-type": "atomic"
@@ -360,7 +372,8 @@
             ]
           }
         }
-      }
+      },
+      "x-kubernetes-list-type": "atomic"
     },
     "sideEffects": {
       "description": "SideEffects states whether this webhook has side effects. Acceptable values are: None, NoneOnDryRun (webhooks created via v1beta1 may also specify Some or Unknown). Webhooks with side effects MUST implement a reconciliation system, since a request may be rejected by a future step in the admission chain and the side effects therefore need to be undone. Requests with the dryRun attribute will be auto-rejected if they match a webhook with sideEffects == Unknown or Some.\n\nPossible enum values:\n - `\"None\"` means that calling the webhook will have no side effects.\n - `\"NoneOnDryRun\"` means that calling the webhook will possibly have side effects, but if the request being reviewed has the dry-run attribute, the side effects will be suppressed.\n - `\"Some\"` means that calling the webhook will possibly have side effects. If a request with the dry-run attribute would trigger a call to this webhook, the request will instead fail.\n - `\"Unknown\"` means that no information is known about the side effects of calling the webhook. If a request with the dry-run attribute would trigger a call to this webhook, the request will instead fail.",
