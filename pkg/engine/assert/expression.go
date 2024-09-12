@@ -15,20 +15,20 @@ var (
 	engineRegex  = regexp.MustCompile(`^\((?:(\w+):)?(.+)\)$`)
 )
 
-type expression struct {
-	foreach     bool
-	foreachName string
-	statement   string
+type Expression struct {
+	Foreach     bool
+	ForeachName string
+	Statement   string
 	binding     string
 	engine      string
 }
 
-func parseExpressionRegex(_ context.Context, in string) *expression {
-	expression := &expression{}
+func parseExpressionRegex(_ context.Context, in string) *Expression {
+	expression := &Expression{}
 	// 1. match foreach
 	if match := foreachRegex.FindStringSubmatch(in); match != nil {
-		expression.foreach = true
-		expression.foreachName = match[1]
+		expression.Foreach = true
+		expression.ForeachName = match[1]
 		in = match[2]
 	}
 	// 2. match binding
@@ -50,14 +50,14 @@ func parseExpressionRegex(_ context.Context, in string) *expression {
 		}
 	}
 	// parse statement
-	expression.statement = in
-	if expression.statement == "" {
+	expression.Statement = in
+	if expression.Statement == "" {
 		return nil
 	}
 	return expression
 }
 
-func parseExpression(ctx context.Context, value any) *expression {
+func ParseExpression(ctx context.Context, value any) *Expression {
 	if reflectutils.GetKind(value) != reflect.String {
 		return nil
 	}

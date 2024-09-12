@@ -11,7 +11,7 @@ func Test_parseExpressionRegex(t *testing.T) {
 	tests := []struct {
 		name string
 		in   string
-		want *expression
+		want *Expression
 	}{{
 		name: "empty",
 		in:   "",
@@ -19,153 +19,153 @@ func Test_parseExpressionRegex(t *testing.T) {
 	}, {
 		name: "simple field",
 		in:   "test",
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "test",
 		},
 	}, {
 		name: "simple field",
 		in:   "(test)",
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "test",
 			engine:      "jp",
 		},
 	}, {
 		name: "nested field",
 		in:   "test.test",
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "test.test",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "test.test",
 		},
 	}, {
 		name: "nested field",
 		in:   "(test.test)",
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "test.test",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "test.test",
 			engine:      "jp",
 		},
 	}, {
 		name: "foreach simple field",
 		in:   "~.test",
-		want: &expression{
-			foreach:     true,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     true,
+			ForeachName: "",
+			Statement:   "test",
 		},
 	}, {
 		name: "foreach simple field",
 		in:   "~.(test)",
-		want: &expression{
-			foreach:     true,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     true,
+			ForeachName: "",
+			Statement:   "test",
 			engine:      "jp",
 		},
 	}, {
 		name: "foreach nested field",
 		in:   "~.(test.test)",
-		want: &expression{
-			foreach:     true,
-			foreachName: "",
-			statement:   "test.test",
+		want: &Expression{
+			Foreach:     true,
+			ForeachName: "",
+			Statement:   "test.test",
 			engine:      "jp",
 		},
 	}, {
 		name: "binding",
 		in:   "test->foo",
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "test",
 			binding:     "foo",
 		},
 	}, {
 		name: "binding",
 		in:   "(test)->foo",
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "test",
 			binding:     "foo",
 			engine:      "jp",
 		},
 	}, {
 		name: "foreach and binding",
 		in:   "~.test->foo",
-		want: &expression{
-			foreach:     true,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     true,
+			ForeachName: "",
+			Statement:   "test",
 			binding:     "foo",
 		},
 	}, {
 		name: "foreach and binding",
 		in:   "~.(test)->foo",
-		want: &expression{
-			foreach:     true,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     true,
+			ForeachName: "",
+			Statement:   "test",
 			binding:     "foo",
 			engine:      "jp",
 		},
 	}, {
 		name: "escape",
 		in:   `\~(test)->foo\`,
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "~(test)->foo",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "~(test)->foo",
 			binding:     "",
 		},
 	}, {
 		name: "escape",
 		in:   `\test\`,
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "test",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "test",
 			binding:     "",
 		},
 	}, {
 		name: "escape",
 		in:   `\(test)\`,
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "(test)",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "(test)",
 			binding:     "",
 		},
 	}, {
 		name: "escape",
 		in:   `\/test/\`,
-		want: &expression{
-			foreach:     false,
-			foreachName: "",
-			statement:   "/test/",
+		want: &Expression{
+			Foreach:     false,
+			ForeachName: "",
+			Statement:   "/test/",
 			binding:     "",
 		},
 	}, {
 		name: "escape",
 		in:   `~index.\(test)\`,
-		want: &expression{
-			foreach:     true,
-			foreachName: "index",
-			statement:   "(test)",
+		want: &Expression{
+			Foreach:     true,
+			ForeachName: "index",
+			Statement:   "(test)",
 			binding:     "",
 		},
 	}, {
 		name: "escape",
 		in:   `~index.\(test)\->name`,
-		want: &expression{
-			foreach:     true,
-			foreachName: "index",
-			statement:   "(test)",
+		want: &Expression{
+			Foreach:     true,
+			ForeachName: "index",
+			Statement:   "(test)",
 			binding:     "name",
 		},
 	}}

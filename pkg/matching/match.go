@@ -2,12 +2,14 @@ package matching
 
 import (
 	"context"
+	"reflect"
 	"strings"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
@@ -39,7 +41,60 @@ func (r Results) Error() string {
 	return strings.Join(lines, "\n")
 }
 
-// func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]error, error) {
+func MatchAssertion(ctx context.Context, path *field.Path, assertion v1alpha1.Assertion, actual any, bindings binding.Bindings, opts ...template.Option) ([]Result, error) {
+	foreach := false
+	if assertion.With != "" {
+		expression := assert.ParseExpression(ctx, assertion.With)
+		if expression != nil {
+			with, err := template.Execute(ctx, expression.Statement, actual, bindings, opts...)
+			if err != nil {
+				return nil, err
+			}
+			actual = with
+			foreach = expression.Foreach
+		}
+	}
+	var errs []Result
+	if foreach {
+		if actual == nil {
+			// errs = append(errs, field.Invalid(path, actual, "value is null"))
+		} else if reflectutils.GetKind(actual) != reflect.Slice {
+			return errs, field.TypeInvalid(path, actual, "expected a slice")
+		} else {
+			valueOf := reflect.ValueOf(actual)
+			for i := range valueOf.Len() {
+				actual := valueOf.Index(i).Interface()
+				if _errs, err := assert.Assert(ctx, path, assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...); err != nil {
+					return errs, err
+				} else if len(_errs) > 0 {
+					fail := Result{
+						ErrorList: _errs,
+					}
+					if assertion.Message != "" {
+						fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+					}
+					errs = append(errs, fail)
+				}
+			}
+		}
+	} else {
+		_errs, err := assert.Assert(ctx, path, assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
+		if err != nil {
+			return errs, err
+		}
+		if len(_errs) > 0 {
+			fail := Result{
+				ErrorList: _errs,
+			}
+			if assertion.Message != "" {
+				fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+			}
+			errs = append(errs, fail)
+		}
+	}
+	return errs, nil
+}
+
 func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]Result, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return nil, field.Invalid(path, match, "an empty assert is not valid")
@@ -48,7 +103,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
+				checkFails, err := MatchAssertion(ctx, path.Index(i).Child("check"), assertion, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -56,13 +111,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 					fails = nil
 					break
 				}
-				fail := Result{
-					ErrorList: checkFails,
-				}
-				if assertion.Message != "" {
-					fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
-				}
-				fails = append(fails, fail)
+				fails = append(fails, checkFails...)
 			}
 			if fails != nil {
 				return fails, nil
@@ -72,18 +121,12 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
+				checkFails, err := MatchAssertion(ctx, path.Index(i).Child("check"), assertion, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
 				if len(checkFails) > 0 {
-					fail := Result{
-						ErrorList: checkFails,
-					}
-					if assertion.Message != "" {
-						fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
-					}
-					fails = append(fails, fail)
+					fails = append(fails, checkFails...)
 				}
 			}
 			return fails, nil

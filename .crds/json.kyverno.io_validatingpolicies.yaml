@@ -61,6 +61,9 @@ spec:
                               message:
                                 description: Message is the message associated message.
                                 type: string
+                              with:
+                                description: With defines the data to work with.
+                                type: string
                             required:
                             - check
                             type: object
@@ -78,6 +81,9 @@ spec:
                                 x-kubernetes-preserve-unknown-fields: true
                               message:
                                 description: Message is the message associated message.
+                                type: string
+                              with:
+                                description: With defines the data to work with.
                                 type: string
                             required:
                             - check
