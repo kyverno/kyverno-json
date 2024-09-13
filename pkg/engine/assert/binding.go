@@ -11,15 +11,15 @@ import (
 func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, entry any) binding.Binding {
 	return template.NewLazyBinding(
 		func() (any, error) {
-			expression := parseExpression(context.TODO(), entry)
+			expression := ParseExpression(context.TODO(), entry)
 			if expression != nil && expression.engine != "" {
-				if expression.foreach {
+				if expression.Foreach {
 					return nil, field.Invalid(path.Child("variable"), entry, "foreach is not supported in context")
 				}
 				if expression.binding != "" {
 					return nil, field.Invalid(path.Child("variable"), entry, "binding is not supported in context")
 				}
-				projected, err := template.Execute(context.Background(), expression.statement, value, bindings)
+				projected, err := template.Execute(context.Background(), expression.Statement, value, bindings)
 				if err != nil {
 					return nil, field.InternalError(path.Child("variable"), err)
 				}

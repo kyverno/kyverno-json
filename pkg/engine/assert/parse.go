@@ -138,17 +138,17 @@ type scalarNode struct {
 
 func (n *scalarNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	rhs := n.rhs
-	expression := parseExpression(ctx, rhs)
+	expression := ParseExpression(ctx, rhs)
 	// we only project if the expression uses the engine syntax
 	// this is to avoid the case where the value is a map and the RHS is a string
 	if expression != nil && expression.engine != "" {
-		if expression.foreachName != "" {
+		if expression.ForeachName != "" {
 			return nil, field.Invalid(path, rhs, "foreach is not supported on the RHS")
 		}
 		if expression.binding != "" {
 			return nil, field.Invalid(path, rhs, "binding is not supported on the RHS")
 		}
-		projected, err := template.Execute(ctx, expression.statement, value, bindings, opts...)
+		projected, err := template.Execute(ctx, expression.Statement, value, bindings, opts...)
 		if err != nil {
 			return nil, field.InternalError(path, err)
 		}

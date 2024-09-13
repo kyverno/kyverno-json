@@ -18,16 +18,16 @@ type projection struct {
 }
 
 func project(ctx context.Context, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
-	expression := parseExpression(ctx, key)
+	expression := ParseExpression(ctx, key)
 	if expression != nil {
 		if expression.engine != "" {
-			projected, err := template.Execute(ctx, expression.statement, value, bindings, opts...)
+			projected, err := template.Execute(ctx, expression.Statement, value, bindings, opts...)
 			if err != nil {
 				return nil, err
 			}
 			return &projection{
-				foreach:     expression.foreach,
-				foreachName: expression.foreachName,
+				foreach:     expression.Foreach,
+				foreachName: expression.ForeachName,
 				binding:     expression.binding,
 				result:      projected,
 			}, nil
@@ -35,13 +35,13 @@ func project(ctx context.Context, key any, value any, bindings binding.Bindings,
 			if value == nil {
 				return nil, nil
 			} else if reflectutils.GetKind(value) == reflect.Map {
-				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
+				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.Statement))
 				if !mapValue.IsValid() {
 					return nil, nil
 				}
 				return &projection{
-					foreach:     expression.foreach,
-					foreachName: expression.foreachName,
+					foreach:     expression.Foreach,
+					foreachName: expression.ForeachName,
 					binding:     expression.binding,
 					result:      mapValue.Interface(),
 				}, nil
