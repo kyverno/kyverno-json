@@ -7,30 +7,40 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
+	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func Parse(ctx context.Context, assertion any) Assertion {
+func Parse(ctx context.Context, assertion any) (Assertion, error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
 		node := sliceNode{}
 		valueOf := reflect.ValueOf(assertion)
 		for i := 0; i < valueOf.Len(); i++ {
-			node = append(node, Parse(ctx, valueOf.Index(i).Interface()))
+			sub, err := Parse(ctx, valueOf.Index(i).Interface())
+			if err != nil {
+				return nil, err
+			}
+			node = append(node, sub)
 		}
-		return node
+		return node, nil
 	case reflect.Map:
 		node := mapNode{}
 		iter := reflect.ValueOf(assertion).MapRange()
 		for iter.Next() {
-			node[iter.Key().Interface()] = Parse(ctx, iter.Value().Interface())
+			sub, err := Parse(ctx, iter.Value().Interface())
+			if err != nil {
+				return nil, err
+			}
+			node[iter.Key().Interface()] = sub
 		}
-		return node
+		return node, nil
 	default:
-		return &scalarNode{rhs: assertion}
+		return newScalarNode(ctx, nil, assertion)
 	}
 }
 
@@ -133,11 +143,10 @@ func (n sliceNode) assert(ctx context.Context, path *field.Path, value any, bind
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
 type scalarNode struct {
-	rhs any
+	project func(value any, bindings binding.Bindings, opts ...template.Option) (any, error)
 }
 
-func (n *scalarNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
-	rhs := n.rhs
+func newScalarNode(ctx context.Context, path *field.Path, rhs any) (Assertion, error) {
 	expression := parseExpression(ctx, rhs)
 	// we only project if the expression uses the engine syntax
 	// this is to avoid the case where the value is a map and the RHS is a string
@@ -148,14 +157,32 @@ func (n *scalarNode) assert(ctx context.Context, path *field.Path, value any, bi
 		if expression.binding != "" {
 			return nil, field.Invalid(path, rhs, "binding is not supported on the RHS")
 		}
-		projected, err := template.Execute(ctx, expression.statement, value, bindings, opts...)
+		parser := parsing.NewParser()
+		compiled, err := parser.Parse(expression.statement)
 		if err != nil {
 			return nil, field.InternalError(path, err)
 		}
-		rhs = projected
+		return &scalarNode{
+			project: func(value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+				o := template.BuildOptions(opts...)
+				vm := interpreter.NewInterpreter(nil, bindings)
+				return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.FunctionCaller))
+			},
+		}, nil
+	} else {
+		return &scalarNode{
+			project: func(value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+				return rhs, nil
+			},
+		}, nil
 	}
+}
+
+func (n *scalarNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
-	if match, err := match.Match(ctx, rhs, value); err != nil {
+	if rhs, err := n.project(value, bindings, opts...); err != nil {
+		return nil, field.InternalError(path, err)
+	} else if match, err := match.Match(ctx, rhs, value); err != nil {
 		return nil, field.InternalError(path, err)
 	} else if !match {
 		errs = append(errs, field.Invalid(path, value, expectValueMessage(rhs)))

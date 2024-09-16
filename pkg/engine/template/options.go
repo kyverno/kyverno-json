@@ -11,28 +11,28 @@ var (
 	defaultCaller = interpreter.NewFunctionCaller(funcs...)
 )
 
-type Option func(options) options
+type Option func(Options) Options
 
-type options struct {
-	functionCaller interpreter.FunctionCaller
+type Options struct {
+	FunctionCaller interpreter.FunctionCaller
 }
 
 func WithFunctionCaller(functionCaller interpreter.FunctionCaller) Option {
-	return func(o options) options {
-		o.functionCaller = functionCaller
+	return func(o Options) Options {
+		o.FunctionCaller = functionCaller
 		return o
 	}
 }
 
-func buildOptions(opts ...Option) options {
-	var o options
+func BuildOptions(opts ...Option) Options {
+	var o Options
 	for _, opt := range opts {
 		if opt != nil {
 			o = opt(o)
 		}
 	}
-	if o.functionCaller == nil {
-		o.functionCaller = defaultCaller
+	if o.FunctionCaller == nil {
+		o.FunctionCaller = defaultCaller
 	}
 	return o
 }

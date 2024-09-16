@@ -48,7 +48,11 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
+				parsed, err := assert.Parse(ctx, assertion.Check.Value)
+				if err != nil {
+					return fails, err
+				}
+				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), parsed, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -72,7 +76,11 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), assert.Parse(ctx, assertion.Check.Value), actual, bindings, opts...)
+				parsed, err := assert.Parse(ctx, assertion.Check.Value)
+				if err != nil {
+					return fails, err
+				}
+				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), parsed, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -118,7 +126,11 @@ func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual 
 func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := assert.Assert(ctx, path.Index(i), assert.Parse(ctx, assertion.Value), actual, bindings, opts...)
+		parsed, err := assert.Parse(ctx, assertion.Value)
+		if err != nil {
+			return errs, err
+		}
+		_errs, err := assert.Assert(ctx, path.Index(i), parsed, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}
@@ -133,7 +145,11 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		_errs, err := assert.Assert(ctx, path.Index(i), assert.Parse(ctx, assertion.Value), actual, bindings, opts...)
+		parsed, err := assert.Parse(ctx, assertion.Value)
+		if err != nil {
+			return errs, err
+		}
+		_errs, err := assert.Assert(ctx, path.Index(i), parsed, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}

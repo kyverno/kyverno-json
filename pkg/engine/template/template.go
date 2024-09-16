@@ -32,12 +32,12 @@ func String(ctx context.Context, in string, value any, bindings binding.Bindings
 }
 
 func Execute(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
-	o := buildOptions(opts...)
+	o := BuildOptions(opts...)
 	vm := interpreter.NewInterpreter(nil, bindings)
 	parser := parsing.NewParser()
 	compiled, err := parser.Parse(statement)
 	if err != nil {
 		return nil, err
 	}
-	return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.functionCaller))
+	return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.FunctionCaller))
 }
