@@ -1,9 +1,8 @@
 package v1alpha1
 
 import (
-	"encoding/json"
-
 	"github.com/jinzhu/copier"
+	"k8s.io/apimachinery/pkg/util/json"
 )
 
 // Any can be any type.
@@ -17,7 +16,7 @@ type Any struct {
 }
 
 func (in *Any) DeepCopyInto(out *Any) {
-	if err := copier.Copy(out, in); err != nil {
+	if err := copier.CopyWithOption(out, in, copier.Option{DeepCopy: true}); err != nil {
 		panic("deep copy failed")
 	}
 }
