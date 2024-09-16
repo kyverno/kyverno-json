@@ -17,7 +17,7 @@ type Any struct {
 }
 
 func (in *Any) DeepCopyInto(out *Any) {
-	if err := copier.Copy(out, in); err != nil {
+	if err := copier.CopyWithOption(out, in, copier.Option{DeepCopy: true}); err != nil {
 		panic("deep copy failed")
 	}
 }
