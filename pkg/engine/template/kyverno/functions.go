@@ -7,7 +7,6 @@ import (
 	"crypto/x509"
 	"encoding/asn1"
 	"encoding/base64"
-	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"fmt"
@@ -26,6 +25,7 @@ import (
 	regen "github.com/zach-klippenstein/goregen"
 	"golang.org/x/crypto/cryptobyte"
 	cryptobyte_asn1 "golang.org/x/crypto/cryptobyte/asn1"
+	"k8s.io/apimachinery/pkg/util/json"
 	"sigs.k8s.io/yaml"
 )
 

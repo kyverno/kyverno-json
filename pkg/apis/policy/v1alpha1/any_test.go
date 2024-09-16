@@ -109,7 +109,7 @@ func TestAny_UnmarshalJSON(t *testing.T) {
 	}, {
 		name:    "int",
 		data:    []byte("42"),
-		want:    &Any{Value: 42.0},
+		want:    &Any{Value: int64(42)},
 		wantErr: false,
 	}, {
 		name:    "string",
@@ -119,7 +119,7 @@ func TestAny_UnmarshalJSON(t *testing.T) {
 	}, {
 		name:    "map",
 		data:    []byte(`{"foo":42}`),
-		want:    &Any{Value: map[string]any{"foo": 42.0}},
+		want:    &Any{Value: map[string]any{"foo": int64(42)}},
 		wantErr: false,
 	}, {
 		name:    "error",
