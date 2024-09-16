@@ -34,6 +34,17 @@ func TestAny_DeepCopyInto(t *testing.T) {
 			assert.Equal(t, tt.in, tt.out)
 		})
 	}
+	{
+		inner := map[string]any{
+			"foo": 42,
+		}
+		in := Any{map[string]any{"inner": inner}}
+		out := in.DeepCopy()
+		inPtr := in.Value.(map[string]any)["inner"].(map[string]any)
+		inPtr["foo"] = 55
+		outPtr := out.Value.(map[string]any)["inner"].(map[string]any)
+		assert.NotEqual(t, inPtr, outPtr)
+	}
 }
 
 func TestAny_MarshalJSON(t *testing.T) {
