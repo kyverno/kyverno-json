@@ -40,6 +40,7 @@ func Parse(ctx context.Context, assertion any) (Assertion, error) {
 		}
 		return node, nil
 	default:
+		// TODO: propagate path
 		return newScalarNode(ctx, nil, assertion)
 	}
 }
