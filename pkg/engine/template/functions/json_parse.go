@@ -1,8 +1,9 @@
 package functions
 
 import (
-	"encoding/json"
 	"errors"
+
+	"k8s.io/apimachinery/pkg/util/json"
 )
 
 func jpfJsonParse(arguments []any) (any, error) {

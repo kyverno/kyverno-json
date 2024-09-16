@@ -1,7 +1,6 @@
 package payload
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,6 +8,7 @@ import (
 	"github.com/kyverno/pkg/ext/file"
 	yamlutils "github.com/kyverno/pkg/ext/yaml"
 	"gopkg.in/yaml.v3"
+	"k8s.io/apimachinery/pkg/util/json"
 )
 
 func Load(path string) (any, error) {

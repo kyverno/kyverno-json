@@ -1,9 +1,8 @@
 package v1alpha1
 
 import (
-	"encoding/json"
-
 	"github.com/jinzhu/copier"
+	"k8s.io/apimachinery/pkg/util/json"
 )
 
 // Any can be any type.
