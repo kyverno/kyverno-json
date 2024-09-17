@@ -7,7 +7,6 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
-	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
@@ -15,13 +14,13 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func Parse(ctx context.Context, assertion any) (Assertion, error) {
+func Parse(ctx context.Context, path *field.Path, assertion any) (Assertion, error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
 		node := sliceNode{}
 		valueOf := reflect.ValueOf(assertion)
 		for i := 0; i < valueOf.Len(); i++ {
-			sub, err := Parse(ctx, valueOf.Index(i).Interface())
+			sub, err := Parse(ctx, path.Index(i), valueOf.Index(i).Interface())
 			if err != nil {
 				return nil, err
 			}
@@ -32,16 +31,16 @@ func Parse(ctx context.Context, assertion any) (Assertion, error) {
 		node := mapNode{}
 		iter := reflect.ValueOf(assertion).MapRange()
 		for iter.Next() {
-			sub, err := Parse(ctx, iter.Value().Interface())
+			key := iter.Key().Interface()
+			sub, err := Parse(ctx, path.Child(fmt.Sprint(key)), iter.Value().Interface())
 			if err != nil {
 				return nil, err
 			}
-			node[iter.Key().Interface()] = sub
+			node[key] = sub
 		}
 		return node, nil
 	default:
-		// TODO: propagate path
-		return newScalarNode(ctx, nil, assertion)
+		return newScalarNode(ctx, path, assertion)
 	}
 }
 
@@ -165,9 +164,7 @@ func newScalarNode(ctx context.Context, path *field.Path, rhs any) (Assertion, e
 		}
 		return &scalarNode{
 			project: func(value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
-				o := template.BuildOptions(opts...)
-				vm := interpreter.NewInterpreter(nil, bindings)
-				return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.FunctionCaller))
+				return template.ExecuteAST(ctx, compiled, value, bindings, opts...)
 			},
 		}, nil
 	} else {

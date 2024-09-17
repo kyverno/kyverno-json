@@ -32,12 +32,16 @@ func String(ctx context.Context, in string, value any, bindings binding.Bindings
 }
 
 func Execute(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
-	o := BuildOptions(opts...)
-	vm := interpreter.NewInterpreter(nil, bindings)
 	parser := parsing.NewParser()
 	compiled, err := parser.Parse(statement)
 	if err != nil {
 		return nil, err
 	}
-	return vm.Execute(compiled, value, interpreter.WithFunctionCaller(o.FunctionCaller))
+	return ExecuteAST(ctx, compiled, value, bindings, opts...)
+}
+
+func ExecuteAST(ctx context.Context, ast parsing.ASTNode, value any, bindings binding.Bindings, opts ...Option) (any, error) {
+	o := buildOptions(opts...)
+	vm := interpreter.NewInterpreter(nil, bindings)
+	return vm.Execute(ast, value, interpreter.WithFunctionCaller(o.functionCaller))
 }
