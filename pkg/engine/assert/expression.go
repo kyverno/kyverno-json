@@ -4,7 +4,9 @@ import (
 	"context"
 	"reflect"
 	"regexp"
+	"sync"
 
+	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
@@ -21,6 +23,7 @@ type expression struct {
 	statement   string
 	binding     string
 	engine      string
+	ast         func() (parsing.ASTNode, error)
 }
 
 func parseExpressionRegex(_ context.Context, in string) *expression {
@@ -54,6 +57,10 @@ func parseExpressionRegex(_ context.Context, in string) *expression {
 	if expression.statement == "" {
 		return nil
 	}
+	expression.ast = sync.OnceValues(func() (parsing.ASTNode, error) {
+		parser := parsing.NewParser()
+		return parser.Parse(expression.statement)
+	})
 	return expression
 }
 

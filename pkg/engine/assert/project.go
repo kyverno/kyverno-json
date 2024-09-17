@@ -21,7 +21,11 @@ func project(ctx context.Context, key any, value any, bindings binding.Bindings,
 	expression := parseExpression(ctx, key)
 	if expression != nil {
 		if expression.engine != "" {
-			projected, err := template.Execute(ctx, expression.statement, value, bindings, opts...)
+			ast, err := expression.ast()
+			if err != nil {
+				return nil, err
+			}
+			projected, err := template.ExecuteAST(ctx, ast, value, bindings, opts...)
 			if err != nil {
 				return nil, err
 			}

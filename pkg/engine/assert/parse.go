@@ -7,7 +7,6 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
-	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
@@ -142,11 +141,9 @@ func (n sliceNode) assert(ctx context.Context, path *field.Path, value any, bind
 // scalarNode is a terminal type of assertion.
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
-type scalarNode struct {
-	project func(value any, bindings binding.Bindings, opts ...template.Option) (any, error)
-}
+type scalarNode func(value any, bindings binding.Bindings, opts ...template.Option) (any, error)
 
-func newScalarNode(ctx context.Context, path *field.Path, rhs any) (Assertion, error) {
+func newScalarNode(ctx context.Context, path *field.Path, rhs any) (scalarNode, error) {
 	expression := parseExpression(ctx, rhs)
 	// we only project if the expression uses the engine syntax
 	// this is to avoid the case where the value is a map and the RHS is a string
@@ -157,28 +154,22 @@ func newScalarNode(ctx context.Context, path *field.Path, rhs any) (Assertion, e
 		if expression.binding != "" {
 			return nil, field.Invalid(path, rhs, "binding is not supported on the RHS")
 		}
-		parser := parsing.NewParser()
-		compiled, err := parser.Parse(expression.statement)
+		ast, err := expression.ast()
 		if err != nil {
 			return nil, field.InternalError(path, err)
 		}
-		return &scalarNode{
-			project: func(value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
-				return template.ExecuteAST(ctx, compiled, value, bindings, opts...)
-			},
-		}, nil
-	} else {
-		return &scalarNode{
-			project: func(value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
-				return rhs, nil
-			},
+		return func(value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+			return template.ExecuteAST(ctx, ast, value, bindings, opts...)
 		}, nil
 	}
+	return func(value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+		return rhs, nil
+	}, nil
 }
 
-func (n *scalarNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func (n scalarNode) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
-	if rhs, err := n.project(value, bindings, opts...); err != nil {
+	if rhs, err := n(value, bindings, opts...); err != nil {
 		return nil, field.InternalError(path, err)
 	} else if match, err := match.Match(ctx, rhs, value); err != nil {
 		return nil, field.InternalError(path, err)
