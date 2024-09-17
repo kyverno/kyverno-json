@@ -57,10 +57,6 @@ func parseExpressionRegex(_ context.Context, in string) *expression {
 	if expression.statement == "" {
 		return nil
 	}
-	expression.ast = sync.OnceValues(func() (parsing.ASTNode, error) {
-		parser := parsing.NewParser()
-		return parser.Parse(expression.statement)
-	})
 	return expression
 }
 
@@ -68,5 +64,12 @@ func parseExpression(ctx context.Context, value any) *expression {
 	if reflectutils.GetKind(value) != reflect.String {
 		return nil
 	}
-	return parseExpressionRegex(ctx, reflect.ValueOf(value).String())
+	exp := parseExpressionRegex(ctx, reflect.ValueOf(value).String())
+	if exp != nil && exp.engine == "jp" {
+		exp.ast = sync.OnceValues(func() (parsing.ASTNode, error) {
+			parser := parsing.NewParser()
+			return parser.Parse(exp.statement)
+		})
+	}
+	return exp
 }

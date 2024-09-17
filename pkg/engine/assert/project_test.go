@@ -88,7 +88,8 @@ func Test_project(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := project(context.TODO(), tt.key, tt.value, tt.bindings)
+			expression := parseExpression(context.TODO(), tt.key)
+			got, err := project(context.TODO(), expression, tt.key, tt.value, tt.bindings)
 			if tt.wantErr {
 				tassert.Error(t, err)
 			} else {
