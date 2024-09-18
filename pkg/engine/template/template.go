@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/google/cel-go/cel"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
@@ -17,7 +18,7 @@ func String(ctx context.Context, in string, value any, bindings binding.Bindings
 	groups := variable.FindAllStringSubmatch(in, -1)
 	for _, group := range groups {
 		statement := strings.TrimSpace(group[1])
-		result, err := Execute(ctx, statement, value, bindings, opts...)
+		result, err := ExecuteJP(ctx, statement, value, bindings, opts...)
 		if err != nil {
 			in = strings.ReplaceAll(in, group[0], fmt.Sprintf("ERR (%s - %s)", statement, err))
 		} else if result == nil {
@@ -31,7 +32,31 @@ func String(ctx context.Context, in string, value any, bindings binding.Bindings
 	return in
 }
 
-func Execute(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
+func ExecuteCEL(ctx context.Context, statement string, value any, bindings binding.Bindings) (any, error) {
+	env, err := cel.NewEnv(cel.Variable("object", cel.AnyType))
+	if err != nil {
+		return nil, err
+	}
+	ast, iss := env.Compile(statement)
+	if iss.Err() != nil {
+		return nil, iss.Err()
+	}
+	prg, err := env.Program(ast)
+	if err != nil {
+		return nil, err
+	}
+	out, _, err := prg.Eval(
+		map[string]interface{}{
+			"object": value,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	return out.Value(), nil
+}
+
+func ExecuteJP(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
 	parser := parsing.NewParser()
 	compiled, err := parser.Parse(statement)
 	if err != nil {

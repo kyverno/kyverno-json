@@ -25,6 +25,12 @@ func Test_Execute(t *testing.T) {
 		out:      "../../../test/commands/scan/foo-bar/out.txt",
 		wantErr:  false,
 	}, {
+		name:     "cel",
+		payload:  "../../../test/commands/scan/cel/payload.yaml",
+		policies: []string{"../../../test/commands/scan/cel/policy.yaml"},
+		out:      "../../../test/commands/scan/cel/out.txt",
+		wantErr:  false,
+	}, {
 		name:     "wildcard",
 		payload:  "../../../test/commands/scan/wildcard/payload.json",
 		policies: []string{"../../../test/commands/scan/wildcard/policy.yaml"},

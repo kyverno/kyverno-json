@@ -164,19 +164,26 @@ func parseScalar(ctx context.Context, assertion any) (node, error) {
 	// we only project if the expression uses the engine syntax
 	// this is to avoid the case where the value is a map and the RHS is a string
 	var project func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error)
-	if expression != nil && expression.engine != "" {
+	if expression != nil {
 		if expression.foreachName != "" {
 			return nil, errors.New("foreach is not supported on the RHS")
 		}
 		if expression.binding != "" {
 			return nil, errors.New("binding is not supported on the RHS")
 		}
-		ast, err := expression.ast()
-		if err != nil {
-			return nil, err
+		if expression.engine == "jp" {
+			ast, err := expression.ast()
+			if err != nil {
+				return nil, err
+			}
+			project = func(ctx context.Context, value any, bindings jpbinding.Bindings, opts ...template.Option) (any, error) {
+				return template.ExecuteAST(ctx, ast, value, bindings, opts...)
+			}
 		}
-		project = func(ctx context.Context, value any, bindings jpbinding.Bindings, opts ...template.Option) (any, error) {
-			return template.ExecuteAST(ctx, ast, value, bindings, opts...)
+		if expression.engine == "cel" {
+			project = func(ctx context.Context, value any, bindings jpbinding.Bindings, opts ...template.Option) (any, error) {
+				return template.ExecuteCEL(ctx, expression.statement, value, bindings)
+			}
 		}
 	}
 	return func(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {

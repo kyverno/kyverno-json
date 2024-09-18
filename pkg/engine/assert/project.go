@@ -21,13 +21,24 @@ type projection struct {
 func project(ctx context.Context, expression *expression, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
 	if expression != nil {
 		if expression.engine != "" {
-			ast, err := expression.ast()
-			if err != nil {
-				return nil, err
+			var projected any
+			if expression.engine == "jp" {
+				ast, err := expression.ast()
+				if err != nil {
+					return nil, err
+				}
+				result, err := template.ExecuteAST(ctx, ast, value, bindings, opts...)
+				if err != nil {
+					return nil, err
+				}
+				projected = result
 			}
-			projected, err := template.ExecuteAST(ctx, ast, value, bindings, opts...)
-			if err != nil {
-				return nil, err
+			if expression.engine == "cel" {
+				result, err := template.ExecuteCEL(ctx, expression.statement, value, bindings)
+				if err != nil {
+					return nil, err
+				}
+				projected = result
 			}
 			return &projection{
 				foreach:     expression.foreach,
