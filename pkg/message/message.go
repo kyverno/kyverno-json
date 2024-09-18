@@ -19,9 +19,11 @@ type Message interface {
 	Format(any, binding.Bindings, ...template.Option) string
 }
 
+type substitution = func(string, any, binding.Bindings, ...template.Option) string
+
 type message struct {
 	original      string
-	substitutions []func(string, any, binding.Bindings, ...template.Option) string
+	substitutions []substitution
 }
 
 func (m *message) Original() string {
@@ -36,11 +38,10 @@ func (m *message) Format(value any, bindings binding.Bindings, opts ...template.
 	return out
 }
 
-func Parse(in string) Message {
+func Parse(in string) *message {
 	groups := variable.FindAllStringSubmatch(in, -1)
 	var substitutions []func(string, any, binding.Bindings, ...template.Option) string
 	for _, group := range groups {
-		placeholder := group[0]
 		statement := strings.TrimSpace(group[1])
 		parse := sync.OnceValues(func() (parsing.ASTNode, error) {
 			parser := parsing.NewParser()
@@ -53,6 +54,7 @@ func Parse(in string) Message {
 			}
 			return template.ExecuteAST(context.TODO(), ast, value, bindings, opts...)
 		}
+		placeholder := group[0]
 		substitutions = append(substitutions, func(out string, value any, bindings binding.Bindings, opts ...template.Option) string {
 			result, err := evaluate(value, bindings, opts...)
 			if err != nil {
