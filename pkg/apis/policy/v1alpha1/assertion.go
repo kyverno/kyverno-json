@@ -4,9 +4,10 @@ package v1alpha1
 type Assertion struct {
 	// Message is the message associated message.
 	// +optional
-	Message string `json:"message,omitempty"`
+	Message *Message `json:"message,omitempty"`
 
 	// Engine defines the default engine to use when evaluating expressions.
+	// +optional
 	Engine *Engine `json:"engine,omitempty"`
 
 	// Check is the assertion check definition.

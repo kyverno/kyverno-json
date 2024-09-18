@@ -131,7 +131,7 @@ func New() engine.Engine[Request, Response] {
 					}
 				}
 			}
-			violations, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.resource, bindings)
+			violations, err := matching.MatchAssert(ctx, nil, &r.rule.Assert, r.resource, bindings)
 			if err != nil {
 				return []RuleResponse{{
 					Rule:       r.rule,
