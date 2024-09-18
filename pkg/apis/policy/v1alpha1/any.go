@@ -1,53 +1,15 @@
 package v1alpha1
 
 import (
-	"fmt"
-
 	"k8s.io/apimachinery/pkg/util/json"
 )
-
-func deepCopy(in any) any {
-	if in == nil {
-		return nil
-	}
-	switch in := in.(type) {
-	case string:
-		return in
-	case int:
-		return in
-	case int32:
-		return in
-	case int64:
-		return in
-	case float32:
-		return in
-	case float64:
-		return in
-	case bool:
-		return in
-	case []any:
-		var out []any
-		for _, in := range in {
-			out = append(out, deepCopy(in))
-		}
-		return out
-	case map[string]any:
-		out := map[string]any{}
-		for k, in := range in {
-			out[k] = deepCopy(in)
-		}
-		return out
-	}
-	panic(fmt.Sprintf("deep copy failed - unrecognized type %T", in))
-}
 
 // Any can be any type.
 // +k8s:deepcopy-gen=false
 // +kubebuilder:validation:XPreserveUnknownFields
 // +kubebuilder:validation:Type:=""
 type Any struct {
-	// +optional
-	value any `json:"-"`
+	_value any
 }
 
 func NewAny(value any) Any {
@@ -55,11 +17,11 @@ func NewAny(value any) Any {
 }
 
 func (t *Any) Value() any {
-	return t.value
+	return t._value
 }
 
 func (in *Any) DeepCopyInto(out *Any) {
-	out.value = deepCopy(in.value)
+	out._value = deepCopy(in._value)
 }
 
 func (in *Any) DeepCopy() *Any {
@@ -72,7 +34,7 @@ func (in *Any) DeepCopy() *Any {
 }
 
 func (a *Any) MarshalJSON() ([]byte, error) {
-	return json.Marshal(a.value)
+	return json.Marshal(a._value)
 }
 
 func (a *Any) UnmarshalJSON(data []byte) error {
@@ -81,6 +43,6 @@ func (a *Any) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	a.value = v
+	a._value = v
 	return nil
 }

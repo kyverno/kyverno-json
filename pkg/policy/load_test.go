@@ -4,8 +4,10 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -118,11 +120,11 @@ func TestLoad(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := Load(tt.path)
 			if tt.wantErr {
-				require.Error(t, err)
+				assert.Error(t, err)
 			} else {
-				require.NoError(t, err)
+				assert.NoError(t, err)
 			}
-			require.Equal(t, tt.want, got)
+			assert.True(t, cmp.Equal(tt.want, got, cmp.AllowUnexported(v1alpha1.AssertionTree{}), cmpopts.IgnoreFields(v1alpha1.AssertionTree{}, "_assertion")))
 		})
 	}
 }

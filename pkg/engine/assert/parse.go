@@ -2,6 +2,7 @@ package assert
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -13,14 +14,14 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func Parse(ctx context.Context, path *field.Path, assertion any) (Assertion, error) {
+func Parse(ctx context.Context, assertion any) (Assertion, error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
-		return parseSlice(ctx, path, assertion)
+		return parseSlice(ctx, assertion)
 	case reflect.Map:
-		return parseMap(ctx, path, assertion)
+		return parseMap(ctx, assertion)
 	default:
-		return parseScalar(ctx, path, assertion)
+		return parseScalar(ctx, assertion)
 	}
 }
 
@@ -34,11 +35,11 @@ func (n node) assert(ctx context.Context, path *field.Path, value any, bindings 
 // parseSlice is the assertion represented by a slice.
 // it first compares the length of the analysed resource with the length of the descendants.
 // if lengths match all descendants are evaluated with their corresponding items.
-func parseSlice(ctx context.Context, path *field.Path, assertion any) (node, error) {
+func parseSlice(ctx context.Context, assertion any) (node, error) {
 	var assertions []Assertion
 	valueOf := reflect.ValueOf(assertion)
 	for i := 0; i < valueOf.Len(); i++ {
-		sub, err := Parse(ctx, path.Index(i), valueOf.Index(i).Interface())
+		sub, err := Parse(ctx, valueOf.Index(i).Interface())
 		if err != nil {
 			return nil, err
 		}
@@ -70,7 +71,7 @@ func parseSlice(ctx context.Context, path *field.Path, assertion any) (node, err
 
 // parseMap is the assertion represented by a map.
 // it is responsible for projecting the analysed resource and passing the result to the descendant
-func parseMap(ctx context.Context, path *field.Path, assertion any) (node, error) {
+func parseMap(ctx context.Context, assertion any) (node, error) {
 	assertions := map[any]struct {
 		*expression
 		Assertion
@@ -79,7 +80,7 @@ func parseMap(ctx context.Context, path *field.Path, assertion any) (node, error
 	for iter.Next() {
 		key := iter.Key().Interface()
 		value := iter.Value().Interface()
-		assertion, err := Parse(ctx, path.Child(fmt.Sprint(key)), value)
+		assertion, err := Parse(ctx, value)
 		if err != nil {
 			return nil, err
 		}
@@ -158,21 +159,21 @@ func parseMap(ctx context.Context, path *field.Path, assertion any) (node, error
 // parseScalar is the assertion represented by a leaf.
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
-func parseScalar(ctx context.Context, path *field.Path, assertion any) (node, error) {
+func parseScalar(ctx context.Context, assertion any) (node, error) {
 	expression := parseExpression(ctx, assertion)
 	// we only project if the expression uses the engine syntax
 	// this is to avoid the case where the value is a map and the RHS is a string
 	var project func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error)
 	if expression != nil && expression.engine != "" {
 		if expression.foreachName != "" {
-			return nil, field.Invalid(path, assertion, "foreach is not supported on the RHS")
+			return nil, errors.New("foreach is not supported on the RHS")
 		}
 		if expression.binding != "" {
-			return nil, field.Invalid(path, assertion, "binding is not supported on the RHS")
+			return nil, errors.New("binding is not supported on the RHS")
 		}
 		ast, err := expression.ast()
 		if err != nil {
-			return nil, field.InternalError(path, err)
+			return nil, err
 		}
 		project = func(ctx context.Context, value any, bindings jpbinding.Bindings, opts ...template.Option) (any, error) {
 			return template.ExecuteAST(ctx, ast, value, bindings, opts...)
