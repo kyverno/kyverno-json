@@ -2,162 +2,162 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/install/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/intro/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/jp/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/playground/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/quick-start/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/apis/kyverno-json.v1alpha1/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/dockerfile/dockerfile-deny-expose-22/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/dockerfile/dockerfile-deny-latest-image/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/dockerfile/dockerfile-disallow-apt/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/dockerfile/dockerfile-disallow-last-user-root/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/dockerfile/dockerfile-disallow-sudo/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/ecs/ecs-cluster-enable-logging/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/ecs/ecs-cluster-required-container-insights/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/ecs/ecs-service-public-ip/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/ecs/ecs-service-required-latest-platform-fargate/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/ecs/ecs-task-definition-fs-read-only/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/policies/ecs/policy-1/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_completion/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_completion_bash/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_completion_fish/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_completion_powershell/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_completion_zsh/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_docs/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_jp/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_jp_function/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_jp_parse/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_jp_query/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_playground/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_scan/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_serve/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/cli/commands/kyverno-json_version/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/go-library/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/jp/functions/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/policies/asserts/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/policies/policies/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/webapp/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
     <url>
          <loc>https://github.io/kyverno/kyverno-json/main/catalog/</loc>
-         <lastmod>2024-09-16</lastmod>
+         <lastmod>2024-09-18</lastmod>
     </url>
 </urlset>
