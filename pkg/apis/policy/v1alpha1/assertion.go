@@ -7,6 +7,7 @@ type Assertion struct {
 	Message string `json:"message,omitempty"`
 
 	// Engine defines the default engine to use when evaluating expressions.
+	// +optional
 	Engine *Engine `json:"engine,omitempty"`
 
 	// Check is the assertion check definition.

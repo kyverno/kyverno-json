@@ -7,6 +7,7 @@ type ValidatingRule struct {
 	Name string `json:"name"`
 
 	// Engine defines the default engine to use when evaluating expressions.
+	// +optional
 	Engine *Engine `json:"engine,omitempty"`
 
 	// Context defines variables and data sources that can be used during rule execution.
