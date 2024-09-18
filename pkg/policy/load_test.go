@@ -70,7 +70,7 @@ func TestLoad(t *testing.T) {
 							),
 						},
 					},
-					Assert: &v1alpha1.Assert{
+					Assert: v1alpha1.Assert{
 						All: []v1alpha1.Assertion{{
 							Check: v1alpha1.NewAssertionTree(
 								map[string]any{

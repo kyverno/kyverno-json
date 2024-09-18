@@ -31,5 +31,5 @@ type ValidatingRule struct {
 	Feedback []Feedback `json:"feedback,omitempty"`
 
 	// Assert is used to validate matching resources.
-	Assert *Assert `json:"assert"`
+	Assert Assert `json:"assert"`
 }
