@@ -79,6 +79,7 @@ auto_generated: true
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
 | `message` | `string` |  |  | <p>Message is the message associated message.</p> |
+| `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) | :white_check_mark: |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
 | `check` | [`AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) | :white_check_mark: |  | <p>Check is the assertion check definition.</p> |
 
 ## `AssertionTree`     {#json-kyverno-io-v1alpha1-AssertionTree}
@@ -107,6 +108,16 @@ auto_generated: true
 |---|---|---|---|---|
 | `name` | `string` | :white_check_mark: |  | <p>Name is the entry name.</p> |
 | `variable` | [`Any`](#json-kyverno-io-v1alpha1-Any) |  |  | <p>Variable defines an arbitrary variable.</p> |
+
+## `Engine`     {#json-kyverno-io-v1alpha1-Engine}
+
+(Alias of `string`)
+
+**Appears in:**
+    
+- [Assertion](#json-kyverno-io-v1alpha1-Assertion)
+- [ValidatingPolicySpec](#json-kyverno-io-v1alpha1-ValidatingPolicySpec)
+- [ValidatingRule](#json-kyverno-io-v1alpha1-ValidatingRule)
 
 ## `Feedback`     {#json-kyverno-io-v1alpha1-Feedback}
 
@@ -147,6 +158,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
+| `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) | :white_check_mark: |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
 | `rules` | [`[]ValidatingRule`](#json-kyverno-io-v1alpha1-ValidatingRule) | :white_check_mark: |  | <p>Rules is a list of ValidatingRule instances.</p> |
 
 ## `ValidatingRule`     {#json-kyverno-io-v1alpha1-ValidatingRule}
@@ -161,6 +173,7 @@ auto_generated: true
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
 | `name` | `string` | :white_check_mark: |  | <p>Name is a label to identify the rule, It must be unique within the policy.</p> |
+| `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) | :white_check_mark: |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
 | `context` | [`[]ContextEntry`](#json-kyverno-io-v1alpha1-ContextEntry) |  |  | <p>Context defines variables and data sources that can be used during rule execution.</p> |
 | `match` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Match defines when this policy rule should be applied.</p> |
 | `exclude` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Exclude defines when this policy rule should not be applied.</p> |

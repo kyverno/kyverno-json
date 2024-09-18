@@ -39,6 +39,13 @@ spec:
           spec:
             description: Policy spec.
             properties:
+              engine:
+                description: Engine defines the default engine to use when evaluating
+                  expressions.
+                enum:
+                - jp
+                - cel
+                type: string
               rules:
                 description: Rules is a list of ValidatingRule instances.
                 items:
@@ -57,6 +64,13 @@ spec:
                               check:
                                 description: Check is the assertion check definition.
                                 x-kubernetes-preserve-unknown-fields: true
+                              engine:
+                                description: Engine defines the default engine to
+                                  use when evaluating expressions.
+                                enum:
+                                - jp
+                                - cel
+                                type: string
                               message:
                                 description: Message is the message associated message.
                                 type: string
@@ -74,6 +88,13 @@ spec:
                               check:
                                 description: Check is the assertion check definition.
                                 x-kubernetes-preserve-unknown-fields: true
+                              engine:
+                                description: Engine defines the default engine to
+                                  use when evaluating expressions.
+                                enum:
+                                - jp
+                                - cel
+                                type: string
                               message:
                                 description: Message is the message associated message.
                                 type: string
@@ -99,6 +120,13 @@ spec:
                         - name
                         type: object
                       type: array
+                    engine:
+                      description: Engine defines the default engine to use when evaluating
+                        expressions.
+                      enum:
+                      - jp
+                      - cel
+                      type: string
                     exclude:
                       description: Exclude defines when this policy rule should not
                         be applied.
