@@ -258,11 +258,7 @@ func (in *ValidatingRule) DeepCopyInto(out *ValidatingRule) {
 		*out = make([]Feedback, len(*in))
 		copy(*out, *in)
 	}
-	if in.Assert != nil {
-		in, out := &in.Assert, &out.Assert
-		*out = new(Assert)
-		(*in).DeepCopyInto(*out)
-	}
+	in.Assert.DeepCopyInto(&out.Assert)
 	return
 }
 
