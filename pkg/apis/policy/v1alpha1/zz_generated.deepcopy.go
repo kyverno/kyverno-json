@@ -110,14 +110,14 @@ func (in *Match) DeepCopyInto(out *Match) {
 	*out = *in
 	if in.Any != nil {
 		in, out := &in.Any, &out.Any
-		*out = make([]Any, len(*in))
+		*out = make([]AssertionTree, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
 	if in.All != nil {
 		in, out := &in.All, &out.All
-		*out = make([]Any, len(*in))
+		*out = make([]AssertionTree, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}

@@ -40,9 +40,9 @@ func TestAny_DeepCopyInto(t *testing.T) {
 		}
 		in := Any{map[string]any{"inner": inner}}
 		out := in.DeepCopy()
-		inPtr := in.Value.(map[string]any)["inner"].(map[string]any)
+		inPtr := in.Value().(map[string]any)["inner"].(map[string]any)
 		inPtr["foo"] = 55
-		outPtr := out.Value.(map[string]any)["inner"].(map[string]any)
+		outPtr := out.Value().(map[string]any)["inner"].(map[string]any)
 		assert.NotEqual(t, inPtr, outPtr)
 	}
 }
@@ -81,9 +81,7 @@ func TestAny_MarshalJSON(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &Any{
-				Value: tt.value,
-			}
+			a := NewAny(tt.value)
 			got, err := a.MarshalJSON()
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -99,37 +97,36 @@ func TestAny_UnmarshalJSON(t *testing.T) {
 	tests := []struct {
 		name    string
 		data    []byte
-		want    *Any
+		want    Any
 		wantErr bool
 	}{{
 		name:    "nil",
 		data:    []byte("null"),
-		want:    &Any{},
+		want:    NewAny(nil),
 		wantErr: false,
 	}, {
 		name:    "int",
 		data:    []byte("42"),
-		want:    &Any{Value: int64(42)},
+		want:    NewAny(int64(42)),
 		wantErr: false,
 	}, {
 		name:    "string",
 		data:    []byte(`"foo"`),
-		want:    &Any{Value: "foo"},
+		want:    NewAny("foo"),
 		wantErr: false,
 	}, {
 		name:    "map",
 		data:    []byte(`{"foo":42}`),
-		want:    &Any{Value: map[string]any{"foo": int64(42)}},
+		want:    NewAny(map[string]any{"foo": int64(42)}),
 		wantErr: false,
 	}, {
 		name:    "error",
 		data:    []byte(`{"foo":`),
-		want:    nil,
 		wantErr: true,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &Any{}
+			var a Any
 			err := a.UnmarshalJSON(tt.data)
 			if tt.wantErr {
 				assert.Error(t, err)

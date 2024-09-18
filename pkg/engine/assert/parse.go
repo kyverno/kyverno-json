@@ -27,7 +27,6 @@ func Parse(ctx context.Context, path *field.Path, assertion any) (Assertion, err
 // node implements the Assertion interface using a delegate func
 type node func(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error)
 
-// TODO: do we need the path in the signature ?
 func (n node) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	return n(ctx, path, value, bindings, opts...)
 }

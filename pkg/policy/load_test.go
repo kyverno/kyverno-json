@@ -59,17 +59,19 @@ func TestLoad(t *testing.T) {
 				Rules: []v1alpha1.ValidatingRule{{
 					Name: "pod-no-latest",
 					Match: &v1alpha1.Match{
-						Any: []v1alpha1.Any{{
-							Value: map[string]any{
-								"apiVersion": "v1",
-								"kind":       "Pod",
-							},
-						}},
+						Any: []v1alpha1.AssertionTree{
+							v1alpha1.NewAssertionTree(
+								map[string]any{
+									"apiVersion": "v1",
+									"kind":       "Pod",
+								},
+							),
+						},
 					},
 					Assert: &v1alpha1.Assert{
 						All: []v1alpha1.Assertion{{
-							Check: v1alpha1.Any{
-								Value: map[string]any{
+							Check: v1alpha1.NewAssertionTree(
+								map[string]any{
 									"spec": map[string]any{
 										"~foo.containers->foos": map[string]any{
 											"(at($foos, $foo).image)->foo": map[string]any{
@@ -79,7 +81,7 @@ func TestLoad(t *testing.T) {
 										},
 									},
 								},
-							},
+							),
 						}},
 					},
 				}},

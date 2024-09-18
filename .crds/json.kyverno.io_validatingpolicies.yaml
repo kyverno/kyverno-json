@@ -56,7 +56,6 @@ spec:
                             properties:
                               check:
                                 description: Check is the assertion check definition.
-                                type: object
                                 x-kubernetes-preserve-unknown-fields: true
                               message:
                                 description: Message is the message associated message.
@@ -74,7 +73,6 @@ spec:
                             properties:
                               check:
                                 description: Check is the assertion check definition.
-                                type: object
                                 x-kubernetes-preserve-unknown-fields: true
                               message:
                                 description: Message is the message associated message.
@@ -109,16 +107,14 @@ spec:
                           description: All allows specifying assertion trees which
                             will be ANDed.
                           items:
-                            description: Any can be any type.
-                            type: object
+                            description: AssertionTree represents an assertion tree.
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
                         any:
                           description: Any allows specifying assertion trees which
                             will be ORed.
                           items:
-                            description: Any can be any type.
-                            type: object
+                            description: AssertionTree represents an assertion tree.
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
                       type: object
@@ -150,16 +146,14 @@ spec:
                           description: All allows specifying assertion trees which
                             will be ANDed.
                           items:
-                            description: Any can be any type.
-                            type: object
+                            description: AssertionTree represents an assertion tree.
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
                         any:
                           description: Any allows specifying assertion trees which
                             will be ORed.
                           items:
-                            description: Any can be any type.
-                            type: object
+                            description: AssertionTree represents an assertion tree.
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
                       type: object

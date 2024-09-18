@@ -6,8 +6,6 @@ type ContextEntry struct {
 	Name string `json:"name"`
 
 	// Variable defines an arbitrary variable.
-	// +kubebuilder:pruning:PreserveUnknownFields
-	// +kubebuilder:validation:Schemaless
 	// +optional
 	Variable Any `json:"variable,omitempty"`
 }

@@ -17724,7 +17724,7 @@
                         "description": "All allows specifying assertion trees which will be ANDed.",
                         "type": "array",
                         "items": {
-                          "description": "Any can be any type.",
+                          "description": "AssertionTree represents an assertion tree.",
                           "x-kubernetes-preserve-unknown-fields": true
                         }
                       },
@@ -17732,7 +17732,7 @@
                         "description": "Any allows specifying assertion trees which will be ORed.",
                         "type": "array",
                         "items": {
-                          "description": "Any can be any type.",
+                          "description": "AssertionTree represents an assertion tree.",
                           "x-kubernetes-preserve-unknown-fields": true
                         }
                       }
@@ -17772,7 +17772,7 @@
                         "description": "All allows specifying assertion trees which will be ANDed.",
                         "type": "array",
                         "items": {
-                          "description": "Any can be any type.",
+                          "description": "AssertionTree represents an assertion tree.",
                           "x-kubernetes-preserve-unknown-fields": true
                         }
                       },
@@ -17780,7 +17780,7 @@
                         "description": "Any allows specifying assertion trees which will be ORed.",
                         "type": "array",
                         "items": {
-                          "description": "Any can be any type.",
+                          "description": "AssertionTree represents an assertion tree.",
                           "x-kubernetes-preserve-unknown-fields": true
                         }
                       }

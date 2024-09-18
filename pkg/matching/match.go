@@ -48,7 +48,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				parsed, err := assert.Parse(ctx, path.Index(i).Child("check"), assertion.Check.Value)
+				parsed, err := assert.Parse(ctx, path.Index(i).Child("check"), assertion.Check.Raw())
 				if err != nil {
 					return fails, err
 				}
@@ -76,7 +76,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				parsed, err := assert.Parse(ctx, path.Index(i).Child("check"), assertion.Check.Value)
+				parsed, err := assert.Parse(ctx, path.Index(i).Child("check"), assertion.Check.Raw())
 				if err != nil {
 					return fails, err
 				}
@@ -123,10 +123,10 @@ func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual 
 	}
 }
 
-func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		parsed, err := assert.Parse(ctx, path.Index(i), assertion.Value)
+		parsed, err := assert.Parse(ctx, path.Index(i), assertion.Raw())
 		if err != nil {
 			return errs, err
 		}
@@ -142,10 +142,10 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 	return errs, nil
 }
 
-func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		parsed, err := assert.Parse(ctx, path.Index(i), assertion.Value)
+		parsed, err := assert.Parse(ctx, path.Index(i), assertion.Raw())
 		if err != nil {
 			return errs, err
 		}
