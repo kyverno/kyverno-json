@@ -17636,6 +17636,14 @@
             "rules"
           ],
           "properties": {
+            "engine": {
+              "description": "Engine defines the default engine to use when evaluating expressions.",
+              "type": "string",
+              "enum": [
+                "jp",
+                "cel"
+              ]
+            },
             "rules": {
               "description": "Rules is a list of ValidatingRule instances.",
               "type": "array",
@@ -17665,6 +17673,14 @@
                               "description": "Check is the assertion check definition.",
                               "x-kubernetes-preserve-unknown-fields": true
                             },
+                            "engine": {
+                              "description": "Engine defines the default engine to use when evaluating expressions.",
+                              "type": "string",
+                              "enum": [
+                                "jp",
+                                "cel"
+                              ]
+                            },
                             "message": {
                               "description": "Message is the message associated message.",
                               "type": "string"
@@ -17685,6 +17701,14 @@
                             "check": {
                               "description": "Check is the assertion check definition.",
                               "x-kubernetes-preserve-unknown-fields": true
+                            },
+                            "engine": {
+                              "description": "Engine defines the default engine to use when evaluating expressions.",
+                              "type": "string",
+                              "enum": [
+                                "jp",
+                                "cel"
+                              ]
                             },
                             "message": {
                               "description": "Message is the message associated message.",
@@ -17715,6 +17739,14 @@
                         }
                       }
                     }
+                  },
+                  "engine": {
+                    "description": "Engine defines the default engine to use when evaluating expressions.",
+                    "type": "string",
+                    "enum": [
+                      "jp",
+                      "cel"
+                    ]
                   },
                   "exclude": {
                     "description": "Exclude defines when this policy rule should not be applied.",
