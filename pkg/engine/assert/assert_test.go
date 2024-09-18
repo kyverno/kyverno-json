@@ -10,25 +10,20 @@ import (
 )
 
 func TestAssert(t *testing.T) {
-	type args struct {
-		assertion Assertion
+	tests := []struct {
+		name      string
+		assertion any
 		value     any
 		bindings  binding.Bindings
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    field.ErrorList
-		wantErr bool
+		want      field.ErrorList
+		wantErr   bool
 	}{{
 		name: "nil vs empty object",
-		args: args{
-			assertion: Parse(context.TODO(), map[string]any{
-				"foo": map[string]any{},
-			}),
-			value: map[string]any{
-				"foo": nil,
-			},
+		assertion: map[string]any{
+			"foo": map[string]any{},
+		},
+		value: map[string]any{
+			"foo": nil,
 		},
 		want: field.ErrorList{
 			&field.Error{
@@ -40,14 +35,12 @@ func TestAssert(t *testing.T) {
 		wantErr: false,
 	}, {
 		name: "not nil vs empty object",
-		args: args{
-			assertion: Parse(context.TODO(), map[string]any{
-				"foo": map[string]any{},
-			}),
-			value: map[string]any{
-				"foo": map[string]any{
-					"bar": 42,
-				},
+		assertion: map[string]any{
+			"foo": map[string]any{},
+		},
+		value: map[string]any{
+			"foo": map[string]any{
+				"bar": 42,
 			},
 		},
 		want:    nil,
@@ -55,7 +48,9 @@ func TestAssert(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Assert(context.TODO(), nil, tt.args.assertion, tt.args.value, tt.args.bindings)
+			parsed, err := Parse(context.TODO(), nil, tt.assertion)
+			tassert.NoError(t, err)
+			got, err := Assert(context.TODO(), nil, parsed, tt.value, tt.bindings)
 			if tt.wantErr {
 				tassert.Error(t, err)
 			} else {

@@ -17,11 +17,15 @@ type projection struct {
 	result      any
 }
 
-func project(ctx context.Context, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
-	expression := parseExpression(ctx, key)
+// TODO: remove need for key
+func project(ctx context.Context, expression *expression, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
 	if expression != nil {
 		if expression.engine != "" {
-			projected, err := template.Execute(ctx, expression.statement, value, bindings, opts...)
+			ast, err := expression.ast()
+			if err != nil {
+				return nil, err
+			}
+			projected, err := template.ExecuteAST(ctx, ast, value, bindings, opts...)
 			if err != nil {
 				return nil, err
 			}
