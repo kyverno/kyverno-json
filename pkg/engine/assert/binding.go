@@ -8,7 +8,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, entry any) binding.Binding {
+func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, entry any, opts ...template.Option) binding.Binding {
 	return template.NewLazyBinding(
 		func() (any, error) {
 			expression := parseExpression(context.TODO(), entry)
@@ -19,7 +19,7 @@ func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, e
 				if expression.binding != "" {
 					return nil, field.Invalid(path.Child("variable"), entry, "binding is not supported in context")
 				}
-				projected, err := template.Execute(context.Background(), expression.statement, value, bindings)
+				projected, err := template.Execute(context.TODO(), expression.statement, value, bindings, opts...)
 				if err != nil {
 					return nil, field.InternalError(path.Child("variable"), err)
 				}

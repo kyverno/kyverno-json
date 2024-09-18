@@ -7,11 +7,12 @@ import (
 
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
-	"github.com/kyverno/kyverno-json/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine"
+	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/matching"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 type Request struct {
@@ -69,7 +70,12 @@ func New() engine.Engine[Request, Response] {
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
 			bindings := r.bindings.Register("$rule", jpbinding.NewBinding(r.rule))
-			bindings = binding.NewContextBindings(bindings, r.resource, r.rule.Context...)
+			// TODO: this doesn't seem to be the right path
+			var path *field.Path
+			path = path.Child("context")
+			for i, entry := range r.rule.Context {
+				bindings = bindings.Register("$"+entry.Name, assert.NewContextBinding(path.Index(i), bindings, r.resource, entry.Variable.Value()))
+			}
 			identifier := ""
 			if r.rule.Identifier != "" {
 				result, err := template.Execute(context.Background(), r.rule.Identifier, r.resource, bindings)
