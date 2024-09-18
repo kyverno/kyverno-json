@@ -78,6 +78,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
+| `message` | [`Message`](#json-kyverno-io-v1alpha1-Message) |  |  | <p>Message is the message associated message.</p> |
 | `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) |  |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
 | `check` | [`AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) | :white_check_mark: |  | <p>Check is the assertion check definition.</p> |
 
@@ -155,9 +156,11 @@ auto_generated: true
     
 - [Assertion](#json-kyverno-io-v1alpha1-Assertion)
 
+<p>Message stores a message template.</p>
+
+
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `_template` | `string` | :white_check_mark: |  | *No description provided.* |
 
 ## `ValidatingPolicySpec`     {#json-kyverno-io-v1alpha1-ValidatingPolicySpec}
 
