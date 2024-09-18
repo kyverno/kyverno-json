@@ -48,11 +48,12 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("any")
 			for i, assertion := range match.Any {
-				parsed, err := assert.Parse(ctx, path.Index(i).Child("check"), assertion.Check.Raw())
+				path := path.Index(i).Child("check")
+				parsed, err := assertion.Check.Assertion()
 				if err != nil {
 					return fails, err
 				}
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), parsed, actual, bindings, opts...)
+				checkFails, err := assert.Assert(ctx, path, parsed, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -76,11 +77,12 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 			var fails []Result
 			path := path.Child("all")
 			for i, assertion := range match.All {
-				parsed, err := assert.Parse(ctx, path.Index(i).Child("check"), assertion.Check.Raw())
+				path := path.Index(i).Child("check")
+				parsed, err := assertion.Check.Assertion()
 				if err != nil {
 					return fails, err
 				}
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), parsed, actual, bindings, opts...)
+				checkFails, err := assert.Assert(ctx, path, parsed, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -126,11 +128,12 @@ func Match(ctx context.Context, path *field.Path, match *v1alpha1.Match, actual 
 func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		parsed, err := assert.Parse(ctx, path.Index(i), assertion.Raw())
+		path := path.Index(i)
+		assertion, err := assertion.Assertion()
 		if err != nil {
 			return errs, err
 		}
-		_errs, err := assert.Assert(ctx, path.Index(i), parsed, actual, bindings, opts...)
+		_errs, err := assert.Assert(ctx, path, assertion, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}
@@ -145,11 +148,12 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Asser
 func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
-		parsed, err := assert.Parse(ctx, path.Index(i), assertion.Raw())
+		path := path.Index(i)
+		assertion, err := assertion.Assertion()
 		if err != nil {
 			return errs, err
 		}
-		_errs, err := assert.Assert(ctx, path.Index(i), parsed, actual, bindings, opts...)
+		_errs, err := assert.Assert(ctx, path, assertion, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}

@@ -48,7 +48,7 @@ func TestAssert(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parsed, err := Parse(context.TODO(), nil, tt.assertion)
+			parsed, err := Parse(context.TODO(), tt.assertion)
 			tassert.NoError(t, err)
 			got, err := Assert(context.TODO(), nil, parsed, tt.value, tt.bindings)
 			if tt.wantErr {
