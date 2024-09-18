@@ -9,5 +9,5 @@ import (
 )
 
 type Assertion interface {
-	assert(context.Context, *field.Path, any, binding.Bindings, ...template.Option) (field.ErrorList, error)
+	assert(context.Context, any, binding.Bindings, ...template.Option) (field.ErrorList, error)
 }

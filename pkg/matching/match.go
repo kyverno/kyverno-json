@@ -52,7 +52,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 				if err != nil {
 					return fails, err
 				}
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), parsed, actual, bindings, opts...)
+				checkFails, err := assert.Assert(ctx, parsed, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -80,7 +80,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 				if err != nil {
 					return fails, err
 				}
-				checkFails, err := assert.Assert(ctx, path.Index(i).Child("check"), parsed, actual, bindings, opts...)
+				checkFails, err := assert.Assert(ctx, parsed, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -130,7 +130,7 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 		if err != nil {
 			return errs, err
 		}
-		_errs, err := assert.Assert(ctx, path.Index(i), parsed, actual, bindings, opts...)
+		_errs, err := assert.Assert(ctx, parsed, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}
@@ -149,7 +149,7 @@ func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Any, 
 		if err != nil {
 			return errs, err
 		}
-		_errs, err := assert.Assert(ctx, path.Index(i), parsed, actual, bindings, opts...)
+		_errs, err := assert.Assert(ctx, parsed, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}
