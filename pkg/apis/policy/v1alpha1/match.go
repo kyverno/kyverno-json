@@ -4,9 +4,9 @@ package v1alpha1
 type Match struct {
 	// Any allows specifying assertion trees which will be ORed.
 	// +optional
-	Any []Any `json:"any,omitempty"`
+	Any []AssertionTree `json:"any,omitempty"`
 
 	// All allows specifying assertion trees which will be ANDed.
 	// +optional
-	All []Any `json:"all,omitempty"`
+	All []AssertionTree `json:"all,omitempty"`
 }

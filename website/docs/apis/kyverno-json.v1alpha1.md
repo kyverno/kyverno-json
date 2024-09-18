@@ -45,16 +45,14 @@ auto_generated: true
 
 **Appears in:**
     
-- [Assertion](#json-kyverno-io-v1alpha1-Assertion)
 - [ContextEntry](#json-kyverno-io-v1alpha1-ContextEntry)
-- [Match](#json-kyverno-io-v1alpha1-Match)
 
 <p>Any can be any type.</p>
 
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `Value` | `any` |  | :white_check_mark: | <p>Value contains the value of the Any object.</p> |
+| `-` | `any` | :white_check_mark: |  | *No description provided.* |
 
 ## `Assert`     {#json-kyverno-io-v1alpha1-Assert}
 
@@ -82,7 +80,21 @@ auto_generated: true
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
 | `message` | `string` |  |  | <p>Message is the message associated message.</p> |
-| `check` | [`Any`](#json-kyverno-io-v1alpha1-Any) | :white_check_mark: |  | <p>Check is the assertion check definition.</p> |
+| `check` | [`AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) | :white_check_mark: |  | <p>Check is the assertion check definition.</p> |
+
+## `AssertionTree`     {#json-kyverno-io-v1alpha1-AssertionTree}
+
+**Appears in:**
+    
+- [Assertion](#json-kyverno-io-v1alpha1-Assertion)
+- [Match](#json-kyverno-io-v1alpha1-Match)
+
+<p>AssertionTree represents an assertion tree.</p>
+
+
+| Field | Type | Required | Inline | Description |
+|---|---|---|---|---|
+| `-` | `any` | :white_check_mark: |  | *No description provided.* |
 
 ## `ContextEntry`     {#json-kyverno-io-v1alpha1-ContextEntry}
 
@@ -123,8 +135,8 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `any` | [`[]Any`](#json-kyverno-io-v1alpha1-Any) |  |  | <p>Any allows specifying assertion trees which will be ORed.</p> |
-| `all` | [`[]Any`](#json-kyverno-io-v1alpha1-Any) |  |  | <p>All allows specifying assertion trees which will be ANDed.</p> |
+| `any` | [`[]AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) |  |  | <p>Any allows specifying assertion trees which will be ORed.</p> |
+| `all` | [`[]AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) |  |  | <p>All allows specifying assertion trees which will be ANDed.</p> |
 
 ## `ValidatingPolicySpec`     {#json-kyverno-io-v1alpha1-ValidatingPolicySpec}
 

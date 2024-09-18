@@ -406,7 +406,7 @@
                       "null"
                     ],
                     "items": {
-                      "description": "Any can be any type.",
+                      "description": "AssertionTree represents an assertion tree.",
                       "x-kubernetes-preserve-unknown-fields": true
                     }
                   },
@@ -417,7 +417,7 @@
                       "null"
                     ],
                     "items": {
-                      "description": "Any can be any type.",
+                      "description": "AssertionTree represents an assertion tree.",
                       "x-kubernetes-preserve-unknown-fields": true
                     }
                   }
@@ -472,7 +472,7 @@
                       "null"
                     ],
                     "items": {
-                      "description": "Any can be any type.",
+                      "description": "AssertionTree represents an assertion tree.",
                       "x-kubernetes-preserve-unknown-fields": true
                     }
                   },
@@ -483,7 +483,7 @@
                       "null"
                     ],
                     "items": {
-                      "description": "Any can be any type.",
+                      "description": "AssertionTree represents an assertion tree.",
                       "x-kubernetes-preserve-unknown-fields": true
                     }
                   }

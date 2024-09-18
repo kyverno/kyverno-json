@@ -7,12 +7,13 @@ import (
 
 // Any can be any type.
 // +k8s:deepcopy-gen=false
+// +kubebuilder:validation:XPreserveUnknownFields
 type Any struct {
-	// Value contains the value of the Any object.
-	// +kubebuilder:pruning:PreserveUnknownFields
-	// +kubebuilder:validation:Schemaless
-	// +optional
-	Value any `json:",inline"`
+	value any `json:"-"`
+}
+
+func (t *Any) Value() any {
+	return t.value
 }
 
 func (in *Any) DeepCopyInto(out *Any) {
@@ -31,7 +32,7 @@ func (in *Any) DeepCopy() *Any {
 }
 
 func (a *Any) MarshalJSON() ([]byte, error) {
-	return json.Marshal(a.Value)
+	return json.Marshal(a.value)
 }
 
 func (a *Any) UnmarshalJSON(data []byte) error {
@@ -40,6 +41,6 @@ func (a *Any) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
-	a.Value = v
+	a.value = v
 	return nil
 }
