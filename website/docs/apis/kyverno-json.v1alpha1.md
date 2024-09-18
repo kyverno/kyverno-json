@@ -52,7 +52,6 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `-` | `any` | :white_check_mark: |  | *No description provided.* |
 
 ## `Assert`     {#json-kyverno-io-v1alpha1-Assert}
 
@@ -94,7 +93,6 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `-` | `any` | :white_check_mark: |  | *No description provided.* |
 
 ## `ContextEntry`     {#json-kyverno-io-v1alpha1-ContextEntry}
 

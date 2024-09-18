@@ -1,15 +1,20 @@
 package v1alpha1
 
 import (
-	"github.com/jinzhu/copier"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
-// AssertionTree represents an assertion tree.
 // +k8s:deepcopy-gen=false
 // +kubebuilder:validation:XPreserveUnknownFields
+// +kubebuilder:validation:Type:=""
+// AssertionTree represents an assertion tree.
 type AssertionTree struct {
+	// +optional
 	tree any `json:"-"`
+}
+
+func NewAssertionTree(value any) AssertionTree {
+	return AssertionTree{value}
 }
 
 func (t *AssertionTree) Raw() any {
@@ -31,9 +36,7 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 }
 
 func (in *AssertionTree) DeepCopyInto(out *AssertionTree) {
-	if err := copier.CopyWithOption(out, in, copier.Option{DeepCopy: true}); err != nil {
-		panic("deep copy failed")
-	}
+	out.tree = deepCopy(in.tree)
 }
 
 // Assertion contains an assertion tree associated with a message.
