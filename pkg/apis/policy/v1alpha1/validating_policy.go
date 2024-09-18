@@ -26,7 +26,7 @@ type ValidatingPolicy struct {
 
 // ValidatingPolicyList is a list of ValidatingPolicy instances.
 type ValidatingPolicyList struct {
-	metav1.TypeMeta `json:",inline" yaml:",inline"`
-	metav1.ListMeta `json:"metadata" yaml:"metadata"`
-	Items           []ValidatingPolicy `json:"items" yaml:"items"`
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata"`
+	Items           []ValidatingPolicy `json:"items"`
 }
