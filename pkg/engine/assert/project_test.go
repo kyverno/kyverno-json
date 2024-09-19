@@ -5,7 +5,9 @@ import (
 	"testing"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/syntax/expression"
 	tassert "github.com/stretchr/testify/assert"
+	"k8s.io/utils/ptr"
 )
 
 func Test_project(t *testing.T) {
@@ -88,8 +90,12 @@ func Test_project(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			expression := parseExpression(context.TODO(), tt.key)
-			got, err := project(context.TODO(), expression, tt.key, tt.value, tt.bindings)
+			var expr *expression.Expression
+			switch typed := tt.key.(type) {
+			case string:
+				expr = ptr.To(expression.Parse(typed))
+			}
+			got, err := project(context.TODO(), expr, tt.key, tt.value, tt.bindings)
 			if tt.wantErr {
 				tassert.Error(t, err)
 			} else {
