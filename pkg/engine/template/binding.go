@@ -29,7 +29,7 @@ func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, t
 					}
 					return projected, nil
 				case expression.EngineCEL:
-					projected, err := template.ExecuteCEL(context.Background(), expr.Statement, value, bindings)
+					projected, err := ExecuteCEL(context.Background(), expr.Statement, value, bindings)
 					if err != nil {
 						return nil, field.InternalError(path.Child("variable"), err)
 					}
