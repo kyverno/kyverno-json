@@ -5,13 +5,17 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sync"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/syntax/expression"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
+	"k8s.io/utils/ptr"
 )
 
 func Parse(ctx context.Context, assertion any) (Assertion, error) {
@@ -73,7 +77,7 @@ func parseSlice(ctx context.Context, assertion any) (node, error) {
 // it is responsible for projecting the analysed resource and passing the result to the descendant
 func parseMap(ctx context.Context, assertion any) (node, error) {
 	assertions := map[any]struct {
-		*expression
+		*expression.Expression
 		Assertion
 	}{}
 	iter := reflect.ValueOf(assertion).MapRange()
@@ -84,13 +88,13 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 		if err != nil {
 			return nil, err
 		}
-		assertions[key] = struct {
-			*expression
-			Assertion
-		}{
-			expression: parseExpression(ctx, key),
-			Assertion:  assertion,
+		entry := assertions[key]
+		entry.Assertion = assertion
+		switch typed := key.(type) {
+		case string:
+			entry.Expression = ptr.To(expression.Parse(typed))
 		}
+		assertions[key] = entry
 	}
 	return func(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 		var errs field.ErrorList
@@ -102,7 +106,7 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 			return errs, nil
 		}
 		for k, v := range assertions {
-			projection, err := project(ctx, v.expression, k, value, bindings, opts...)
+			projection, err := project(ctx, v.Expression, k, value, bindings, opts...)
 			if err != nil {
 				return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
 			} else if projection == nil {
@@ -159,31 +163,34 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 // parseScalar is the assertion represented by a leaf.
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
-func parseScalar(ctx context.Context, assertion any) (node, error) {
-	expression := parseExpression(ctx, assertion)
-	// we only project if the expression uses the engine syntax
-	// this is to avoid the case where the value is a map and the RHS is a string
+func parseScalar(_ context.Context, assertion any) (node, error) {
 	var project func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error)
-	if expression != nil {
-		if expression.foreachName != "" {
+	switch typed := assertion.(type) {
+	case string:
+		expr := expression.Parse(typed)
+		if expr.Foreach {
 			return nil, errors.New("foreach is not supported on the RHS")
 		}
-		if expression.binding != "" {
+		if expr.Binding != "" {
 			return nil, errors.New("binding is not supported on the RHS")
 		}
-		if expression.engine == "jp" {
-			ast, err := expression.ast()
-			if err != nil {
-				return nil, err
-			}
+		switch expr.Engine {
+		case expression.EngineJP:
+			parse := sync.OnceValues(func() (parsing.ASTNode, error) {
+				parser := parsing.NewParser()
+				return parser.Parse(expr.Statement)
+			})
 			project = func(ctx context.Context, value any, bindings jpbinding.Bindings, opts ...template.Option) (any, error) {
+				ast, err := parse()
+				if err != nil {
+					return nil, err
+				}
 				return template.ExecuteAST(ctx, ast, value, bindings, opts...)
 			}
-		}
-		if expression.engine == "cel" {
-			project = func(ctx context.Context, value any, bindings jpbinding.Bindings, opts ...template.Option) (any, error) {
-				return template.ExecuteCEL(ctx, expression.statement, value, bindings)
-			}
+		case expression.EngineCEL:
+			return nil, errors.New("engine not supported")
+		default:
+			assertion = expr.Statement
 		}
 	}
 	return func(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {

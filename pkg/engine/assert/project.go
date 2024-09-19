@@ -7,6 +7,7 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/syntax/expression"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
@@ -18,46 +19,42 @@ type projection struct {
 }
 
 // TODO: remove need for key
-func project(ctx context.Context, expression *expression, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
+func project(ctx context.Context, expression *expression.Expression, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
 	if expression != nil {
-		if expression.engine != "" {
+		if expression.Engine != "" {
 			var projected any
-			if expression.engine == "jp" {
-				ast, err := expression.ast()
-				if err != nil {
-					return nil, err
-				}
-				result, err := template.ExecuteAST(ctx, ast, value, bindings, opts...)
+			if expression.Engine == "jp" {
+				result, err := template.ExecuteJP(ctx, expression.Statement, value, bindings, opts...)
 				if err != nil {
 					return nil, err
 				}
 				projected = result
 			}
-			if expression.engine == "cel" {
-				result, err := template.ExecuteCEL(ctx, expression.statement, value, bindings)
+			if expression.Engine == "cel" {
+				result, err := template.ExecuteCEL(ctx, expression.Statement, value, bindings)
 				if err != nil {
 					return nil, err
 				}
 				projected = result
 			}
 			return &projection{
-				foreach:     expression.foreach,
-				foreachName: expression.foreachName,
-				binding:     expression.binding,
+				foreach:     expression.Foreach,
+				foreachName: expression.ForeachName,
+				binding:     expression.Binding,
 				result:      projected,
 			}, nil
 		} else {
 			if value == nil {
 				return nil, nil
 			} else if reflectutils.GetKind(value) == reflect.Map {
-				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.statement))
+				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.Statement))
 				if !mapValue.IsValid() {
 					return nil, nil
 				}
 				return &projection{
-					foreach:     expression.foreach,
-					foreachName: expression.foreachName,
-					binding:     expression.binding,
+					foreach:     expression.Foreach,
+					foreachName: expression.ForeachName,
+					binding:     expression.Binding,
 					result:      mapValue.Interface(),
 				}, nil
 			}
