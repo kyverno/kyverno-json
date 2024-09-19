@@ -8,7 +8,6 @@ import (
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/engine"
-	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/matching"
@@ -74,7 +73,7 @@ func New() engine.Engine[Request, Response] {
 			var path *field.Path
 			path = path.Child("context")
 			for i, entry := range r.rule.Context {
-				bindings = bindings.Register("$"+entry.Name, assert.NewContextBinding(path.Index(i), bindings, r.resource, entry.Variable.Value()))
+				bindings = bindings.Register("$"+entry.Name, template.NewContextBinding(path.Index(i), bindings, r.resource, entry.Variable.Value()))
 			}
 			identifier := ""
 			if r.rule.Identifier != "" {

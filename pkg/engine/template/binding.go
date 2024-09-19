@@ -1,19 +1,18 @@
-package assert
+package template
 
 import (
 	"context"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/jp"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, entry any, opts ...template.Option) binding.Binding {
+func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, template any, opts ...Option) binding.Binding {
 	return jp.NewLazyBinding(
 		func() (any, error) {
-			switch typed := entry.(type) {
+			switch typed := template.(type) {
 			case string:
 				expr := expression.Parse(typed)
 				if expr.Foreach {
@@ -24,7 +23,7 @@ func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, e
 				}
 				switch expr.Engine {
 				case expression.EngineJP:
-					projected, err := template.ExecuteJP(context.TODO(), expr.Statement, value, bindings, opts...)
+					projected, err := ExecuteJP(context.TODO(), expr.Statement, value, bindings, opts...)
 					if err != nil {
 						return nil, field.InternalError(path.Child("variable"), err)
 					}
