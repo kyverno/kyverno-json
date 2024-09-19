@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/jp"
-	"github.com/kyverno/kyverno-json/pkg/syntax/expression"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
