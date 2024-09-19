@@ -9,10 +9,10 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
+	"github.com/kyverno/kyverno-json/pkg/core/expression"
+	"github.com/kyverno/kyverno-json/pkg/core/projection"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
-	"github.com/kyverno/kyverno-json/pkg/syntax/expression"
-	"github.com/kyverno/kyverno-json/pkg/syntax/projection"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
