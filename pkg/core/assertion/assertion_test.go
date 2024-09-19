@@ -1,4 +1,4 @@
-package assert
+package assertion
 
 import (
 	"context"
@@ -50,7 +50,7 @@ func TestAssert(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			parsed, err := Parse(context.TODO(), tt.assertion)
 			tassert.NoError(t, err)
-			got, err := Assert(context.TODO(), nil, parsed, tt.value, tt.bindings)
+			got, err := parsed.Assert(context.TODO(), nil, tt.value, tt.bindings)
 			if tt.wantErr {
 				tassert.Error(t, err)
 			} else {
