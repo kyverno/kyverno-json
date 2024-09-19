@@ -8,7 +8,7 @@ import (
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 )
 
-func Execute(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
+func ExecuteJP(ctx context.Context, statement string, value any, bindings binding.Bindings, opts ...Option) (any, error) {
 	parser := parsing.NewParser()
 	compiled, err := parser.Parse(statement)
 	if err != nil {

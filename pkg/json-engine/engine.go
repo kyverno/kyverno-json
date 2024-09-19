@@ -78,7 +78,7 @@ func New() engine.Engine[Request, Response] {
 			}
 			identifier := ""
 			if r.rule.Identifier != "" {
-				result, err := template.Execute(context.Background(), r.rule.Identifier, r.resource, bindings)
+				result, err := template.ExecuteJP(context.Background(), r.rule.Identifier, r.resource, bindings)
 				if err != nil {
 					identifier = fmt.Sprintf("(error: %s)", err)
 				} else {
@@ -117,7 +117,7 @@ func New() engine.Engine[Request, Response] {
 			}
 			var feedback map[string]Feedback
 			for _, f := range r.rule.Feedback {
-				result, err := template.Execute(context.Background(), f.Value, r.resource, bindings)
+				result, err := template.ExecuteJP(context.Background(), f.Value, r.resource, bindings)
 				if feedback == nil {
 					feedback = map[string]Feedback{}
 				}
