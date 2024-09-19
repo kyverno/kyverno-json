@@ -25,8 +25,7 @@ type Expression struct {
 	Engine      string
 }
 
-func Parse(in string) Expression {
-	expression := Expression{}
+func Parse(in string) (expression Expression) {
 	// 1. match foreach
 	if match := foreachRegex.FindStringSubmatch(in); match != nil {
 		expression.Foreach = true
@@ -54,5 +53,5 @@ func Parse(in string) Expression {
 	// 4. assign statement
 	expression.Statement = in
 	// 5. done
-	return expression
+	return
 }
