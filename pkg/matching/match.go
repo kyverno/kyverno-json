@@ -6,7 +6,6 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
-	"github.com/kyverno/kyverno-json/pkg/engine/assert"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -53,7 +52,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match v1alpha1.Assert, a
 				if err != nil {
 					return fails, err
 				}
-				checkFails, err := assert.Assert(ctx, path, parsed, actual, bindings, opts...)
+				checkFails, err := parsed.Assert(ctx, path, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -82,7 +81,7 @@ func MatchAssert(ctx context.Context, path *field.Path, match v1alpha1.Assert, a
 				if err != nil {
 					return fails, err
 				}
-				checkFails, err := assert.Assert(ctx, path, parsed, actual, bindings, opts...)
+				checkFails, err := parsed.Assert(ctx, path, actual, bindings, opts...)
 				if err != nil {
 					return fails, err
 				}
@@ -133,7 +132,7 @@ func MatchAny(ctx context.Context, path *field.Path, assertions []v1alpha1.Asser
 		if err != nil {
 			return errs, err
 		}
-		_errs, err := assert.Assert(ctx, path, assertion, actual, bindings, opts...)
+		_errs, err := assertion.Assert(ctx, path, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}
@@ -153,7 +152,7 @@ func MatchAll(ctx context.Context, path *field.Path, assertions []v1alpha1.Asser
 		if err != nil {
 			return errs, err
 		}
-		_errs, err := assert.Assert(ctx, path, assertion, actual, bindings, opts...)
+		_errs, err := assertion.Assert(ctx, path, actual, bindings, opts...)
 		if err != nil {
 			return errs, err
 		}

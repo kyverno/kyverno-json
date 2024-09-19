@@ -1,4 +1,4 @@
-package assert
+package assertion
 
 import (
 	"context"
@@ -17,7 +17,11 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-func Parse(ctx context.Context, assertion any) (Assertion, error) {
+type Assertion interface {
+	Assert(context.Context, *field.Path, any, binding.Bindings, ...template.Option) (field.ErrorList, error)
+}
+
+func Parse(ctx context.Context, assertion any) (node, error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
 		return parseSlice(ctx, assertion)
@@ -31,7 +35,7 @@ func Parse(ctx context.Context, assertion any) (Assertion, error) {
 // node implements the Assertion interface using a delegate func
 type node func(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error)
 
-func (n node) assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
+func (n node) Assert(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
 	return n(ctx, path, value, bindings, opts...)
 }
 
@@ -39,7 +43,7 @@ func (n node) assert(ctx context.Context, path *field.Path, value any, bindings 
 // it first compares the length of the analysed resource with the length of the descendants.
 // if lengths match all descendants are evaluated with their corresponding items.
 func parseSlice(ctx context.Context, assertion any) (node, error) {
-	var assertions []Assertion
+	var assertions []node
 	valueOf := reflect.ValueOf(assertion)
 	for i := 0; i < valueOf.Len(); i++ {
 		sub, err := Parse(ctx, valueOf.Index(i).Interface())
@@ -60,7 +64,7 @@ func parseSlice(ctx context.Context, assertion any) (node, error) {
 				errs = append(errs, field.Invalid(path, value, "lengths of slices don't match"))
 			} else {
 				for i := range assertions {
-					if _errs, err := assertions[i].assert(ctx, path.Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
+					if _errs, err := assertions[i].Assert(ctx, path.Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
 						return nil, err
 					} else {
 						errs = append(errs, _errs...)
@@ -77,7 +81,7 @@ func parseSlice(ctx context.Context, assertion any) (node, error) {
 func parseMap(ctx context.Context, assertion any) (node, error) {
 	assertions := map[any]struct {
 		projection.Projection
-		Assertion
+		node
 	}{}
 	iter := reflect.ValueOf(assertion).MapRange()
 	for iter.Next() {
@@ -88,7 +92,7 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 			return nil, err
 		}
 		entry := assertions[key]
-		entry.Assertion = assertion
+		entry.node = assertion
 		entry.Projection = projection.Parse(key)
 		assertions[key] = entry
 	}
@@ -120,7 +124,7 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 							if v.Projection.ForeachName != "" {
 								bindings = bindings.Register("$"+v.Projection.ForeachName, binding.NewBinding(i))
 							}
-							if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
+							if _errs, err := v.Assert(ctx, path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
 								return nil, err
 							} else {
 								errs = append(errs, _errs...)
@@ -134,7 +138,7 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 							if v.Projection.ForeachName != "" {
 								bindings = bindings.Register("$"+v.Projection.ForeachName, binding.NewBinding(key))
 							}
-							if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings, opts...); err != nil {
+							if _errs, err := v.Assert(ctx, path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings, opts...); err != nil {
 								return nil, err
 							} else {
 								errs = append(errs, _errs...)
@@ -144,7 +148,7 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 						return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projected, "expected a slice or a map")
 					}
 				} else {
-					if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)), projected, bindings, opts...); err != nil {
+					if _errs, err := v.Assert(ctx, path.Child(fmt.Sprint(k)), projected, bindings, opts...); err != nil {
 						return nil, err
 					} else {
 						errs = append(errs, _errs...)

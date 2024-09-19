@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/kyverno/kyverno-json/pkg/engine/assert"
+	"github.com/kyverno/kyverno-json/pkg/core/assertion"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
@@ -14,19 +14,19 @@ import (
 // AssertionTree represents an assertion tree.
 type AssertionTree struct {
 	_tree      any
-	_assertion func() (assert.Assertion, error)
+	_assertion func() (assertion.Assertion, error)
 }
 
 func NewAssertionTree(value any) AssertionTree {
 	return AssertionTree{
 		_tree: value,
-		_assertion: sync.OnceValues(func() (assert.Assertion, error) {
-			return assert.Parse(context.Background(), value)
+		_assertion: sync.OnceValues(func() (assertion.Assertion, error) {
+			return assertion.Parse(context.Background(), value)
 		}),
 	}
 }
 
-func (t *AssertionTree) Assertion() (assert.Assertion, error) {
+func (t *AssertionTree) Assertion() (assertion.Assertion, error) {
 	if t._tree == nil {
 		return nil, nil
 	}
@@ -44,8 +44,8 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	a._tree = v
-	a._assertion = sync.OnceValues(func() (assert.Assertion, error) {
-		return assert.Parse(context.Background(), v)
+	a._assertion = sync.OnceValues(func() (assertion.Assertion, error) {
+		return assertion.Parse(context.Background(), v)
 	})
 	return nil
 }
