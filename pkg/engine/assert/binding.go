@@ -5,11 +5,12 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/jp"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, entry any, opts ...template.Option) binding.Binding {
-	return template.NewLazyBinding(
+	return jp.NewLazyBinding(
 		func() (any, error) {
 			expression := parseExpression(context.TODO(), entry)
 			if expression != nil && expression.engine != "" {

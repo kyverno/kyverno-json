@@ -10,7 +10,7 @@ import (
 
 	jpfunctions "github.com/jmespath-community/go-jmespath/pkg/functions"
 	"github.com/kyverno/kyverno-json/pkg/command"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/jp"
 	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
@@ -59,7 +59,7 @@ func functionString(f jpfunctions.FunctionEntry) string {
 }
 
 func printFunctions(out io.Writer, names ...string) {
-	funcs := template.GetFunctions(context.Background())
+	funcs := jp.GetFunctions(context.Background())
 	slices.SortFunc(funcs, func(a, b jpfunctions.FunctionEntry) int {
 		return cmp.Compare(functionString(a), functionString(b))
 	})
