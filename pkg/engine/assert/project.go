@@ -19,42 +19,42 @@ type projection struct {
 }
 
 // TODO: remove need for key
-func project(ctx context.Context, expression *expression.Expression, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
-	if expression != nil {
-		if expression.Engine != "" {
+func project(ctx context.Context, expr *expression.Expression, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
+	if expr != nil {
+		if expr.Engine != "" {
 			var projected any
-			if expression.Engine == "jp" {
-				result, err := template.ExecuteJP(ctx, expression.Statement, value, bindings, opts...)
+			if expr.Engine == expression.EngineJP {
+				result, err := template.ExecuteJP(ctx, expr.Statement, value, bindings, opts...)
 				if err != nil {
 					return nil, err
 				}
 				projected = result
 			}
-			if expression.Engine == "cel" {
-				result, err := template.ExecuteCEL(ctx, expression.Statement, value, bindings)
+			if expr.Engine == expression.EngineCEL {
+				result, err := template.ExecuteCEL(ctx, expr.Statement, value, bindings)
 				if err != nil {
 					return nil, err
 				}
 				projected = result
 			}
 			return &projection{
-				foreach:     expression.Foreach,
-				foreachName: expression.ForeachName,
-				binding:     expression.Binding,
+				foreach:     expr.Foreach,
+				foreachName: expr.ForeachName,
+				binding:     expr.Binding,
 				result:      projected,
 			}, nil
 		} else {
 			if value == nil {
 				return nil, nil
 			} else if reflectutils.GetKind(value) == reflect.Map {
-				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expression.Statement))
+				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expr.Statement))
 				if !mapValue.IsValid() {
 					return nil, nil
 				}
 				return &projection{
-					foreach:     expression.Foreach,
-					foreachName: expression.ForeachName,
-					binding:     expression.Binding,
+					foreach:     expr.Foreach,
+					foreachName: expr.ForeachName,
+					binding:     expr.Binding,
 					result:      mapValue.Interface(),
 				}, nil
 			}
