@@ -184,7 +184,9 @@ func parseScalar(_ context.Context, assertion any) (node, error) {
 				return template.ExecuteAST(ctx, ast, value, bindings, opts...)
 			}
 		case expression.EngineCEL:
-			return nil, errors.New("engine not supported")
+			project = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+				return template.ExecuteCEL(ctx, expr.Statement, value, bindings)
+			}
 		default:
 			assertion = expr.Statement
 		}
