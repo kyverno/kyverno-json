@@ -64,8 +64,8 @@ func MatchAssert(ctx context.Context, path *field.Path, match v1alpha1.Assert, a
 				fail := Result{
 					ErrorList: checkFails,
 				}
-				if assertion.Message != "" {
-					fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+				if assertion.Message != nil {
+					fail.Message = assertion.Message.Format(actual, bindings, opts...)
 				}
 				fails = append(fails, fail)
 			}
@@ -90,8 +90,8 @@ func MatchAssert(ctx context.Context, path *field.Path, match v1alpha1.Assert, a
 					fail := Result{
 						ErrorList: checkFails,
 					}
-					if assertion.Message != "" {
-						fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+					if assertion.Message != nil {
+						fail.Message = assertion.Message.Format(actual, bindings, opts...)
 					}
 					fails = append(fails, fail)
 				}

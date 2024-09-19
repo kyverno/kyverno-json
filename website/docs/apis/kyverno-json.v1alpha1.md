@@ -78,7 +78,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `message` | `string` |  |  | <p>Message is the message associated message.</p> |
+| `message` | [`Message`](#json-kyverno-io-v1alpha1-Message) |  |  | <p>Message is the message associated message.</p> |
 | `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) |  |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
 | `check` | [`AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) | :white_check_mark: |  | <p>Check is the assertion check definition.</p> |
 
@@ -149,6 +149,18 @@ auto_generated: true
 |---|---|---|---|---|
 | `any` | [`[]AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) |  |  | <p>Any allows specifying assertion trees which will be ORed.</p> |
 | `all` | [`[]AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) |  |  | <p>All allows specifying assertion trees which will be ANDed.</p> |
+
+## `Message`     {#json-kyverno-io-v1alpha1-Message}
+
+**Appears in:**
+    
+- [Assertion](#json-kyverno-io-v1alpha1-Assertion)
+
+<p>Message stores a message template.</p>
+
+
+| Field | Type | Required | Inline | Description |
+|---|---|---|---|---|
 
 ## `ValidatingPolicySpec`     {#json-kyverno-io-v1alpha1-ValidatingPolicySpec}
 
