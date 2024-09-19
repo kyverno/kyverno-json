@@ -1,10 +1,8 @@
 package v1alpha1
 
 import (
-	"context"
-	"sync"
-
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
@@ -13,24 +11,20 @@ import (
 // +kubebuilder:validation:Type:=""
 // AssertionTree represents an assertion tree.
 type AssertionTree struct {
-	_tree      any
-	_assertion func() (assertion.Assertion, error)
+	_tree any
 }
 
 func NewAssertionTree(value any) AssertionTree {
 	return AssertionTree{
 		_tree: value,
-		_assertion: sync.OnceValues(func() (assertion.Assertion, error) {
-			return assertion.Parse(context.Background(), value)
-		}),
 	}
 }
 
-func (t *AssertionTree) Assertion() (assertion.Assertion, error) {
+func (t *AssertionTree) Assertion(compiler templating.Compiler) (assertion.Assertion, error) {
 	if t._tree == nil {
 		return nil, nil
 	}
-	return t._assertion()
+	return assertion.Parse(t._tree, compiler)
 }
 
 func (a *AssertionTree) MarshalJSON() ([]byte, error) {
@@ -44,13 +38,9 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	a._tree = v
-	a._assertion = sync.OnceValues(func() (assertion.Assertion, error) {
-		return assertion.Parse(context.Background(), v)
-	})
 	return nil
 }
 
 func (in *AssertionTree) DeepCopyInto(out *AssertionTree) {
 	out._tree = deepCopy(in._tree)
-	out._assertion = in._assertion
 }

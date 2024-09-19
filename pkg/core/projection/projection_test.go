@@ -1,10 +1,10 @@
 package projection
 
 import (
-	"context"
 	"testing"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	tassert "github.com/stretchr/testify/assert"
 )
 
@@ -88,8 +88,9 @@ func TestProjection(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			proj := Parse(tt.key)
-			got, found, err := proj.Handler(context.TODO(), tt.value, tt.bindings)
+			compiler := templating.NewCompiler(templating.CompilerOptions{})
+			proj := Parse(tt.key, compiler)
+			got, found, err := proj.Handler(tt.value, tt.bindings)
 			if tt.wantErr {
 				tassert.Error(t, err)
 			} else {

@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/payload"
 	"github.com/kyverno/kyverno-json/pkg/policy"
@@ -76,8 +76,9 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		return errors.New("payload is `null`")
 	}
 	out.println("Pre processing ...")
+	compiler := templating.NewCompiler(templating.CompilerOptions{})
 	for _, preprocessor := range c.preprocessors {
-		result, err := template.ExecuteJP(context.Background(), preprocessor, payload, nil)
+		result, err := templating.ExecuteJP(preprocessor, payload, nil, compiler)
 		if err != nil {
 			return err
 		}
