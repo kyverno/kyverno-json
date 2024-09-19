@@ -156,7 +156,7 @@ func loadInput(cmd *cobra.Command, file string) (any, error) {
 }
 
 func evaluate(input any, query string) (any, error) {
-	result, err := template.Execute(context.Background(), query, input, nil)
+	result, err := template.ExecuteJP(context.Background(), query, input, nil)
 	if err != nil {
 		if syntaxError, ok := err.(parsing.SyntaxError); ok {
 			return nil, fmt.Errorf("%s\n%s", syntaxError, syntaxError.HighlightLocation())

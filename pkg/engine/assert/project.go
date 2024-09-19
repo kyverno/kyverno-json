@@ -22,7 +22,7 @@ type projection struct {
 func project(ctx context.Context, expression *expression.Expression, key any, value any, bindings binding.Bindings, opts ...template.Option) (*projection, error) {
 	if expression != nil {
 		if expression.Engine != "" {
-			projected, err := template.Execute(ctx, expression.Statement, value, bindings, opts...)
+			projected, err := template.ExecuteJP(ctx, expression.Statement, value, bindings, opts...)
 			if err != nil {
 				return nil, err
 			}

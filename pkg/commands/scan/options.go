@@ -77,7 +77,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	out.println("Pre processing ...")
 	for _, preprocessor := range c.preprocessors {
-		result, err := template.Execute(context.Background(), preprocessor, payload, nil)
+		result, err := template.ExecuteJP(context.Background(), preprocessor, payload, nil)
 		if err != nil {
 			return err
 		}

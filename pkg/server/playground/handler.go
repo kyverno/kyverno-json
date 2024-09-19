@@ -34,7 +34,7 @@ func newHandler() (gin.HandlerFunc, error) {
 		}
 		// apply pre processors
 		for _, preprocessor := range in.Preprocessors {
-			result, err := template.Execute(context.Background(), preprocessor, payload, nil)
+			result, err := template.ExecuteJP(context.Background(), preprocessor, payload, nil)
 			if err != nil {
 				return nil, fmt.Errorf("failed to execute prepocessor (%s) - %w", preprocessor, err)
 			}
