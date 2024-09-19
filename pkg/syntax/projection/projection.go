@@ -51,7 +51,13 @@ func Parse(in any) (projection Projection) {
 				return projected, true, err
 			}
 		case expression.EngineCEL:
-			panic("engine not supported")
+			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
+				projected, err := template.ExecuteCEL(ctx, expr.Statement, value, bindings)
+				if err != nil {
+					return nil, false, err
+				}
+				return projected, true, nil
+			}
 		default:
 			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
 				if value == nil {
