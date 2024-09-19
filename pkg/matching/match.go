@@ -40,8 +40,8 @@ func (r Results) Error() string {
 }
 
 // func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]error, error) {
-func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]Result, error) {
-	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
+func MatchAssert(ctx context.Context, path *field.Path, match v1alpha1.Assert, actual any, bindings binding.Bindings, opts ...template.Option) ([]Result, error) {
+	if len(match.Any) == 0 && len(match.All) == 0 {
 		return nil, field.Invalid(path, match, "an empty assert is not valid")
 	} else {
 		if len(match.Any) != 0 {
@@ -64,8 +64,8 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 				fail := Result{
 					ErrorList: checkFails,
 				}
-				if assertion.Message != "" {
-					fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+				if assertion.Message != nil {
+					fail.Message = assertion.Message.Format(actual, bindings, opts...)
 				}
 				fails = append(fails, fail)
 			}
@@ -90,8 +90,8 @@ func MatchAssert(ctx context.Context, path *field.Path, match *v1alpha1.Assert, 
 					fail := Result{
 						ErrorList: checkFails,
 					}
-					if assertion.Message != "" {
-						fail.Message = template.String(ctx, assertion.Message, actual, bindings, opts...)
+					if assertion.Message != nil {
+						fail.Message = assertion.Message.Format(actual, bindings, opts...)
 					}
 					fails = append(fails, fail)
 				}
