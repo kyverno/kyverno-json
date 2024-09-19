@@ -8,8 +8,8 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
+	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
-	"github.com/kyverno/kyverno-json/pkg/syntax/expression"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 

@@ -1,7 +1,7 @@
 package v1alpha1
 
 import (
-	"github.com/kyverno/kyverno-json/pkg/syntax/message"
+	"github.com/kyverno/kyverno-json/pkg/core/message"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
