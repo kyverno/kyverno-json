@@ -4,13 +4,38 @@ import (
 	"context"
 
 	"github.com/google/cel-go/cel"
+	"github.com/google/cel-go/common/types"
+	"github.com/google/cel-go/common/types/ref"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 )
 
 func ExecuteCEL(ctx context.Context, statement string, value any, bindings binding.Bindings) (any, error) {
-	env, err := cel.NewEnv(cel.Variable("object", cel.AnyType))
+	env, err := cel.NewEnv(
+		cel.Variable("object", cel.AnyType),
+		cel.Function(
+			"binding",
+			cel.Overload(
+				"binding",
+				[]*types.Type{types.StringType},
+				types.AnyType,
+				cel.UnaryBinding(
+					func(arg ref.Val) ref.Val {
+						name, ok := arg.(types.String)
+						if !ok {
+							return types.MaybeNoSuchOverloadErr(arg)
+						}
+						value, err := binding.Resolve(string(name), bindings)
+						if err != nil {
+							return types.WrapErr(err)
+						}
+						return types.DefaultTypeAdapter.NativeToValue(value)
+					},
+				),
+			),
+		),
+	)
 	if err != nil {
 		return nil, err
 	}

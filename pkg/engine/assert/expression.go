@@ -14,7 +14,7 @@ var (
 	foreachRegex = regexp.MustCompile(`^~(\w+)?\.(.*)`)
 	bindingRegex = regexp.MustCompile(`(.*)\s*->\s*(\w+)$`)
 	escapeRegex  = regexp.MustCompile(`^\\(.+)\\$`)
-	engineRegex  = regexp.MustCompile(`^\((?:(\w+):)?(.+)\)$`)
+	engineRegex  = regexp.MustCompile(`^\((?:(\w+);)?(.+)\)$`)
 )
 
 type expression struct {

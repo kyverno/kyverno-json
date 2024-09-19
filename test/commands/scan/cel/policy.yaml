@@ -6,9 +6,13 @@ spec:
   rules:
     - name: foo-bar-4
       context:
-      - name: foo
-        variable: "(cel: 4)"
+      - name: celFoo
+        variable: (cel; 4)
+      - name: jpFoo
+        variable: (jp; $celFoo)
+      - name: celFoo
+        variable: (cel; binding('$jpFoo'))
       assert:
         all:
         - check:
-            "(cel: object.foo.bar)": "(cel: 4)"
+            (cel; object.foo.bar): (cel; binding('$celFoo'))
