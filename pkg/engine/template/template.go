@@ -26,7 +26,7 @@ func ExecuteCEL(ctx context.Context, statement string, value any, bindings bindi
 						if !ok {
 							return types.MaybeNoSuchOverloadErr(arg)
 						}
-						value, err := binding.Resolve(string(name), bindings)
+						value, err := binding.Resolve("$"+string(name), bindings)
 						if err != nil {
 							return types.WrapErr(err)
 						}

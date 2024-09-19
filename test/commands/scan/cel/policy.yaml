@@ -11,8 +11,8 @@ spec:
       - name: jpFoo
         variable: (jp; $celFoo)
       - name: celFoo
-        variable: (cel; binding('$jpFoo'))
+        variable: (cel; binding('jpFoo'))
       assert:
         all:
         - check:
-            (cel; object.foo.bar): (cel; binding('$celFoo'))
+            (cel; object.foo.bar): (cel; binding('celFoo'))
