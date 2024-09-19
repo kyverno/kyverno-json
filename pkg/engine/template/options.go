@@ -4,10 +4,11 @@ import (
 	"context"
 
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
+	"github.com/kyverno/kyverno-json/pkg/jp"
 )
 
 var (
-	funcs         = GetFunctions(context.Background())
+	funcs         = jp.GetFunctions(context.Background())
 	defaultCaller = interpreter.NewFunctionCaller(funcs...)
 )
 
