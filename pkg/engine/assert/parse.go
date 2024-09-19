@@ -8,14 +8,13 @@ import (
 	"sync"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
-	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/syntax/expression"
+	"github.com/kyverno/kyverno-json/pkg/syntax/projection"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
-	"k8s.io/utils/ptr"
 )
 
 func Parse(ctx context.Context, assertion any) (Assertion, error) {
@@ -77,7 +76,7 @@ func parseSlice(ctx context.Context, assertion any) (node, error) {
 // it is responsible for projecting the analysed resource and passing the result to the descendant
 func parseMap(ctx context.Context, assertion any) (node, error) {
 	assertions := map[any]struct {
-		*expression.Expression
+		projection.Projection
 		Assertion
 	}{}
 	iter := reflect.ValueOf(assertion).MapRange()
@@ -90,10 +89,7 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 		}
 		entry := assertions[key]
 		entry.Assertion = assertion
-		switch typed := key.(type) {
-		case string:
-			entry.Expression = ptr.To(expression.Parse(typed))
-		}
+		entry.Projection = projection.Parse(key)
 		assertions[key] = entry
 	}
 	return func(ctx context.Context, path *field.Path, value any, bindings binding.Bindings, opts ...template.Option) (field.ErrorList, error) {
@@ -106,23 +102,23 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 			return errs, nil
 		}
 		for k, v := range assertions {
-			projection, err := project(ctx, v.Expression, k, value, bindings, opts...)
+			projected, err := v.Projection.Handler(ctx, value, bindings, opts...)
 			if err != nil {
 				return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
-			} else if projection == nil {
+			} else if projected == nil {
 				errs = append(errs, field.Required(path.Child(fmt.Sprint(k)), "field not found in the input object"))
 			} else {
-				if projection.binding != "" {
-					bindings = bindings.Register("$"+projection.binding, jpbinding.NewBinding(projection.result))
+				if v.Projection.Binding != "" {
+					bindings = bindings.Register("$"+v.Projection.Binding, binding.NewBinding(projected))
 				}
-				if projection.foreach {
-					projectedKind := reflectutils.GetKind(projection.result)
+				if v.Projection.Foreach {
+					projectedKind := reflectutils.GetKind(projected)
 					if projectedKind == reflect.Slice {
-						valueOf := reflect.ValueOf(projection.result)
+						valueOf := reflect.ValueOf(projected)
 						for i := 0; i < valueOf.Len(); i++ {
 							bindings := bindings
-							if projection.foreachName != "" {
-								bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(i))
+							if v.Projection.ForeachName != "" {
+								bindings = bindings.Register("$"+v.Projection.ForeachName, binding.NewBinding(i))
 							}
 							if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Index(i), valueOf.Index(i).Interface(), bindings, opts...); err != nil {
 								return nil, err
@@ -131,12 +127,12 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 							}
 						}
 					} else if projectedKind == reflect.Map {
-						iter := reflect.ValueOf(projection.result).MapRange()
+						iter := reflect.ValueOf(projected).MapRange()
 						for iter.Next() {
 							key := iter.Key().Interface()
 							bindings := bindings
-							if projection.foreachName != "" {
-								bindings = bindings.Register("$"+projection.foreachName, jpbinding.NewBinding(key))
+							if v.Projection.ForeachName != "" {
+								bindings = bindings.Register("$"+v.Projection.ForeachName, binding.NewBinding(key))
 							}
 							if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)).Key(fmt.Sprint(key)), iter.Value().Interface(), bindings, opts...); err != nil {
 								return nil, err
@@ -145,10 +141,10 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 							}
 						}
 					} else {
-						return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projection.result, "expected a slice or a map")
+						return nil, field.TypeInvalid(path.Child(fmt.Sprint(k)), projected, "expected a slice or a map")
 					}
 				} else {
-					if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)), projection.result, bindings, opts...); err != nil {
+					if _errs, err := v.assert(ctx, path.Child(fmt.Sprint(k)), projected, bindings, opts...); err != nil {
 						return nil, err
 					} else {
 						errs = append(errs, _errs...)
@@ -180,7 +176,7 @@ func parseScalar(_ context.Context, assertion any) (node, error) {
 				parser := parsing.NewParser()
 				return parser.Parse(expr.Statement)
 			})
-			project = func(ctx context.Context, value any, bindings jpbinding.Bindings, opts ...template.Option) (any, error) {
+			project = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
 				ast, err := parse()
 				if err != nil {
 					return nil, err
