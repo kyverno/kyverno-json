@@ -102,10 +102,10 @@ func parseMap(ctx context.Context, assertion any) (node, error) {
 			return errs, nil
 		}
 		for k, v := range assertions {
-			projected, err := v.Projection.Handler(ctx, value, bindings, opts...)
+			projected, found, err := v.Projection.Handler(ctx, value, bindings, opts...)
 			if err != nil {
 				return nil, field.InternalError(path.Child(fmt.Sprint(k)), err)
-			} else if projected == nil {
+			} else if !found {
 				errs = append(errs, field.Required(path.Child(fmt.Sprint(k)), "field not found in the input object"))
 			} else {
 				if v.Projection.Binding != "" {

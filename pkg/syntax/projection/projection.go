@@ -13,7 +13,7 @@ import (
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
-type Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error)
+type Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error)
 
 type Info struct {
 	Foreach     bool
@@ -42,44 +42,45 @@ func Parse(in any) (projection Projection) {
 				parser := parsing.NewParser()
 				return parser.Parse(expr.Statement)
 			})
-			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
 				ast, err := parse()
 				if err != nil {
-					return nil, err
+					return nil, false, err
 				}
-				return template.ExecuteAST(ctx, ast, value, bindings, opts...)
+				projected, err := template.ExecuteAST(ctx, ast, value, bindings, opts...)
+				return projected, true, err
 			}
 		case expression.EngineCEL:
 			panic("engine not supported")
 		default:
-			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
 				if value == nil {
-					return nil, nil
+					return nil, false, nil
 				}
 				if reflectutils.GetKind(value) == reflect.Map {
 					value := reflect.ValueOf(value).MapIndex(reflect.ValueOf(expr.Statement))
 					if !value.IsValid() {
-						return nil, nil
+						return nil, false, nil
 					}
-					return value.Interface(), nil
+					return value.Interface(), true, nil
 				}
-				return nil, errors.New("projection not recognized")
+				return nil, false, errors.New("projection not recognized")
 			}
 		}
 	default:
 		// 1. compute the projection func
-		projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, error) {
+		projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
 			if value == nil {
-				return nil, nil
+				return nil, false, nil
 			}
 			if reflectutils.GetKind(value) == reflect.Map {
 				mapValue := reflect.ValueOf(value).MapIndex(reflect.ValueOf(typed))
 				if !mapValue.IsValid() {
-					return nil, nil
+					return nil, false, nil
 				}
-				return mapValue.Interface(), nil
+				return mapValue.Interface(), true, nil
 			}
-			return nil, errors.New("projection not recognized")
+			return nil, false, errors.New("projection not recognized")
 		}
 	}
 	return
