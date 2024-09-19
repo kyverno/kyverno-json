@@ -24,7 +24,7 @@ func NewContextBinding(path *field.Path, bindings binding.Bindings, value any, e
 				}
 				switch expr.Engine {
 				case expression.EngineJP:
-					projected, err := template.Execute(context.TODO(), expr.Statement, value, bindings, opts...)
+					projected, err := template.ExecuteJP(context.TODO(), expr.Statement, value, bindings, opts...)
 					if err != nil {
 						return nil, field.InternalError(path.Child("variable"), err)
 					}
