@@ -30,7 +30,7 @@ func TestParse(t *testing.T) {
 			Foreach:     false,
 			ForeachName: "",
 			Statement:   "test",
-			Engine:      "jp",
+			Engine:      EngineDefault,
 		},
 	}, {
 		name: "nested field",
@@ -47,7 +47,7 @@ func TestParse(t *testing.T) {
 			Foreach:     false,
 			ForeachName: "",
 			Statement:   "test.test",
-			Engine:      "jp",
+			Engine:      EngineDefault,
 		},
 	}, {
 		name: "Foreach simple field",
@@ -64,7 +64,7 @@ func TestParse(t *testing.T) {
 			Foreach:     true,
 			ForeachName: "",
 			Statement:   "test",
-			Engine:      "jp",
+			Engine:      EngineDefault,
 		},
 	}, {
 		name: "Foreach nested field",
@@ -73,7 +73,7 @@ func TestParse(t *testing.T) {
 			Foreach:     true,
 			ForeachName: "",
 			Statement:   "test.test",
-			Engine:      "jp",
+			Engine:      EngineDefault,
 		},
 	}, {
 		name: "binding",
@@ -92,7 +92,7 @@ func TestParse(t *testing.T) {
 			ForeachName: "",
 			Statement:   "test",
 			Binding:     "foo",
-			Engine:      "jp",
+			Engine:      EngineDefault,
 		},
 	}, {
 		name: "Foreach and binding",
@@ -111,7 +111,7 @@ func TestParse(t *testing.T) {
 			ForeachName: "",
 			Statement:   "test",
 			Binding:     "foo",
-			Engine:      "jp",
+			Engine:      EngineDefault,
 		},
 	}, {
 		name: "escape",
