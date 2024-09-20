@@ -88,10 +88,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfCompare,
+			Handler:     jpfCompare,
+			Description: "compares two strings lexicographically",
 		},
 		ReturnType: []jpType{jpNumber},
-		Note:       "compares two strings lexicographically",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: equalFold,
@@ -99,10 +99,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfEqualFold,
+			Handler:     jpfEqualFold,
+			Description: "allows comparing two strings for equivalency where the only differences are letter cases",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "allows comparing two strings for equivalency where the only differences are letter cases",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: replace,
@@ -112,10 +112,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpNumber}},
 			},
-			Handler: jpfReplace,
+			Handler:     jpfReplace,
+			Description: "replaces a specified number of instances of the source string with the replacement string in a parent ",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "replaces a specified number of instances of the source string with the replacement string in a parent ",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: replaceAll,
@@ -124,30 +124,30 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfReplaceAll,
+			Handler:     jpfReplaceAll,
+			Description: "replace all instances of one string with another in an overall parent string",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "replace all instances of one string with another in an overall parent string",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: toUpper,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfToUpper,
+			Handler:     jpfToUpper,
+			Description: "takes in a string and outputs the same string with all upper-case letters",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "takes in a string and outputs the same string with all upper-case letters",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: toLower,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfToLower,
+			Handler:     jpfToLower,
+			Description: "takes in a string and outputs the same string with all lower-case letters",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "takes in a string and outputs the same string with all lower-case letters",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: trim,
@@ -155,10 +155,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfTrim,
+			Handler:     jpfTrim,
+			Description: "trims both ends of the source string by characters appearing in the second string",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "trims both ends of the source string by characters appearing in the second string",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: trimPrefix,
@@ -166,10 +166,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfTrimPrefix,
+			Handler:     jpfTrimPrefix,
+			Description: "trims the second string prefix from the first string if the first string starts with the prefix",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "trims the second string prefix from the first string if the first string starts with the prefix",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: split,
@@ -177,10 +177,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpfSplit,
+			Handler:     jpfSplit,
+			Description: "splits the first string when the second string is found and converts it into an array ",
 		},
 		ReturnType: []jpType{jpArrayString},
-		Note:       "splits the first string when the second string is found and converts it into an array ",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: regexReplaceAll,
@@ -189,10 +189,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString, jpNumber}},
 				{Types: []jpType{jpString, jpNumber}},
 			},
-			Handler: jpRegexReplaceAll,
+			Handler:     jpRegexReplaceAll,
+			Description: "converts all parameters to string",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "converts all parameters to string",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: regexReplaceAllLiteral,
@@ -201,10 +201,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString, jpNumber}},
 				{Types: []jpType{jpString, jpNumber}},
 			},
-			Handler: jpRegexReplaceAllLiteral,
+			Handler:     jpRegexReplaceAllLiteral,
+			Description: "converts all parameters to string",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "converts all parameters to string",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: regexMatch,
@@ -212,10 +212,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString, jpNumber}},
 			},
-			Handler: jpRegexMatch,
+			Handler:     jpRegexMatch,
+			Description: "first string is the regular exression which is compared with second input which can be a number or string",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "first string is the regular exression which is compared with second input which can be a number or string",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: patternMatch,
@@ -223,10 +223,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString, jpNumber}},
 			},
-			Handler: jpPatternMatch,
+			Handler:     jpPatternMatch,
+			Description: "'*' matches zero or more alphanumeric characters, '?' matches a single alphanumeric character",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "'*' matches zero or more alphanumeric characters, '?' matches a single alphanumeric character",
 	}, {
 		// Validates if label (param1) would match pod/host/etc labels (param2)
 		FunctionEntry: gojmespath.FunctionEntry{
@@ -235,20 +235,20 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpObject}},
 				{Types: []jpType{jpObject}},
 			},
-			Handler: jpLabelMatch,
+			Handler:     jpLabelMatch,
+			Description: "object arguments must be enclosed in backticks; ex. `{{request.object.spec.template.metadata.labels}}`",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "object arguments must be enclosed in backticks; ex. `{{request.object.spec.template.metadata.labels}}`",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: toBoolean,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpToBoolean,
+			Handler:     jpToBoolean,
+			Description: "It returns true or false for any string, such as 'True', 'TruE', 'False', 'FAlse', 'faLSE', etc.",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "It returns true or false for any string, such as 'True', 'TruE', 'False', 'FAlse', 'faLSE', etc.",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: add,
@@ -256,20 +256,20 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpAny}},
 				{Types: []jpType{jpAny}},
 			},
-			Handler: jpAdd,
+			Handler:     jpAdd,
+			Description: "does arithmetic addition of two specified values of numbers, quantities, and durations",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "does arithmetic addition of two specified values of numbers, quantities, and durations",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: sum,
 			Arguments: []argSpec{
 				{Types: []jpType{jpArray}},
 			},
-			Handler: jpSum,
+			Handler:     jpSum,
+			Description: "does arithmetic addition of specified array of values of numbers, quantities, and durations",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "does arithmetic addition of specified array of values of numbers, quantities, and durations",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: subtract,
@@ -277,10 +277,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpAny}},
 				{Types: []jpType{jpAny}},
 			},
-			Handler: jpSubtract,
+			Handler:     jpSubtract,
+			Description: "does arithmetic subtraction of two specified values of numbers, quantities, and durations",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "does arithmetic subtraction of two specified values of numbers, quantities, and durations",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: multiply,
@@ -288,10 +288,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpAny}},
 				{Types: []jpType{jpAny}},
 			},
-			Handler: jpMultiply,
+			Handler:     jpMultiply,
+			Description: "does arithmetic multiplication of two specified values of numbers, quantities, and durations",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "does arithmetic multiplication of two specified values of numbers, quantities, and durations",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: divide,
@@ -299,10 +299,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpAny}},
 				{Types: []jpType{jpAny}},
 			},
-			Handler: jpDivide,
+			Handler:     jpDivide,
+			Description: "divisor must be non zero",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "divisor must be non zero",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: modulo,
@@ -310,10 +310,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpAny}},
 				{Types: []jpType{jpAny}},
 			},
-			Handler: jpModulo,
+			Handler:     jpModulo,
+			Description: "divisor must be non-zero, arguments must be integers",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "divisor must be non-zero, arguments must be integers",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: round,
@@ -321,30 +321,30 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpNumber}},
 				{Types: []jpType{jpNumber}},
 			},
-			Handler: jpRound,
+			Handler:     jpRound,
+			Description: "does roundoff to upto the given decimal places",
 		},
 		ReturnType: []jpType{jpNumber},
-		Note:       "does roundoff to upto the given decimal places",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: base64Decode,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpBase64Decode,
+			Handler:     jpBase64Decode,
+			Description: "decodes a base 64 string",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "decodes a base 64 string",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: base64Encode,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpBase64Encode,
+			Handler:     jpBase64Encode,
+			Description: "encodes a regular, plaintext and unencoded string to base64",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "encodes a regular, plaintext and unencoded string to base64",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeSince,
@@ -353,34 +353,34 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeSince,
+			Handler:     jpTimeSince,
+			Description: "calculate the difference between a start and end period of time where the end may either be a static definition or the then-current time",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "calculate the difference between a start and end period of time where the end may either be a static definition or the then-current time",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
-			Name:    timeNow,
-			Handler: jpTimeNow,
+			Name:        timeNow,
+			Handler:     jpTimeNow,
+			Description: "returns current time in RFC 3339 format",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "returns current time in RFC 3339 format",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
-			Name:    timeNowUtc,
-			Handler: jpTimeNowUtc,
+			Name:        timeNowUtc,
+			Handler:     jpTimeNowUtc,
+			Description: "returns current UTC time in RFC 3339 format",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "returns current UTC time in RFC 3339 format",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: pathCanonicalize,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpPathCanonicalize,
+			Handler:     jpPathCanonicalize,
+			Description: "normalizes or canonicalizes a given path by removing excess slashes",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "normalizes or canonicalizes a given path by removing excess slashes",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: truncate,
@@ -388,10 +388,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpNumber}},
 			},
-			Handler: jpTruncate,
+			Handler:     jpTruncate,
+			Description: "length argument must be enclosed in backticks; ex. \"{{request.object.metadata.name | truncate(@, `9`)}}\"",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "length argument must be enclosed in backticks; ex. \"{{request.object.metadata.name | truncate(@, `9`)}}\"",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: semverCompare,
@@ -399,30 +399,30 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpSemverCompare,
+			Handler:     jpSemverCompare,
+			Description: "compares two strings which comply with the semantic versioning schema and outputs a boolean response as to the position of the second relative to the first",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "compares two strings which comply with the semantic versioning schema and outputs a boolean response as to the position of the second relative to the first",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: parseJson,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpParseJson,
+			Handler:     jpParseJson,
+			Description: "decodes a valid JSON encoded string to the appropriate type. Opposite of `to_string` function",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "decodes a valid JSON encoded string to the appropriate type. Opposite of `to_string` function",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: parseYAML,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpParseYAML,
+			Handler:     jpParseYAML,
+			Description: "decodes a valid YAML encoded string to the appropriate type provided it can be represented as JSON",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "decodes a valid YAML encoded string to the appropriate type provided it can be represented as JSON",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: lookup,
@@ -430,10 +430,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpObject, jpArray}},
 				{Types: []jpType{jpString, jpNumber}},
 			},
-			Handler: jpLookup,
+			Handler:     jpLookup,
+			Description: "returns the value corresponding to the given key/index in the given object/array",
 		},
 		ReturnType: []jpType{jpAny},
-		Note:       "returns the value corresponding to the given key/index in the given object/array",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: items,
@@ -442,10 +442,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpItems,
+			Handler:     jpItems,
+			Description: "converts a map or array to an array of objects where each key:value is an item in the array",
 		},
 		ReturnType: []jpType{jpArray},
-		Note:       "converts a map or array to an array of objects where each key:value is an item in the array",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: objectFromLists,
@@ -453,40 +453,40 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpArray}},
 				{Types: []jpType{jpArray}},
 			},
-			Handler: jpObjectFromLists,
+			Handler:     jpObjectFromLists,
+			Description: "converts a pair of lists containing keys and values to an object",
 		},
 		ReturnType: []jpType{jpObject},
-		Note:       "converts a pair of lists containing keys and values to an object",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: random,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpRandom,
+			Handler:     jpRandom,
+			Description: "Generates a random sequence of characters",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "Generates a random sequence of characters",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: x509_decode,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpX509Decode,
+			Handler:     jpX509Decode,
+			Description: "decodes an x.509 certificate to an object. you may also use this in conjunction with `base64_decode` jmespath function to decode a base64-encoded certificate",
 		},
 		ReturnType: []jpType{jpObject},
-		Note:       "decodes an x.509 certificate to an object. you may also use this in conjunction with `base64_decode` jmespath function to decode a base64-encoded certificate",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeToCron,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeToCron,
+			Handler:     jpTimeToCron,
+			Description: "converts a time (RFC 3339) to a cron expression (string).",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "converts a time (RFC 3339) to a cron expression (string).",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeAdd,
@@ -494,10 +494,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeAdd,
+			Handler:     jpTimeAdd,
+			Description: "adds duration (second string) to a time value (first string)",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "adds duration (second string) to a time value (first string)",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeParse,
@@ -505,20 +505,20 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeParse,
+			Handler:     jpTimeParse,
+			Description: "changes a time value of a given layout to RFC 3339",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "changes a time value of a given layout to RFC 3339",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeUtc,
 			Arguments: []argSpec{
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeUtc,
+			Handler:     jpTimeUtc,
+			Description: "calcutes time in UTC from a given time in RFC 3339 format",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "calcutes time in UTC from a given time in RFC 3339 format",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeDiff,
@@ -526,10 +526,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeDiff,
+			Handler:     jpTimeDiff,
+			Description: "calculate the difference between a start and end date in RFC3339 format",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "calculate the difference between a start and end date in RFC3339 format",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeBefore,
@@ -537,10 +537,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeBefore,
+			Handler:     jpTimeBefore,
+			Description: "checks if a time is before another time, both in RFC3339 format",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "checks if a time is before another time, both in RFC3339 format",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeAfter,
@@ -548,10 +548,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeAfter,
+			Handler:     jpTimeAfter,
+			Description: "checks if a time is after another time, both in RFC3339 format",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "checks if a time is after another time, both in RFC3339 format",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeBetween,
@@ -560,10 +560,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeBetween,
+			Handler:     jpTimeBetween,
+			Description: "checks if a time is between a start and end time, all in RFC3339 format",
 		},
 		ReturnType: []jpType{jpBool},
-		Note:       "checks if a time is between a start and end time, all in RFC3339 format",
 	}, {
 		FunctionEntry: gojmespath.FunctionEntry{
 			Name: timeTruncate,
@@ -571,10 +571,10 @@ func GetFunctions() []FunctionEntry {
 				{Types: []jpType{jpString}},
 				{Types: []jpType{jpString}},
 			},
-			Handler: jpTimeTruncate,
+			Handler:     jpTimeTruncate,
+			Description: "returns the result of rounding time down to a multiple of duration",
 		},
 		ReturnType: []jpType{jpString},
-		Note:       "returns the result of rounding time down to a multiple of duration",
 	}}
 }
 
