@@ -3,7 +3,7 @@ package matching
 import (
 	"sync"
 
-	"github.com/cespare/xxhash"
+	"github.com/cespare/xxhash/v2"
 	"github.com/elastic/go-freelru"
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
 	"github.com/kyverno/kyverno-json/pkg/core/templating"
