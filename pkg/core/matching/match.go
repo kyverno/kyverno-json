@@ -1,4 +1,4 @@
-package match
+package matching
 
 import (
 	"fmt"
@@ -44,5 +44,5 @@ func Match(expected, actual any) (bool, error) {
 			return true, nil
 		}
 	}
-	return reflectutils.MatchScalar(expected, actual)
+	return Equal(expected, actual)
 }

@@ -1,11 +1,13 @@
-package reflect
+package matching
 
 import (
 	"fmt"
 	"reflect"
+
+	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
-func MatchScalar(expected, actual any) (bool, error) {
+func Equal(expected, actual any) (bool, error) {
 	if actual == nil && expected == nil {
 		return true, nil
 	} else if actual == nil && expected != nil {
@@ -42,5 +44,5 @@ func MatchScalar(expected, actual any) (bool, error) {
 			return a == e, nil
 		}
 	}
-	return false, fmt.Errorf("types are not comparable, %s - %s", GetKind(expected), GetKind(actual))
+	return false, fmt.Errorf("types are not comparable, %s - %s", reflectutils.GetKind(expected), reflectutils.GetKind(actual))
 }

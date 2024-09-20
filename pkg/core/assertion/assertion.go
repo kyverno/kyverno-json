@@ -8,9 +8,9 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
+	"github.com/kyverno/kyverno-json/pkg/core/matching"
 	"github.com/kyverno/kyverno-json/pkg/core/projection"
 	"github.com/kyverno/kyverno-json/pkg/core/templating"
-	"github.com/kyverno/kyverno-json/pkg/engine/match"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -206,7 +206,7 @@ func parseScalar(assertion any, compiler templating.Compiler) (node, error) {
 			expected = projected
 		}
 		var errs field.ErrorList
-		if match, err := match.Match(expected, value); err != nil {
+		if match, err := matching.Match(expected, value); err != nil {
 			return nil, field.InternalError(path, err)
 		} else if !match {
 			errs = append(errs, field.Invalid(path, value, expectValueMessage(expected)))
