@@ -76,9 +76,9 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 		return errors.New("payload is `null`")
 	}
 	out.println("Pre processing ...")
-	compiler := templating.NewCompiler(templating.CompilerOptions{})
+	compiler := templating.DefaultCompiler
 	for _, preprocessor := range c.preprocessors {
-		result, err := templating.ExecuteJP(preprocessor, payload, nil, compiler)
+		result, err := templating.Execute(preprocessor, payload, nil, compiler.Jp)
 		if err != nil {
 			return err
 		}

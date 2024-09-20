@@ -48,7 +48,7 @@ func TestAssert(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			compiler := templating.NewCompiler(templating.CompilerOptions{})
+			compiler := templating.DefaultCompiler
 			parsed, err := Parse(tt.assertion, compiler)
 			tassert.NoError(t, err)
 			got, err := parsed.Assert(nil, tt.value, tt.bindings)

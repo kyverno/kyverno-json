@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
@@ -36,8 +37,8 @@ func Parse(in any, compiler templating.Compiler) (projection Projection) {
 		// 3. compute the projection func
 		switch expr.Engine {
 		case expression.EngineJP:
-			parse := sync.OnceValues(func() (templating.Program, error) {
-				return compiler.CompileJP(expr.Statement)
+			parse := sync.OnceValues(func() (compilers.Program, error) {
+				return compiler.Jp.Compile(expr.Statement)
 			})
 			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
 				program, err := parse()
@@ -52,7 +53,7 @@ func Parse(in any, compiler templating.Compiler) (projection Projection) {
 			}
 		case expression.EngineCEL:
 			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
-				program, err := compiler.CompileCEL(expr.Statement)
+				program, err := compiler.Cel.Compile(expr.Statement)
 				if err != nil {
 					return nil, false, err
 				}

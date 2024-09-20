@@ -155,8 +155,8 @@ func loadInput(cmd *cobra.Command, file string) (any, error) {
 }
 
 func evaluate(input any, query string) (any, error) {
-	compiler := templating.NewCompiler(templating.CompilerOptions{})
-	result, err := templating.ExecuteJP(query, input, nil, compiler)
+	compiler := templating.DefaultCompiler
+	result, err := templating.Execute(query, input, nil, compiler.Jp)
 	if err != nil {
 		if syntaxError, ok := err.(parsing.SyntaxError); ok {
 			return nil, fmt.Errorf("%s\n%s", syntaxError, syntaxError.HighlightLocation())

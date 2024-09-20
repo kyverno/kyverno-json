@@ -8,7 +8,7 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
-	"github.com/kyverno/kyverno-json/pkg/core/templating/jp"
+	"github.com/kyverno/kyverno-json/pkg/core/compilers/jp"
 )
 
 var variable = regexp.MustCompile(`{{(.*?)}}`)

@@ -67,7 +67,7 @@ func New() engine.Engine[Request, Response] {
 		bindings jpbinding.Bindings
 	}
 	compiler := matching.Compiler{
-		Compiler: templating.NewCompiler(templating.CompilerOptions{}),
+		Compiler: templating.DefaultCompiler,
 	}
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
@@ -80,7 +80,7 @@ func New() engine.Engine[Request, Response] {
 			}
 			identifier := ""
 			if r.rule.Identifier != "" {
-				result, err := templating.ExecuteJP(r.rule.Identifier, r.resource, bindings, compiler.Compiler)
+				result, err := templating.Execute(r.rule.Identifier, r.resource, bindings, compiler.Compiler.Jp)
 				if err != nil {
 					identifier = fmt.Sprintf("(error: %s)", err)
 				} else {
@@ -119,7 +119,7 @@ func New() engine.Engine[Request, Response] {
 			}
 			var feedback map[string]Feedback
 			for _, f := range r.rule.Feedback {
-				result, err := templating.ExecuteJP(f.Value, r.resource, bindings, compiler.Compiler)
+				result, err := templating.Execute(f.Value, r.resource, bindings, compiler.Compiler.Jp)
 				if feedback == nil {
 					feedback = map[string]Feedback{}
 				}
