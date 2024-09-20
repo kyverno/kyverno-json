@@ -4,6 +4,7 @@ hiddenMemberFields:
 - _tree
 - _assertion
 - _message
+- _hash
 
 externalPackages:
 - match: ^k8s\.io/apimachinery/pkg/apis/meta/v1\.Duration$

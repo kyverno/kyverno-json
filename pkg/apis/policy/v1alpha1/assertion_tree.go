@@ -1,8 +1,10 @@
 package v1alpha1
 
 import (
+	"crypto/md5" //nolint:gosec
+	"encoding/hex"
+
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
-	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
@@ -12,19 +14,30 @@ import (
 // AssertionTree represents an assertion tree.
 type AssertionTree struct {
 	_tree any
+	_hash string
+}
+
+func hash(in any) string {
+	if in == nil {
+		return ""
+	}
+	bytes, err := json.Marshal(in)
+	if err != nil {
+		return ""
+	}
+	hash := md5.Sum(bytes) //nolint:gosec
+	return hex.EncodeToString(hash[:])
 }
 
 func NewAssertionTree(value any) AssertionTree {
 	return AssertionTree{
 		_tree: value,
+		_hash: hash(value),
 	}
 }
 
-func (t *AssertionTree) Assertion(compiler templating.Compiler) (assertion.Assertion, error) {
-	if t._tree == nil {
-		return nil, nil
-	}
-	return assertion.Parse(t._tree, compiler)
+func (t *AssertionTree) Compile(compiler func(string, any) (assertion.Assertion, error)) (assertion.Assertion, error) {
+	return compiler(t._hash, t._tree)
 }
 
 func (a *AssertionTree) MarshalJSON() ([]byte, error) {
@@ -38,9 +51,11 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	a._tree = v
+	a._hash = hash(a._tree)
 	return nil
 }
 
 func (in *AssertionTree) DeepCopyInto(out *AssertionTree) {
 	out._tree = deepCopy(in._tree)
+	out._hash = in._hash
 }
