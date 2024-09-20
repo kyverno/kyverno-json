@@ -7,9 +7,9 @@ import (
 
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
 	"github.com/kyverno/kyverno-json/pkg/matching"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -66,6 +66,7 @@ func New() engine.Engine[Request, Response] {
 		resource any
 		bindings jpbinding.Bindings
 	}
+	compiler := templating.NewCompiler(templating.CompilerOptions{})
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
 			bindings := r.bindings.Register("$rule", jpbinding.NewBinding(r.rule))
@@ -73,11 +74,11 @@ func New() engine.Engine[Request, Response] {
 			var path *field.Path
 			path = path.Child("context")
 			for i, entry := range r.rule.Context {
-				bindings = bindings.Register("$"+entry.Name, template.NewContextBinding(path.Index(i), bindings, r.resource, entry.Variable.Value()))
+				bindings = bindings.Register("$"+entry.Name, compiler.NewBinding(path.Index(i), r.resource, bindings, entry.Variable.Value()))
 			}
 			identifier := ""
 			if r.rule.Identifier != "" {
-				result, err := template.ExecuteJP(context.Background(), r.rule.Identifier, r.resource, bindings)
+				result, err := templating.ExecuteJP(r.rule.Identifier, r.resource, bindings, compiler)
 				if err != nil {
 					identifier = fmt.Sprintf("(error: %s)", err)
 				} else {
@@ -85,7 +86,7 @@ func New() engine.Engine[Request, Response] {
 				}
 			}
 			if r.rule.Match != nil {
-				errs, err := matching.Match(ctx, nil, r.rule.Match, r.resource, bindings)
+				errs, err := matching.Match(nil, r.rule.Match, r.resource, bindings, compiler)
 				if err != nil {
 					return []RuleResponse{{
 						Rule:       r.rule,
@@ -100,7 +101,7 @@ func New() engine.Engine[Request, Response] {
 				}
 			}
 			if r.rule.Exclude != nil {
-				errs, err := matching.Match(ctx, nil, r.rule.Exclude, r.resource, bindings)
+				errs, err := matching.Match(nil, r.rule.Exclude, r.resource, bindings, compiler)
 				if err != nil {
 					return []RuleResponse{{
 						Rule:       r.rule,
@@ -116,7 +117,7 @@ func New() engine.Engine[Request, Response] {
 			}
 			var feedback map[string]Feedback
 			for _, f := range r.rule.Feedback {
-				result, err := template.ExecuteJP(context.Background(), f.Value, r.resource, bindings)
+				result, err := templating.ExecuteJP(f.Value, r.resource, bindings, compiler)
 				if feedback == nil {
 					feedback = map[string]Feedback{}
 				}
@@ -130,7 +131,7 @@ func New() engine.Engine[Request, Response] {
 					}
 				}
 			}
-			violations, err := matching.MatchAssert(ctx, nil, r.rule.Assert, r.resource, bindings)
+			violations, err := matching.MatchAssert(nil, r.rule.Assert, r.resource, bindings, compiler)
 			if err != nil {
 				return []RuleResponse{{
 					Rule:       r.rule,

@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/server/model"
 	"github.com/loopfz/gadgeto/tonic"
@@ -34,7 +34,7 @@ func newHandler() (gin.HandlerFunc, error) {
 		}
 		// apply pre processors
 		for _, preprocessor := range in.Preprocessors {
-			result, err := template.ExecuteJP(context.Background(), preprocessor, payload, nil)
+			result, err := templating.ExecuteJP(preprocessor, payload, nil, templating.NewCompiler(templating.CompilerOptions{}))
 			if err != nil {
 				return nil, fmt.Errorf("failed to execute prepocessor (%s) - %w", preprocessor, err)
 			}

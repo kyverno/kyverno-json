@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -124,7 +123,7 @@ func TestLoad(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
-			assert.True(t, cmp.Equal(tt.want, got, cmp.AllowUnexported(v1alpha1.AssertionTree{}), cmpopts.IgnoreFields(v1alpha1.AssertionTree{}, "_assertion")))
+			assert.True(t, cmp.Equal(tt.want, got, cmp.AllowUnexported(v1alpha1.AssertionTree{})))
 		})
 	}
 }

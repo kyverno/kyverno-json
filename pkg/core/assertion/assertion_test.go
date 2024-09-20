@@ -1,10 +1,10 @@
 package assertion
 
 import (
-	"context"
 	"testing"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	tassert "github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -48,9 +48,10 @@ func TestAssert(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			parsed, err := Parse(context.TODO(), tt.assertion)
+			compiler := templating.NewCompiler(templating.CompilerOptions{})
+			parsed, err := Parse(tt.assertion, compiler)
 			tassert.NoError(t, err)
-			got, err := parsed.Assert(context.TODO(), nil, tt.value, tt.bindings)
+			got, err := parsed.Assert(nil, tt.value, tt.bindings)
 			if tt.wantErr {
 				tassert.Error(t, err)
 			} else {

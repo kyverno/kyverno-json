@@ -1,7 +1,6 @@
 package query
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,7 +10,7 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	"github.com/kyverno/kyverno-json/pkg/command"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/yaml"
 )
@@ -156,7 +155,8 @@ func loadInput(cmd *cobra.Command, file string) (any, error) {
 }
 
 func evaluate(input any, query string) (any, error) {
-	result, err := template.ExecuteJP(context.Background(), query, input, nil)
+	compiler := templating.NewCompiler(templating.CompilerOptions{})
+	result, err := templating.ExecuteJP(query, input, nil, compiler)
 	if err != nil {
 		if syntaxError, ok := err.(parsing.SyntaxError); ok {
 			return nil, fmt.Errorf("%s\n%s", syntaxError, syntaxError.HighlightLocation())

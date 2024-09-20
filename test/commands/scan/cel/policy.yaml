@@ -1,0 +1,18 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: test
+spec:
+  rules:
+    - name: foo-bar-4
+      context:
+      - name: celFoo
+        variable: (cel; 4)
+      - name: jpFoo
+        variable: (jp; $celFoo)
+      - name: celFoo
+        variable: (cel; bindings.resolve('jpFoo'))
+      assert:
+        all:
+        - check:
+            (cel; object.foo.bar): (cel; bindings.resolve('celFoo'))

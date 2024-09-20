@@ -1,19 +1,17 @@
 package projection
 
 import (
-	"context"
 	"errors"
 	"reflect"
 	"sync"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
-	"github.com/jmespath-community/go-jmespath/pkg/parsing"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
-	"github.com/kyverno/kyverno-json/pkg/engine/template"
+	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
-type Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error)
+type Handler = func(value any, bindings binding.Bindings) (any, bool, error)
 
 type Info struct {
 	Foreach     bool
@@ -26,7 +24,7 @@ type Projection struct {
 	Handler
 }
 
-func Parse(in any) (projection Projection) {
+func Parse(in any, compiler templating.Compiler) (projection Projection) {
 	switch typed := in.(type) {
 	case string:
 		// 1. if we have a string, parse the expression
@@ -38,22 +36,34 @@ func Parse(in any) (projection Projection) {
 		// 3. compute the projection func
 		switch expr.Engine {
 		case expression.EngineJP:
-			parse := sync.OnceValues(func() (parsing.ASTNode, error) {
-				parser := parsing.NewParser()
-				return parser.Parse(expr.Statement)
+			parse := sync.OnceValues(func() (templating.Program, error) {
+				return compiler.CompileJP(expr.Statement)
 			})
-			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
-				ast, err := parse()
+			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
+				program, err := parse()
 				if err != nil {
 					return nil, false, err
 				}
-				projected, err := template.ExecuteAST(ctx, ast, value, bindings, opts...)
+				projected, err := program(value, bindings)
+				if err != nil {
+					return nil, false, err
+				}
 				return projected, true, err
 			}
 		case expression.EngineCEL:
-			panic("engine not supported")
+			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
+				program, err := compiler.CompileCEL(expr.Statement)
+				if err != nil {
+					return nil, false, err
+				}
+				projected, err := program(value, bindings)
+				if err != nil {
+					return nil, false, err
+				}
+				return projected, true, nil
+			}
 		default:
-			projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
+			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
 				if value == nil {
 					return nil, false, nil
 				}
@@ -69,7 +79,7 @@ func Parse(in any) (projection Projection) {
 		}
 	default:
 		// 1. compute the projection func
-		projection.Handler = func(ctx context.Context, value any, bindings binding.Bindings, opts ...template.Option) (any, bool, error) {
+		projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
 			if value == nil {
 				return nil, false, nil
 			}
