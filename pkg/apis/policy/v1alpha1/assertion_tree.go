@@ -1,10 +1,8 @@
 package v1alpha1
 
 import (
-	"crypto/md5" //nolint:gosec
-	"encoding/hex"
-
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
+	hashutils "github.com/kyverno/kyverno-json/pkg/utils/hash"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
@@ -17,22 +15,10 @@ type AssertionTree struct {
 	_hash string
 }
 
-func hash(in any) string {
-	if in == nil {
-		return ""
-	}
-	bytes, err := json.Marshal(in)
-	if err != nil {
-		return ""
-	}
-	hash := md5.Sum(bytes) //nolint:gosec
-	return hex.EncodeToString(hash[:])
-}
-
 func NewAssertionTree(value any) AssertionTree {
 	return AssertionTree{
 		_tree: value,
-		_hash: hash(value),
+		_hash: hashutils.Hash(value),
 	}
 }
 
@@ -51,7 +37,7 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	a._tree = v
-	a._hash = hash(a._tree)
+	a._hash = hashutils.Hash(a._tree)
 	return nil
 }
 
