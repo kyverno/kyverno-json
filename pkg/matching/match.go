@@ -5,7 +5,6 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
-	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
@@ -37,7 +36,7 @@ func (r Results) Error() string {
 	return strings.Join(lines, "\n")
 }
 
-func MatchAssert(path *field.Path, match v1alpha1.Assert, actual any, bindings binding.Bindings, compiler templating.Compiler) ([]Result, error) {
+func MatchAssert(path *field.Path, match v1alpha1.Assert, actual any, bindings binding.Bindings, compiler Compiler) ([]Result, error) {
 	if len(match.Any) == 0 && len(match.All) == 0 {
 		return nil, field.Invalid(path, match, "an empty assert is not valid")
 	} else {
@@ -46,7 +45,7 @@ func MatchAssert(path *field.Path, match v1alpha1.Assert, actual any, bindings b
 			path := path.Child("any")
 			for i, assertion := range match.Any {
 				path := path.Index(i).Child("check")
-				parsed, err := assertion.Check.Assertion(compiler)
+				parsed, err := assertion.Check.Compile(compiler.CompileAssertion)
 				if err != nil {
 					return fails, err
 				}
@@ -75,7 +74,7 @@ func MatchAssert(path *field.Path, match v1alpha1.Assert, actual any, bindings b
 			path := path.Child("all")
 			for i, assertion := range match.All {
 				path := path.Index(i).Child("check")
-				parsed, err := assertion.Check.Assertion(compiler)
+				parsed, err := assertion.Check.Compile(compiler.CompileAssertion)
 				if err != nil {
 					return fails, err
 				}
@@ -99,7 +98,7 @@ func MatchAssert(path *field.Path, match v1alpha1.Assert, actual any, bindings b
 	}
 }
 
-func Match(path *field.Path, match *v1alpha1.Match, actual any, bindings binding.Bindings, compiler templating.Compiler) (field.ErrorList, error) {
+func Match(path *field.Path, match *v1alpha1.Match, actual any, bindings binding.Bindings, compiler Compiler) (field.ErrorList, error) {
 	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
 		return nil, field.Invalid(path, match, "an empty match is not valid")
 	} else {
@@ -122,11 +121,11 @@ func Match(path *field.Path, match *v1alpha1.Match, actual any, bindings binding
 	}
 }
 
-func MatchAny(path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, compiler templating.Compiler) (field.ErrorList, error) {
+func MatchAny(path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, compiler Compiler) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
 		path := path.Index(i)
-		assertion, err := assertion.Assertion(compiler)
+		assertion, err := assertion.Compile(compiler.CompileAssertion)
 		if err != nil {
 			return errs, err
 		}
@@ -142,11 +141,11 @@ func MatchAny(path *field.Path, assertions []v1alpha1.AssertionTree, actual any,
 	return errs, nil
 }
 
-func MatchAll(path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, compiler templating.Compiler) (field.ErrorList, error) {
+func MatchAll(path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, compiler Compiler) (field.ErrorList, error) {
 	var errs field.ErrorList
 	for i, assertion := range assertions {
 		path := path.Index(i)
-		assertion, err := assertion.Assertion(compiler)
+		assertion, err := assertion.Compile(compiler.CompileAssertion)
 		if err != nil {
 			return errs, err
 		}
