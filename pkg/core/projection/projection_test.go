@@ -88,7 +88,7 @@ func TestProjection(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			compiler := templating.NewCompiler(templating.CompilerOptions{})
+			compiler := templating.DefaultCompiler
 			proj := Parse(tt.key, compiler)
 			got, found, err := proj.Handler(tt.value, tt.bindings)
 			if tt.wantErr {

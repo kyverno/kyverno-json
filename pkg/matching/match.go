@@ -61,7 +61,7 @@ func MatchAssert(path *field.Path, match v1alpha1.Assert, actual any, bindings b
 					ErrorList: checkFails,
 				}
 				if assertion.Message != nil {
-					fail.Message = assertion.Message.Format(actual, bindings, compiler.Options().Jp...)
+					fail.Message = assertion.Message.Format(actual, bindings, compiler.Jp.Options()...)
 				}
 				fails = append(fails, fail)
 			}
@@ -87,7 +87,7 @@ func MatchAssert(path *field.Path, match v1alpha1.Assert, actual any, bindings b
 						ErrorList: checkFails,
 					}
 					if assertion.Message != nil {
-						fail.Message = assertion.Message.Format(actual, bindings, compiler.Options().Jp...)
+						fail.Message = assertion.Message.Format(actual, bindings, compiler.Jp.Options()...)
 					}
 					fails = append(fails, fail)
 				}

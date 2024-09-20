@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
+	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	"github.com/kyverno/kyverno-json/pkg/core/matching"
 	"github.com/kyverno/kyverno-json/pkg/core/projection"
@@ -174,8 +175,8 @@ func parseScalar(assertion any, compiler templating.Compiler) (node, error) {
 		}
 		switch expr.Engine {
 		case expression.EngineJP:
-			parse := sync.OnceValues(func() (templating.Program, error) {
-				return compiler.CompileJP(expr.Statement)
+			parse := sync.OnceValues(func() (compilers.Program, error) {
+				return compiler.Jp.Compile(expr.Statement)
 			})
 			project = func(value any, bindings binding.Bindings) (any, error) {
 				program, err := parse()
@@ -186,7 +187,7 @@ func parseScalar(assertion any, compiler templating.Compiler) (node, error) {
 			}
 		case expression.EngineCEL:
 			project = func(value any, bindings binding.Bindings) (any, error) {
-				program, err := compiler.CompileCEL(expr.Statement)
+				program, err := compiler.Cel.Compile(expr.Statement)
 				if err != nil {
 					return nil, err
 				}
