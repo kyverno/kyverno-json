@@ -9,7 +9,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/cel-go v0.20.1
 	github.com/google/go-cmp v0.6.0
-	github.com/jmespath-community/go-jmespath v1.1.2-0.20240117150817-e430401a2172
+	github.com/jmespath-community/go-jmespath v1.1.2-0.20240919193755-5e4e8ae73c8a
 	github.com/kyverno/pkg/ext v0.0.0-20240418121121-df8add26c55c
 	github.com/loopfz/gadgeto v0.11.4
 	github.com/nlepage/go-wasm-http-server v1.1.0

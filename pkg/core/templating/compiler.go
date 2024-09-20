@@ -1,6 +1,8 @@
 package templating
 
 import (
+	"sync"
+
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
@@ -65,36 +67,38 @@ func (c Compiler) CompileJP(statement string) (Program, error) {
 }
 
 func (c Compiler) NewBinding(path *field.Path, value any, bindings binding.Bindings, template any) binding.Binding {
-	return jp.NewLazyBinding(
-		func() (any, error) {
-			switch typed := template.(type) {
-			case string:
-				expr := expression.Parse(typed)
-				if expr.Foreach {
-					return nil, field.Invalid(path.Child("variable"), typed, "foreach is not supported in context")
-				}
-				if expr.Binding != "" {
-					return nil, field.Invalid(path.Child("variable"), typed, "binding is not supported in context")
-				}
-				switch expr.Engine {
-				case expression.EngineJP:
-					projected, err := ExecuteJP(expr.Statement, value, bindings, c)
-					if err != nil {
-						return nil, field.InternalError(path.Child("variable"), err)
+	return binding.NewDelegate(
+		sync.OnceValues(
+			func() (any, error) {
+				switch typed := template.(type) {
+				case string:
+					expr := expression.Parse(typed)
+					if expr.Foreach {
+						return nil, field.Invalid(path.Child("variable"), typed, "foreach is not supported in context")
 					}
-					return projected, nil
-				case expression.EngineCEL:
-					projected, err := ExecuteCEL(expr.Statement, value, bindings, c)
-					if err != nil {
-						return nil, field.InternalError(path.Child("variable"), err)
+					if expr.Binding != "" {
+						return nil, field.Invalid(path.Child("variable"), typed, "binding is not supported in context")
 					}
-					return projected, nil
+					switch expr.Engine {
+					case expression.EngineJP:
+						projected, err := ExecuteJP(expr.Statement, value, bindings, c)
+						if err != nil {
+							return nil, field.InternalError(path.Child("variable"), err)
+						}
+						return projected, nil
+					case expression.EngineCEL:
+						projected, err := ExecuteCEL(expr.Statement, value, bindings, c)
+						if err != nil {
+							return nil, field.InternalError(path.Child("variable"), err)
+						}
+						return projected, nil
+					default:
+						return expr.Statement, nil
+					}
 				default:
-					return expr.Statement, nil
+					return typed, nil
 				}
-			default:
-				return typed, nil
-			}
-		},
+			},
+		),
 	)
 }
