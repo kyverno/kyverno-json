@@ -29,14 +29,14 @@ func NewCompiler(compiler compilers.Compilers, cacheSize uint32) Compiler {
 	return out
 }
 
-func (c Compiler) CompileAssertion(hash string, value any) (assertion.Assertion, error) {
+func (c Compiler) CompileAssertion(hash string, value any, defaultCompiler string) (assertion.Assertion, error) {
 	if c.SyncedLRU == nil {
-		return assertion.Parse(value, c.Compilers)
+		return assertion.Parse(value, c.Compilers, defaultCompiler)
 	}
 	entry, _ := c.SyncedLRU.Get(hash)
 	if entry == nil {
 		entry = sync.OnceValues(func() (assertion.Assertion, error) {
-			return assertion.Parse(value, c.Compilers)
+			return assertion.Parse(value, c.Compilers, defaultCompiler)
 		})
 		c.SyncedLRU.Add(hash, entry)
 	}

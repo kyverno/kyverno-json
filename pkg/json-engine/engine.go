@@ -8,6 +8,7 @@ import (
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
+	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
 	"github.com/kyverno/kyverno-json/pkg/matching"
@@ -26,7 +27,7 @@ type Response struct {
 }
 
 type PolicyResponse struct {
-	Policy *v1alpha1.ValidatingPolicy
+	Policy v1alpha1.ValidatingPolicy
 	Rules  []RuleResponse
 }
 
@@ -57,12 +58,13 @@ const (
 
 func New() engine.Engine[Request, Response] {
 	type ruleRequest struct {
+		policy   v1alpha1.ValidatingPolicy
 		rule     v1alpha1.ValidatingRule
 		resource any
 		bindings jpbinding.Bindings
 	}
 	type policyRequest struct {
-		policy   *v1alpha1.ValidatingPolicy
+		policy   v1alpha1.ValidatingPolicy
 		resource any
 		bindings jpbinding.Bindings
 	}
@@ -72,11 +74,22 @@ func New() engine.Engine[Request, Response] {
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
 			bindings := r.bindings.Register("$rule", jpbinding.NewBinding(r.rule))
+			defaultCompiler := expression.CompilerJP
+			if r.policy.Spec.Compiler != nil {
+				defaultCompiler = string(*r.policy.Spec.Compiler)
+			}
+			if r.rule.Compiler != nil {
+				defaultCompiler = string(*r.rule.Compiler)
+			}
 			// TODO: this doesn't seem to be the right path
 			var path *field.Path
 			path = path.Child("context")
 			for i, entry := range r.rule.Context {
-				bindings = bindings.Register("$"+entry.Name, compiler.NewBinding(path.Index(i), r.resource, bindings, entry.Variable.Value()))
+				defaultCompiler := defaultCompiler
+				if entry.Compiler != nil {
+					defaultCompiler = string(*entry.Compiler)
+				}
+				bindings = bindings.Register("$"+entry.Name, compiler.NewBinding(path.Index(i), r.resource, bindings, entry.Variable.Value(), defaultCompiler))
 			}
 			identifier := ""
 			if r.rule.Identifier != "" {
@@ -88,7 +101,11 @@ func New() engine.Engine[Request, Response] {
 				}
 			}
 			if r.rule.Match != nil {
-				errs, err := matching.Match(nil, r.rule.Match, r.resource, bindings, compiler)
+				defaultCompiler := defaultCompiler
+				if r.rule.Match.Compiler != nil {
+					defaultCompiler = string(*r.rule.Match.Compiler)
+				}
+				errs, err := matching.Match(nil, r.rule.Match, r.resource, bindings, compiler, defaultCompiler)
 				if err != nil {
 					return []RuleResponse{{
 						Rule:       r.rule,
@@ -103,7 +120,11 @@ func New() engine.Engine[Request, Response] {
 				}
 			}
 			if r.rule.Exclude != nil {
-				errs, err := matching.Match(nil, r.rule.Exclude, r.resource, bindings, compiler)
+				defaultCompiler := defaultCompiler
+				if r.rule.Exclude.Compiler != nil {
+					defaultCompiler = string(*r.rule.Exclude.Compiler)
+				}
+				errs, err := matching.Match(nil, r.rule.Exclude, r.resource, bindings, compiler, defaultCompiler)
 				if err != nil {
 					return []RuleResponse{{
 						Rule:       r.rule,
@@ -119,6 +140,11 @@ func New() engine.Engine[Request, Response] {
 			}
 			var feedback map[string]Feedback
 			for _, f := range r.rule.Feedback {
+				// TODO
+				// defaultCompiler := defaultCompiler
+				// if f.Engine != nil {
+				// 	defaultCompiler = string(*f.Engine)
+				// }
 				result, err := compilers.Execute(f.Value, r.resource, bindings, compiler.Jp)
 				if feedback == nil {
 					feedback = map[string]Feedback{}
@@ -133,7 +159,7 @@ func New() engine.Engine[Request, Response] {
 					}
 				}
 			}
-			violations, err := matching.MatchAssert(nil, r.rule.Assert, r.resource, bindings, compiler)
+			violations, err := matching.MatchAssert(nil, r.rule.Assert, r.resource, bindings, compiler, defaultCompiler)
 			if err != nil {
 				return []RuleResponse{{
 					Rule:       r.rule,
@@ -178,7 +204,7 @@ func New() engine.Engine[Request, Response] {
 			bindings = bindings.Register("$payload", jpbinding.NewBinding(r.Resource))
 			for _, policy := range r.Policies {
 				response.Policies = append(response.Policies, policyEngine.Run(ctx, policyRequest{
-					policy:   policy,
+					policy:   *policy,
 					resource: r.Resource,
 					bindings: bindings,
 				}))

@@ -30,7 +30,7 @@ func TestParse(t *testing.T) {
 			Foreach:     false,
 			ForeachName: "",
 			Statement:   "test",
-			Engine:      EngineDefault,
+			Compiler:    CompilerJP,
 		},
 	}, {
 		name: "nested field",
@@ -47,7 +47,7 @@ func TestParse(t *testing.T) {
 			Foreach:     false,
 			ForeachName: "",
 			Statement:   "test.test",
-			Engine:      EngineDefault,
+			Compiler:    CompilerJP,
 		},
 	}, {
 		name: "Foreach simple field",
@@ -64,7 +64,7 @@ func TestParse(t *testing.T) {
 			Foreach:     true,
 			ForeachName: "",
 			Statement:   "test",
-			Engine:      EngineDefault,
+			Compiler:    CompilerJP,
 		},
 	}, {
 		name: "Foreach nested field",
@@ -73,7 +73,7 @@ func TestParse(t *testing.T) {
 			Foreach:     true,
 			ForeachName: "",
 			Statement:   "test.test",
-			Engine:      EngineDefault,
+			Compiler:    CompilerJP,
 		},
 	}, {
 		name: "binding",
@@ -92,7 +92,7 @@ func TestParse(t *testing.T) {
 			ForeachName: "",
 			Statement:   "test",
 			Binding:     "foo",
-			Engine:      EngineDefault,
+			Compiler:    CompilerJP,
 		},
 	}, {
 		name: "Foreach and binding",
@@ -111,7 +111,7 @@ func TestParse(t *testing.T) {
 			ForeachName: "",
 			Statement:   "test",
 			Binding:     "foo",
-			Engine:      EngineDefault,
+			Compiler:    CompilerJP,
 		},
 	}, {
 		name: "escape",
@@ -170,7 +170,7 @@ func TestParse(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Parse(tt.in)
+			got := Parse(CompilerJP, tt.in)
 			assert.Equal(t, tt.want, got)
 		})
 	}

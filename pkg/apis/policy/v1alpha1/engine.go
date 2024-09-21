@@ -1,10 +1,10 @@
 package v1alpha1
 
-// Engine defines the engine to use when evaluating expressions.
+// Compiler defines the compiler to use when evaluating expressions.
 // +kubebuilder:validation:Enum:=jp;cel
-type Engine string
+type Compiler string
 
 const (
-	EngineJP  Engine = "jp"
-	EngineCEL Engine = "cel"
+	EngineJP  Compiler = "jp"
+	EngineCEL Compiler = "cel"
 )

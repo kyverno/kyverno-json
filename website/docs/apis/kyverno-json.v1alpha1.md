@@ -64,6 +64,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
+| `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `any` | [`[]Assertion`](#json-kyverno-io-v1alpha1-Assertion) |  |  | <p>Any allows specifying assertions which will be ORed.</p> |
 | `all` | [`[]Assertion`](#json-kyverno-io-v1alpha1-Assertion) |  |  | <p>All allows specifying assertions which will be ANDed.</p> |
 
@@ -78,8 +79,8 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
+| `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `message` | [`Message`](#json-kyverno-io-v1alpha1-Message) |  |  | <p>Message is the message associated message.</p> |
-| `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) |  |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
 | `check` | [`AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) | :white_check_mark: |  | <p>Check is the assertion check definition.</p> |
 
 ## `AssertionTree`     {#json-kyverno-io-v1alpha1-AssertionTree}
@@ -95,6 +96,23 @@ auto_generated: true
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
 
+## `Compiler`     {#json-kyverno-io-v1alpha1-Compiler}
+
+(Alias of `string`)
+
+**Appears in:**
+    
+- [Assert](#json-kyverno-io-v1alpha1-Assert)
+- [Assertion](#json-kyverno-io-v1alpha1-Assertion)
+- [ContextEntry](#json-kyverno-io-v1alpha1-ContextEntry)
+- [Feedback](#json-kyverno-io-v1alpha1-Feedback)
+- [Match](#json-kyverno-io-v1alpha1-Match)
+- [ValidatingPolicySpec](#json-kyverno-io-v1alpha1-ValidatingPolicySpec)
+- [ValidatingRule](#json-kyverno-io-v1alpha1-ValidatingRule)
+
+<p>Compiler defines the compiler to use when evaluating expressions.</p>
+
+
 ## `ContextEntry`     {#json-kyverno-io-v1alpha1-ContextEntry}
 
 **Appears in:**
@@ -106,21 +124,9 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
+| `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `name` | `string` | :white_check_mark: |  | <p>Name is the entry name.</p> |
 | `variable` | [`Any`](#json-kyverno-io-v1alpha1-Any) |  |  | <p>Variable defines an arbitrary variable.</p> |
-
-## `Engine`     {#json-kyverno-io-v1alpha1-Engine}
-
-(Alias of `string`)
-
-**Appears in:**
-    
-- [Assertion](#json-kyverno-io-v1alpha1-Assertion)
-- [ValidatingPolicySpec](#json-kyverno-io-v1alpha1-ValidatingPolicySpec)
-- [ValidatingRule](#json-kyverno-io-v1alpha1-ValidatingRule)
-
-<p>Engine defines the engine to use when evaluating expressions.</p>
-
 
 ## `Feedback`     {#json-kyverno-io-v1alpha1-Feedback}
 
@@ -133,6 +139,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
+| `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `name` | `string` | :white_check_mark: |  | <p>Name is the feedback entry name.</p> |
 | `value` | `string` | :white_check_mark: |  | <p>Value is the feedback entry value (a JMESPath expression).</p> |
 
@@ -147,6 +154,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
+| `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `any` | [`[]AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) |  |  | <p>Any allows specifying assertion trees which will be ORed.</p> |
 | `all` | [`[]AssertionTree`](#json-kyverno-io-v1alpha1-AssertionTree) |  |  | <p>All allows specifying assertion trees which will be ANDed.</p> |
 
@@ -173,7 +181,7 @@ auto_generated: true
 
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
-| `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) |  |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
+| `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `rules` | [`[]ValidatingRule`](#json-kyverno-io-v1alpha1-ValidatingRule) | :white_check_mark: |  | <p>Rules is a list of ValidatingRule instances.</p> |
 
 ## `ValidatingRule`     {#json-kyverno-io-v1alpha1-ValidatingRule}
@@ -188,7 +196,7 @@ auto_generated: true
 | Field | Type | Required | Inline | Description |
 |---|---|---|---|---|
 | `name` | `string` | :white_check_mark: |  | <p>Name is a label to identify the rule, It must be unique within the policy.</p> |
-| `engine` | [`Engine`](#json-kyverno-io-v1alpha1-Engine) |  |  | <p>Engine defines the default engine to use when evaluating expressions.</p> |
+| `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `context` | [`[]ContextEntry`](#json-kyverno-io-v1alpha1-ContextEntry) |  |  | <p>Context defines variables and data sources that can be used during rule execution.</p> |
 | `match` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Match defines when this policy rule should be applied.</p> |
 | `exclude` | [`Match`](#json-kyverno-io-v1alpha1-Match) |  |  | <p>Exclude defines when this policy rule should not be applied.</p> |

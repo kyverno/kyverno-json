@@ -19,14 +19,14 @@ type Assertion interface {
 	Assert(*field.Path, any, binding.Bindings) (field.ErrorList, error)
 }
 
-func Parse(assertion any, compiler compilers.Compilers) (node, error) {
+func Parse(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
-		return parseSlice(assertion, compiler)
+		return parseSlice(assertion, compiler, defaultCompiler)
 	case reflect.Map:
-		return parseMap(assertion, compiler)
+		return parseMap(assertion, compiler, defaultCompiler)
 	default:
-		return parseScalar(assertion, compiler)
+		return parseScalar(assertion, compiler, defaultCompiler)
 	}
 }
 
@@ -40,11 +40,11 @@ func (n node) Assert(path *field.Path, value any, bindings binding.Bindings) (fi
 // parseSlice is the assertion represented by a slice.
 // it first compares the length of the analysed resource with the length of the descendants.
 // if lengths match all descendants are evaluated with their corresponding items.
-func parseSlice(assertion any, compiler compilers.Compilers) (node, error) {
+func parseSlice(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
 	var assertions []node
 	valueOf := reflect.ValueOf(assertion)
 	for i := 0; i < valueOf.Len(); i++ {
-		sub, err := Parse(valueOf.Index(i).Interface(), compiler)
+		sub, err := Parse(valueOf.Index(i).Interface(), compiler, defaultCompiler)
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +76,7 @@ func parseSlice(assertion any, compiler compilers.Compilers) (node, error) {
 
 // parseMap is the assertion represented by a map.
 // it is responsible for projecting the analysed resource and passing the result to the descendant
-func parseMap(assertion any, compiler compilers.Compilers) (node, error) {
+func parseMap(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
 	assertions := map[any]struct {
 		projection.Projection
 		node
@@ -85,13 +85,13 @@ func parseMap(assertion any, compiler compilers.Compilers) (node, error) {
 	for iter.Next() {
 		key := iter.Key().Interface()
 		value := iter.Value().Interface()
-		assertion, err := Parse(value, compiler)
+		assertion, err := Parse(value, compiler, defaultCompiler)
 		if err != nil {
 			return nil, err
 		}
 		entry := assertions[key]
 		entry.node = assertion
-		entry.Projection = projection.Parse(key, compiler)
+		entry.Projection = projection.Parse(key, compiler, defaultCompiler)
 		assertions[key] = entry
 	}
 	return func(path *field.Path, value any, bindings binding.Bindings) (field.ErrorList, error) {
@@ -161,21 +161,20 @@ func parseMap(assertion any, compiler compilers.Compilers) (node, error) {
 // parseScalar is the assertion represented by a leaf.
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
-func parseScalar(assertion any, compiler compilers.Compilers) (node, error) {
+func parseScalar(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
 	var project func(value any, bindings binding.Bindings) (any, error)
 	switch typed := assertion.(type) {
 	case string:
-		expr := expression.Parse(typed)
+		expr := expression.Parse(defaultCompiler, typed)
 		if expr.Foreach {
 			return nil, errors.New("foreach is not supported on the RHS")
 		}
 		if expr.Binding != "" {
 			return nil, errors.New("binding is not supported on the RHS")
 		}
-		switch expr.Engine {
-		case expression.EngineJP:
+		if compiler := compiler.Compiler(expr.Compiler); compiler != nil {
 			parse := sync.OnceValues(func() (compilers.Program, error) {
-				return compiler.Jp.Compile(expr.Statement)
+				return compiler.Compile(expr.Statement)
 			})
 			project = func(value any, bindings binding.Bindings) (any, error) {
 				program, err := parse()
@@ -184,15 +183,7 @@ func parseScalar(assertion any, compiler compilers.Compilers) (node, error) {
 				}
 				return program(value, bindings)
 			}
-		case expression.EngineCEL:
-			project = func(value any, bindings binding.Bindings) (any, error) {
-				program, err := compiler.Cel.Compile(expr.Statement)
-				if err != nil {
-					return nil, err
-				}
-				return program(value, bindings)
-			}
-		default:
+		} else {
 			assertion = expr.Statement
 		}
 	}

@@ -4,17 +4,16 @@ import (
 	"regexp"
 )
 
-var (
-	foreachRegex = regexp.MustCompile(`^~(\w+)?\.(.*)`)
-	bindingRegex = regexp.MustCompile(`(.*)\s*->\s*(\w+)$`)
-	escapeRegex  = regexp.MustCompile(`^\\(.+)\\$`)
-	engineRegex  = regexp.MustCompile(`^\((?:(\w+);)?(.+)\)$`)
+const (
+	CompilerJP  = "jp"
+	CompilerCEL = "cel"
 )
 
-const (
-	EngineJP      = "jp"
-	EngineCEL     = "cel"
-	EngineDefault = EngineJP
+var (
+	foreachRegex  = regexp.MustCompile(`^~(\w+)?\.(.*)`)
+	bindingRegex  = regexp.MustCompile(`(.*)\s*->\s*(\w+)$`)
+	escapeRegex   = regexp.MustCompile(`^\\(.+)\\$`)
+	compilerRegex = regexp.MustCompile(`^\((?:(\w+);)?(.+)\)$`)
 )
 
 type Expression struct {
@@ -22,10 +21,10 @@ type Expression struct {
 	ForeachName string
 	Statement   string
 	Binding     string
-	Engine      string
+	Compiler    string
 }
 
-func Parse(in string) (expression Expression) {
+func Parse(compiler string, in string) (expression Expression) {
 	// 1. match foreach
 	if match := foreachRegex.FindStringSubmatch(in); match != nil {
 		expression.Foreach = true
@@ -41,11 +40,11 @@ func Parse(in string) (expression Expression) {
 	if match := escapeRegex.FindStringSubmatch(in); match != nil {
 		in = match[1]
 	} else {
-		if match := engineRegex.FindStringSubmatch(in); match != nil {
-			expression.Engine = match[1]
+		if match := compilerRegex.FindStringSubmatch(in); match != nil {
+			expression.Compiler = match[1]
 			// account for default engine
-			if expression.Engine == "" {
-				expression.Engine = EngineDefault
+			if expression.Compiler == "" {
+				expression.Compiler = compiler
 			}
 			in = match[2]
 		}
