@@ -6,11 +6,12 @@ import (
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/jmespath-community/go-jmespath/pkg/interpreter"
 	"github.com/jmespath-community/go-jmespath/pkg/parsing"
-	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 )
 
+type Program = func(any, binding.Bindings) (any, error)
+
 type Compiler interface {
-	Compile(string) (compilers.Program, error)
+	Compile(string) (Program, error)
 	Options() []Option
 }
 
@@ -32,7 +33,7 @@ func (c *compiler) Options() []Option {
 	return c.options
 }
 
-func (c *compiler) Compile(statement string) (compilers.Program, error) {
+func (c *compiler) Compile(statement string) (Program, error) {
 	parser := parsing.NewParser()
 	compiled, err := parser.Parse(statement)
 	if err != nil {

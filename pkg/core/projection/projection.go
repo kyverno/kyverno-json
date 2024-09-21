@@ -8,7 +8,6 @@ import (
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
-	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
@@ -25,7 +24,7 @@ type Projection struct {
 	Handler
 }
 
-func Parse(in any, compiler templating.Compiler) (projection Projection) {
+func Parse(in any, compiler compilers.Compilers) (projection Projection) {
 	switch typed := in.(type) {
 	case string:
 		// 1. if we have a string, parse the expression
