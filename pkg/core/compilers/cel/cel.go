@@ -3,11 +3,12 @@ package cel
 import (
 	"github.com/google/cel-go/cel"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
-	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 )
 
+type Program = func(any, binding.Bindings) (any, error)
+
 type Compiler interface {
-	Compile(string) (compilers.Program, error)
+	Compile(string) (Program, error)
 }
 
 type compiler struct{}
@@ -16,7 +17,7 @@ func NewCompiler() *compiler {
 	return &compiler{}
 }
 
-func (c *compiler) Compile(statement string) (compilers.Program, error) {
+func (c *compiler) Compile(statement string) (Program, error) {
 	env, err := DefaultEnv()
 	if err != nil {
 		return nil, err

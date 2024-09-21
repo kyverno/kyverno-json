@@ -1,4 +1,4 @@
-package templating
+package compilers
 
 import (
 	"sync"
@@ -10,17 +10,17 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-var DefaultCompiler = Compiler{
+var DefaultCompiler = Compilers{
 	Jp:  jp.NewCompiler(),
 	Cel: cel.NewCompiler(),
 }
 
-type Compiler struct {
+type Compilers struct {
 	Jp  jp.Compiler
 	Cel cel.Compiler
 }
 
-func (c Compiler) NewBinding(path *field.Path, value any, bindings binding.Bindings, template any) binding.Binding {
+func (c Compilers) NewBinding(path *field.Path, value any, bindings binding.Bindings, template any) binding.Binding {
 	return binding.NewDelegate(
 		sync.OnceValues(
 			func() (any, error) {

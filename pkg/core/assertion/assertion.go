@@ -11,7 +11,6 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	"github.com/kyverno/kyverno-json/pkg/core/matching"
 	"github.com/kyverno/kyverno-json/pkg/core/projection"
-	"github.com/kyverno/kyverno-json/pkg/core/templating"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -20,7 +19,7 @@ type Assertion interface {
 	Assert(*field.Path, any, binding.Bindings) (field.ErrorList, error)
 }
 
-func Parse(assertion any, compiler templating.Compiler) (node, error) {
+func Parse(assertion any, compiler compilers.Compilers) (node, error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
 		return parseSlice(assertion, compiler)
@@ -41,7 +40,7 @@ func (n node) Assert(path *field.Path, value any, bindings binding.Bindings) (fi
 // parseSlice is the assertion represented by a slice.
 // it first compares the length of the analysed resource with the length of the descendants.
 // if lengths match all descendants are evaluated with their corresponding items.
-func parseSlice(assertion any, compiler templating.Compiler) (node, error) {
+func parseSlice(assertion any, compiler compilers.Compilers) (node, error) {
 	var assertions []node
 	valueOf := reflect.ValueOf(assertion)
 	for i := 0; i < valueOf.Len(); i++ {
@@ -77,7 +76,7 @@ func parseSlice(assertion any, compiler templating.Compiler) (node, error) {
 
 // parseMap is the assertion represented by a map.
 // it is responsible for projecting the analysed resource and passing the result to the descendant
-func parseMap(assertion any, compiler templating.Compiler) (node, error) {
+func parseMap(assertion any, compiler compilers.Compilers) (node, error) {
 	assertions := map[any]struct {
 		projection.Projection
 		node
@@ -162,7 +161,7 @@ func parseMap(assertion any, compiler templating.Compiler) (node, error) {
 // parseScalar is the assertion represented by a leaf.
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
-func parseScalar(assertion any, compiler templating.Compiler) (node, error) {
+func parseScalar(assertion any, compiler compilers.Compilers) (node, error) {
 	var project func(value any, bindings binding.Bindings) (any, error)
 	switch typed := assertion.(type) {
 	case string:
