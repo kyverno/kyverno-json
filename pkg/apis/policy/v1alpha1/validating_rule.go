@@ -6,9 +6,9 @@ type ValidatingRule struct {
 	// +kubebuilder:validation:MaxLength=63
 	Name string `json:"name"`
 
-	// Engine defines the default engine to use when evaluating expressions.
+	// Compiler defines the default compiler to use when evaluating expressions.
 	// +optional
-	Engine *Engine `json:"engine,omitempty"`
+	Compiler *Compiler `json:"compiler,omitempty"`
 
 	// Context defines variables and data sources that can be used during rule execution.
 	// +optional

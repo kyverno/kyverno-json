@@ -2,9 +2,9 @@ package v1alpha1
 
 // ValidatingPolicySpec contains the policy spec.
 type ValidatingPolicySpec struct {
-	// Engine defines the default engine to use when evaluating expressions.
+	// Compiler defines the default compiler to use when evaluating expressions.
 	// +optional
-	Engine *Engine `json:"engine,omitempty"`
+	Compiler *Compiler `json:"compiler,omitempty"`
 
 	// Rules is a list of ValidatingRule instances.
 	Rules []ValidatingRule `json:"rules"`

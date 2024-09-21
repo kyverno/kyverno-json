@@ -7,12 +7,16 @@ spec:
     - name: foo-bar-4
       context:
       - name: celFoo
-        variable: (cel; 4)
+        compiler: cel
+        variable: (4)
       - name: jpFoo
-        variable: (jp; $celFoo)
+        compiler: jp
+        variable: ($celFoo)
       - name: celFoo
-        variable: (cel; bindings.resolve('jpFoo'))
+        compiler: cel
+        variable: (bindings.resolve('jpFoo'))
       assert:
         all:
-        - check:
-            (cel; object.foo.bar): (cel; bindings.resolve('celFoo'))
+        - compiler: cel
+          check:
+            (object.foo.bar): (bindings.resolve('celFoo'))

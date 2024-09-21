@@ -285,8 +285,8 @@
         "rules"
       ],
       "properties": {
-        "engine": {
-          "description": "Engine defines the default engine to use when evaluating expressions.",
+        "compiler": {
+          "description": "Compiler defines the default compiler to use when evaluating expressions.",
           "type": [
             "string",
             "null"
@@ -334,8 +334,8 @@
                           "description": "Check is the assertion check definition.",
                           "x-kubernetes-preserve-unknown-fields": true
                         },
-                        "engine": {
-                          "description": "Engine defines the default engine to use when evaluating expressions.",
+                        "compiler": {
+                          "description": "Compiler defines the default compiler to use when evaluating expressions.",
                           "type": [
                             "string",
                             "null"
@@ -375,8 +375,8 @@
                           "description": "Check is the assertion check definition.",
                           "x-kubernetes-preserve-unknown-fields": true
                         },
-                        "engine": {
-                          "description": "Engine defines the default engine to use when evaluating expressions.",
+                        "compiler": {
+                          "description": "Compiler defines the default compiler to use when evaluating expressions.",
                           "type": [
                             "string",
                             "null"
@@ -395,8 +395,30 @@
                         }
                       }
                     }
+                  },
+                  "compiler": {
+                    "description": "Compiler defines the default compiler to use when evaluating expressions.",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "enum": [
+                      "jp",
+                      "cel"
+                    ]
                   }
                 }
+              },
+              "compiler": {
+                "description": "Compiler defines the default compiler to use when evaluating expressions.",
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "enum": [
+                  "jp",
+                  "cel"
+                ]
               },
               "context": {
                 "description": "Context defines variables and data sources that can be used during rule execution.",
@@ -414,6 +436,17 @@
                     "name"
                   ],
                   "properties": {
+                    "compiler": {
+                      "description": "Compiler defines the default compiler to use when evaluating expressions.",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "jp",
+                        "cel"
+                      ]
+                    },
                     "name": {
                       "description": "Name is the entry name.",
                       "type": "string"
@@ -424,17 +457,6 @@
                     }
                   }
                 }
-              },
-              "engine": {
-                "description": "Engine defines the default engine to use when evaluating expressions.",
-                "type": [
-                  "string",
-                  "null"
-                ],
-                "enum": [
-                  "jp",
-                  "cel"
-                ]
               },
               "exclude": {
                 "description": "Exclude defines when this policy rule should not be applied.",
@@ -464,6 +486,17 @@
                       "description": "AssertionTree represents an assertion tree.",
                       "x-kubernetes-preserve-unknown-fields": true
                     }
+                  },
+                  "compiler": {
+                    "description": "Compiler defines the default compiler to use when evaluating expressions.",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "enum": [
+                      "jp",
+                      "cel"
+                    ]
                   }
                 }
               },
@@ -484,6 +517,17 @@
                     "value"
                   ],
                   "properties": {
+                    "compiler": {
+                      "description": "Compiler defines the default compiler to use when evaluating expressions.",
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "jp",
+                        "cel"
+                      ]
+                    },
                     "name": {
                       "description": "Name is the feedback entry name.",
                       "type": "string"
@@ -530,6 +574,17 @@
                       "description": "AssertionTree represents an assertion tree.",
                       "x-kubernetes-preserve-unknown-fields": true
                     }
+                  },
+                  "compiler": {
+                    "description": "Compiler defines the default compiler to use when evaluating expressions.",
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "enum": [
+                      "jp",
+                      "cel"
+                    ]
                   }
                 }
               },

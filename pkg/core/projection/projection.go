@@ -24,23 +24,22 @@ type Projection struct {
 	Handler
 }
 
-func Parse(in any, compiler compilers.Compilers) (projection Projection) {
+func Parse(in any, compiler compilers.Compilers, defaultCompiler string) (projection Projection) {
 	switch typed := in.(type) {
 	case string:
 		// 1. if we have a string, parse the expression
-		expr := expression.Parse(typed)
+		expr := expression.Parse(defaultCompiler, typed)
 		// 2. record projection infos
 		projection.Foreach = expr.Foreach
 		projection.ForeachName = expr.ForeachName
 		projection.Binding = expr.Binding
 		// 3. compute the projection func
-		switch expr.Engine {
-		case expression.EngineJP:
-			parse := sync.OnceValues(func() (compilers.Program, error) {
-				return compiler.Jp.Compile(expr.Statement)
+		if compiler := compiler.Compiler(expr.Compiler); compiler != nil {
+			compile := sync.OnceValues(func() (compilers.Program, error) {
+				return compiler.Compile(expr.Statement)
 			})
 			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
-				program, err := parse()
+				program, err := compile()
 				if err != nil {
 					return nil, false, err
 				}
@@ -50,19 +49,7 @@ func Parse(in any, compiler compilers.Compilers) (projection Projection) {
 				}
 				return projected, true, err
 			}
-		case expression.EngineCEL:
-			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
-				program, err := compiler.Cel.Compile(expr.Statement)
-				if err != nil {
-					return nil, false, err
-				}
-				projected, err := program(value, bindings)
-				if err != nil {
-					return nil, false, err
-				}
-				return projected, true, nil
-			}
-		default:
+		} else {
 			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
 				if value == nil {
 					return nil, false, nil

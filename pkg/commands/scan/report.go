@@ -40,7 +40,7 @@ func ToReport(response jsonengine.Response) Report {
 	}
 	for _, policy := range response.Policies {
 		policyReport := PolicyReport{
-			Policy: policy.Policy,
+			Policy: &policy.Policy,
 		}
 		for _, rule := range policy.Rules {
 			ruleReport := RuleReport{

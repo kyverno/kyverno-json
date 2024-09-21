@@ -22,8 +22,8 @@ func NewAssertionTree(value any) AssertionTree {
 	}
 }
 
-func (t *AssertionTree) Compile(compiler func(string, any) (assertion.Assertion, error)) (assertion.Assertion, error) {
-	return compiler(t._hash, t._tree)
+func (t *AssertionTree) Compile(compiler func(string, any, string) (assertion.Assertion, error), defaultCompiler string) (assertion.Assertion, error) {
+	return compiler(t._hash, t._tree, defaultCompiler)
 }
 
 func (a *AssertionTree) MarshalJSON() ([]byte, error) {

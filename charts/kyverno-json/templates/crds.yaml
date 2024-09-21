@@ -48,8 +48,8 @@ spec:
           spec:
             description: Policy spec.
             properties:
-              engine:
-                description: Engine defines the default engine to use when evaluating
+              compiler:
+                description: Compiler defines the default compiler to use when evaluating
                   expressions.
                 enum:
                 - jp
@@ -73,9 +73,9 @@ spec:
                               check:
                                 description: Check is the assertion check definition.
                                 x-kubernetes-preserve-unknown-fields: true
-                              engine:
-                                description: Engine defines the default engine to
-                                  use when evaluating expressions.
+                              compiler:
+                                description: Compiler defines the default compiler
+                                  to use when evaluating expressions.
                                 enum:
                                 - jp
                                 - cel
@@ -97,9 +97,9 @@ spec:
                               check:
                                 description: Check is the assertion check definition.
                                 x-kubernetes-preserve-unknown-fields: true
-                              engine:
-                                description: Engine defines the default engine to
-                                  use when evaluating expressions.
+                              compiler:
+                                description: Compiler defines the default compiler
+                                  to use when evaluating expressions.
                                 enum:
                                 - jp
                                 - cel
@@ -111,7 +111,21 @@ spec:
                             - check
                             type: object
                           type: array
+                        compiler:
+                          description: Compiler defines the default compiler to use
+                            when evaluating expressions.
+                          enum:
+                          - jp
+                          - cel
+                          type: string
                       type: object
+                    compiler:
+                      description: Compiler defines the default compiler to use when
+                        evaluating expressions.
+                      enum:
+                      - jp
+                      - cel
+                      type: string
                     context:
                       description: Context defines variables and data sources that
                         can be used during rule execution.
@@ -119,6 +133,13 @@ spec:
                         description: ContextEntry adds variables and data sources
                           to a rule context.
                         properties:
+                          compiler:
+                            description: Compiler defines the default compiler to
+                              use when evaluating expressions.
+                            enum:
+                            - jp
+                            - cel
+                            type: string
                           name:
                             description: Name is the entry name.
                             type: string
@@ -129,13 +150,6 @@ spec:
                         - name
                         type: object
                       type: array
-                    engine:
-                      description: Engine defines the default engine to use when evaluating
-                        expressions.
-                      enum:
-                      - jp
-                      - cel
-                      type: string
                     exclude:
                       description: Exclude defines when this policy rule should not
                         be applied.
@@ -154,12 +168,26 @@ spec:
                             description: AssertionTree represents an assertion tree.
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
+                        compiler:
+                          description: Compiler defines the default compiler to use
+                            when evaluating expressions.
+                          enum:
+                          - jp
+                          - cel
+                          type: string
                       type: object
                     feedback:
                       description: Feedback declares rule feedback entries.
                       items:
                         description: Feedback contains a feedback entry.
                         properties:
+                          compiler:
+                            description: Compiler defines the default compiler to
+                              use when evaluating expressions.
+                            enum:
+                            - jp
+                            - cel
+                            type: string
                           name:
                             description: Name is the feedback entry name.
                             type: string
@@ -193,6 +221,13 @@ spec:
                             description: AssertionTree represents an assertion tree.
                             x-kubernetes-preserve-unknown-fields: true
                           type: array
+                        compiler:
+                          description: Compiler defines the default compiler to use
+                            when evaluating expressions.
+                          enum:
+                          - jp
+                          - cel
+                          type: string
                       type: object
                     name:
                       description: Name is a label to identify the rule, It must be
