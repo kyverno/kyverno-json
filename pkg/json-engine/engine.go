@@ -3,8 +3,10 @@ package jsonengine
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
+	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	jpbinding "github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
@@ -68,7 +70,7 @@ func New() engine.Engine[Request, Response] {
 		resource any
 		bindings jpbinding.Bindings
 	}
-	compiler := matching.NewCompiler(compilers.DefaultCompiler, 256)
+	compiler := matching.NewCompiler(compilers.DefaultCompilers, 256)
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
 			bindings := r.bindings.Register("$rule", jpbinding.NewBinding(r.rule))
@@ -82,12 +84,31 @@ func New() engine.Engine[Request, Response] {
 			// TODO: this doesn't seem to be the right path
 			var path *field.Path
 			path = path.Child("context")
-			for i, entry := range r.rule.Context {
+			for _, entry := range r.rule.Context {
 				defaultCompiler := defaultCompiler
 				if entry.Compiler != nil {
 					defaultCompiler = string(*entry.Compiler)
 				}
-				bindings = bindings.Register("$"+entry.Name, compiler.NewBinding(path.Index(i), r.resource, bindings, entry.Variable.Value(), defaultCompiler))
+				bindings = func(variable v1alpha1.Any, bindings jpbinding.Bindings) jpbinding.Bindings {
+					return bindings.Register(
+						"$"+entry.Name,
+						binding.NewDelegate(
+							sync.OnceValues(
+								func() (any, error) {
+									handler, err := variable.Compile(compiler.CompileProjection, defaultCompiler)
+									if err != nil {
+										return nil, field.InternalError(path.Child("variable"), err)
+									}
+									projected, err := handler(r.resource, bindings)
+									if err != nil {
+										return nil, field.InternalError(path.Child("variable"), err)
+									}
+									return projected, nil
+								},
+							),
+						),
+					)
+				}(entry.Variable, bindings)
 			}
 			identifier := ""
 			if r.rule.Identifier != "" {

@@ -7,6 +7,7 @@ import (
 	"github.com/elastic/go-freelru"
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
+	"github.com/kyverno/kyverno-json/pkg/core/projection"
 )
 
 type _compilers = compilers.Compilers
@@ -43,4 +44,9 @@ func (c Compiler) CompileAssertion(hash string, value any, defaultCompiler strin
 		c.SyncedLRU.Add(hash, entry)
 	}
 	return entry()
+}
+
+func (c Compiler) CompileProjection(hash string, value any, defaultCompiler string) (projection.ScalarHandler, error) {
+	// TODO: cache
+	return projection.ParseScalar(value, c._compilers, defaultCompiler)
 }

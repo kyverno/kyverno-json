@@ -9,40 +9,36 @@ import (
 func TestAny_DeepCopyInto(t *testing.T) {
 	tests := []struct {
 		name string
-		in   *Any
-		out  *Any
+		in   Any
 	}{{
 		name: "nil",
-		in:   &Any{nil},
-		out:  &Any{nil},
+		in:   NewAny(nil),
 	}, {
 		name: "int",
-		in:   &Any{42},
-		out:  &Any{nil},
+		in:   NewAny(42),
 	}, {
 		name: "string",
-		in:   &Any{"foo"},
-		out:  &Any{nil},
+		in:   NewAny("foo"),
 	}, {
 		name: "slice",
-		in:   &Any{[]any{42, "string"}},
-		out:  &Any{nil},
+		in:   NewAny([]any{42, "string"}),
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.in.DeepCopyInto(tt.out)
-			assert.Equal(t, tt.in, tt.out)
+			var out Any
+			tt.in.DeepCopyInto(&out)
+			assert.Equal(t, tt.in, out)
 		})
 	}
 	{
 		inner := map[string]any{
 			"foo": 42,
 		}
-		in := Any{map[string]any{"inner": inner}}
+		in := NewAny(map[string]any{"inner": inner})
 		out := in.DeepCopy()
-		inPtr := in.Value().(map[string]any)["inner"].(map[string]any)
+		inPtr := in._value.(map[string]any)["inner"].(map[string]any)
 		inPtr["foo"] = 55
-		outPtr := out.Value().(map[string]any)["inner"].(map[string]any)
+		outPtr := out._value.(map[string]any)["inner"].(map[string]any)
 		assert.NotEqual(t, inPtr, outPtr)
 	}
 }

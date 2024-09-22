@@ -6,10 +6,10 @@ import (
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
-	tassert "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestProjection(t *testing.T) {
+func TestParseMap(t *testing.T) {
 	tests := []struct {
 		name      string
 		key       any
@@ -89,16 +89,16 @@ func TestProjection(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			compiler := compilers.DefaultCompiler
-			proj := Parse(tt.key, compiler, expression.CompilerJP)
+			compiler := compilers.DefaultCompilers
+			proj := ParseMapKey(tt.key, compiler, expression.CompilerJP)
 			got, found, err := proj.Handler(tt.value, tt.bindings)
 			if tt.wantErr {
-				tassert.Error(t, err)
+				assert.Error(t, err)
 			} else {
-				tassert.NoError(t, err)
+				assert.NoError(t, err)
 			}
-			tassert.Equal(t, tt.wantFound, found)
-			tassert.Equal(t, tt.want, got)
+			assert.Equal(t, tt.wantFound, found)
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }

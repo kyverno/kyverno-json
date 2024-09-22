@@ -77,7 +77,7 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	}
 	out.println("Pre processing ...")
 	for _, preprocessor := range c.preprocessors {
-		result, err := compilers.Execute(preprocessor, payload, nil, compilers.DefaultCompiler.Jp)
+		result, err := compilers.Execute(preprocessor, payload, nil, compilers.DefaultCompilers.Jp)
 		if err != nil {
 			return err
 		}
