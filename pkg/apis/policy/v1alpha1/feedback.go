@@ -10,5 +10,6 @@ type Feedback struct {
 	Name string `json:"name"`
 
 	// Value is the feedback entry value (a JMESPath expression).
-	Value string `json:"value"`
+	// +optional
+	Value *Any `json:"value,omitempty"`
 }

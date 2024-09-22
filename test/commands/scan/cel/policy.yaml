@@ -3,20 +3,18 @@ kind: ValidatingPolicy
 metadata:
   name: test
 spec:
+  compiler: cel
   rules:
     - name: foo-bar-4
       context:
       - name: celFoo
-        compiler: cel
         variable: (4)
       - name: jpFoo
         compiler: jp
         variable: ($celFoo)
       - name: celFoo
-        compiler: cel
         variable: (bindings.resolve('jpFoo'))
       assert:
         all:
-        - compiler: cel
-          check:
+        - check:
             (object.foo.bar): (bindings.resolve('celFoo'))

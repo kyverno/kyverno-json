@@ -116,6 +116,10 @@ func (in *Feedback) DeepCopyInto(out *Feedback) {
 		*out = new(Compiler)
 		**out = **in
 	}
+	if in.Value != nil {
+		in, out := &in.Value, &out.Value
+		*out = (*in).DeepCopy()
+	}
 	return
 }
 

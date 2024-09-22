@@ -46,6 +46,7 @@ auto_generated: true
 **Appears in:**
     
 - [ContextEntry](#json-kyverno-io-v1alpha1-ContextEntry)
+- [Feedback](#json-kyverno-io-v1alpha1-Feedback)
 
 <p>Any can be any type.</p>
 
@@ -141,7 +142,7 @@ auto_generated: true
 |---|---|---|---|---|
 | `compiler` | [`Compiler`](#json-kyverno-io-v1alpha1-Compiler) |  |  | <p>Compiler defines the default compiler to use when evaluating expressions.</p> |
 | `name` | `string` | :white_check_mark: |  | <p>Name is the feedback entry name.</p> |
-| `value` | `string` | :white_check_mark: |  | <p>Value is the feedback entry value (a JMESPath expression).</p> |
+| `value` | [`Any`](#json-kyverno-io-v1alpha1-Any) |  |  | <p>Value is the feedback entry value (a JMESPath expression).</p> |
 
 ## `Match`     {#json-kyverno-io-v1alpha1-Match}
 

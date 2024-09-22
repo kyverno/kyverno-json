@@ -194,10 +194,9 @@ spec:
                           value:
                             description: Value is the feedback entry value (a JMESPath
                               expression).
-                            type: string
+                            x-kubernetes-preserve-unknown-fields: true
                         required:
                         - name
-                        - value
                         type: object
                       type: array
                     identifier:
