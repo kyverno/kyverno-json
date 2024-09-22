@@ -36,27 +36,22 @@ func (r Results) Error() string {
 	return strings.Join(lines, "\n")
 }
 
-func MatchAssert(path *field.Path, assert v1alpha1.Assert, actual any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) ([]Result, error) {
-	if assert.Compiler != nil {
-		defaultCompiler = string(*assert.Compiler)
+func Assert(path *field.Path, in v1alpha1.Assert, actual any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) ([]Result, error) {
+	if in.Compiler != nil {
+		defaultCompiler = string(*in.Compiler)
 	}
-	if len(assert.Any) == 0 && len(assert.All) == 0 {
-		return nil, field.Invalid(path, assert, "an empty assert is not valid")
+	if len(in.Any) == 0 && len(in.All) == 0 {
+		return nil, field.Invalid(path, in, "an empty assert is not valid")
 	} else {
-		if len(assert.Any) != 0 {
+		if len(in.Any) != 0 {
 			var fails []Result
 			path := path.Child("any")
-			for i, assertion := range assert.Any {
+			for i, assertion := range in.Any {
 				defaultCompiler := defaultCompiler
 				if assertion.Compiler != nil {
 					defaultCompiler = string(*assertion.Compiler)
 				}
-				path := path.Index(i).Child("check")
-				parsed, err := assertion.Check.Compile(compiler.CompileAssertion, defaultCompiler)
-				if err != nil {
-					return fails, err
-				}
-				checkFails, err := parsed.Assert(path, actual, bindings)
+				checkFails, err := assert(path.Index(i).Child("check"), assertion.Check, actual, bindings, compiler, defaultCompiler)
 				if err != nil {
 					return fails, err
 				}
@@ -76,20 +71,15 @@ func MatchAssert(path *field.Path, assert v1alpha1.Assert, actual any, bindings 
 				return fails, nil
 			}
 		}
-		if len(assert.All) != 0 {
+		if len(in.All) != 0 {
 			var fails []Result
 			path := path.Child("all")
-			for i, assertion := range assert.All {
+			for i, assertion := range in.All {
 				defaultCompiler := defaultCompiler
 				if assertion.Compiler != nil {
 					defaultCompiler = string(*assertion.Compiler)
 				}
-				path := path.Index(i).Child("check")
-				parsed, err := assertion.Check.Compile(compiler.CompileAssertion, defaultCompiler)
-				if err != nil {
-					return fails, err
-				}
-				checkFails, err := parsed.Assert(path, actual, bindings)
+				checkFails, err := assert(path.Index(i).Child("check"), assertion.Check, actual, bindings, compiler, defaultCompiler)
 				if err != nil {
 					return fails, err
 				}
@@ -109,23 +99,23 @@ func MatchAssert(path *field.Path, assert v1alpha1.Assert, actual any, bindings 
 	}
 }
 
-func Match(path *field.Path, match *v1alpha1.Match, actual any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) (field.ErrorList, error) {
-	if match.Compiler != nil {
-		defaultCompiler = string(*match.Compiler)
+func Match(path *field.Path, in *v1alpha1.Match, actual any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) (field.ErrorList, error) {
+	if in.Compiler != nil {
+		defaultCompiler = string(*in.Compiler)
 	}
-	if match == nil || (len(match.Any) == 0 && len(match.All) == 0) {
-		return nil, field.Invalid(path, match, "an empty match is not valid")
+	if in == nil || (len(in.Any) == 0 && len(in.All) == 0) {
+		return nil, field.Invalid(path, in, "an empty match is not valid")
 	} else {
 		var errs field.ErrorList
-		if len(match.Any) != 0 {
-			_errs, err := MatchAny(path.Child("any"), match.Any, actual, bindings, compiler, defaultCompiler)
+		if len(in.Any) != 0 {
+			_errs, err := matchAny(path.Child("any"), in.Any, actual, bindings, compiler, defaultCompiler)
 			if err != nil {
 				return errs, err
 			}
 			errs = append(errs, _errs...)
 		}
-		if len(match.All) != 0 {
-			_errs, err := MatchAll(path.Child("all"), match.All, actual, bindings, compiler, defaultCompiler)
+		if len(in.All) != 0 {
+			_errs, err := matchAll(path.Child("all"), in.All, actual, bindings, compiler, defaultCompiler)
 			if err != nil {
 				return errs, err
 			}
@@ -135,15 +125,10 @@ func Match(path *field.Path, match *v1alpha1.Match, actual any, bindings binding
 	}
 }
 
-func MatchAny(path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) (field.ErrorList, error) {
+func matchAny(path *field.Path, in []v1alpha1.AssertionTree, value any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) (field.ErrorList, error) {
 	var errs field.ErrorList
-	for i, assertion := range assertions {
-		path := path.Index(i)
-		assertion, err := assertion.Compile(compiler.CompileAssertion, defaultCompiler)
-		if err != nil {
-			return errs, err
-		}
-		_errs, err := assertion.Assert(path, actual, bindings)
+	for i, assertion := range in {
+		_errs, err := assert(path.Index(i), assertion, value, bindings, compiler, defaultCompiler)
 		if err != nil {
 			return errs, err
 		}
@@ -155,19 +140,22 @@ func MatchAny(path *field.Path, assertions []v1alpha1.AssertionTree, actual any,
 	return errs, nil
 }
 
-func MatchAll(path *field.Path, assertions []v1alpha1.AssertionTree, actual any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) (field.ErrorList, error) {
+func matchAll(path *field.Path, in []v1alpha1.AssertionTree, value any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) (field.ErrorList, error) {
 	var errs field.ErrorList
-	for i, assertion := range assertions {
-		path := path.Index(i)
-		assertion, err := assertion.Compile(compiler.CompileAssertion, defaultCompiler)
-		if err != nil {
-			return errs, err
-		}
-		_errs, err := assertion.Assert(path, actual, bindings)
+	for i, assertion := range in {
+		_errs, err := assert(path.Index(i), assertion, value, bindings, compiler, defaultCompiler)
 		if err != nil {
 			return errs, err
 		}
 		errs = append(errs, _errs...)
 	}
 	return errs, nil
+}
+
+func assert(path *field.Path, assertion v1alpha1.AssertionTree, value any, bindings binding.Bindings, compiler Compiler, defaultCompiler string) (field.ErrorList, error) {
+	check, err := assertion.Compile(compiler.CompileAssertion, defaultCompiler)
+	if err != nil {
+		return nil, err
+	}
+	return check.Assert(path, value, bindings)
 }
