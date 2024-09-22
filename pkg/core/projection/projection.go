@@ -11,7 +11,10 @@ import (
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
 )
 
-type Handler = func(value any, bindings binding.Bindings) (any, bool, error)
+type (
+	ScalarHandler = func(value any, bindings binding.Bindings) (any, error)
+	MapKeyHandler = func(value any, bindings binding.Bindings) (any, bool, error)
+)
 
 type Info struct {
 	Foreach     bool
@@ -21,10 +24,10 @@ type Info struct {
 
 type Projection struct {
 	Info
-	Handler
+	Handler MapKeyHandler
 }
 
-func Parse(in any, compiler compilers.Compilers, defaultCompiler string) (projection Projection) {
+func ParseMapKey(in any, compiler compilers.Compilers, defaultCompiler string) (projection Projection) {
 	switch typed := in.(type) {
 	case string:
 		// 1. if we have a string, parse the expression
@@ -47,7 +50,7 @@ func Parse(in any, compiler compilers.Compilers, defaultCompiler string) (projec
 				if err != nil {
 					return nil, false, err
 				}
-				return projected, true, err
+				return projected, true, nil
 			}
 		} else {
 			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
@@ -81,4 +84,41 @@ func Parse(in any, compiler compilers.Compilers, defaultCompiler string) (projec
 		}
 	}
 	return
+}
+
+func ParseScalar(in any, compiler compilers.Compilers, defaultCompiler string) (ScalarHandler, error) {
+	switch typed := in.(type) {
+	case string:
+		expr := expression.Parse(defaultCompiler, typed)
+		if expr.Foreach {
+			return nil, errors.New("foreach is not supported in scalar projections")
+		}
+		if expr.Binding != "" {
+			return nil, errors.New("binding is not supported in scalar projections")
+		}
+		if compiler := compiler.Compiler(expr.Compiler); compiler != nil {
+			compile := sync.OnceValues(func() (compilers.Program, error) {
+				return compiler.Compile(expr.Statement)
+			})
+			return func(value any, bindings binding.Bindings) (any, error) {
+				program, err := compile()
+				if err != nil {
+					return nil, err
+				}
+				projected, err := program(value, bindings)
+				if err != nil {
+					return nil, err
+				}
+				return projected, nil
+			}, nil
+		} else {
+			return func(value any, bindings binding.Bindings) (any, error) {
+				return expr.Statement, nil
+			}, nil
+		}
+	default:
+		return func(value any, bindings binding.Bindings) (any, error) {
+			return typed, nil
+		}, nil
+	}
 }

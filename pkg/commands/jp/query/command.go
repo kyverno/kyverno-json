@@ -155,7 +155,7 @@ func loadInput(cmd *cobra.Command, file string) (any, error) {
 }
 
 func evaluate(input any, query string) (any, error) {
-	result, err := compilers.Execute(query, input, nil, compilers.DefaultCompiler.Jp)
+	result, err := compilers.Execute(query, input, nil, compilers.DefaultCompilers.Jp)
 	if err != nil {
 		if syntaxError, ok := err.(parsing.SyntaxError); ok {
 			return nil, fmt.Errorf("%s\n%s", syntaxError, syntaxError.HighlightLocation())

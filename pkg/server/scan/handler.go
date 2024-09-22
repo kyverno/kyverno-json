@@ -26,7 +26,7 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 		payload := in.Payload
 		// apply pre processors
 		for _, preprocessor := range in.Preprocessors {
-			result, err := compilers.Execute(preprocessor, payload, nil, compilers.DefaultCompiler.Jp)
+			result, err := compilers.Execute(preprocessor, payload, nil, compilers.DefaultCompilers.Jp)
 			if err != nil {
 				return nil, fmt.Errorf("failed to execute prepocessor (%s) - %w", preprocessor, err)
 			}

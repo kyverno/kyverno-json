@@ -91,7 +91,7 @@ func parseMap(assertion any, compiler compilers.Compilers, defaultCompiler strin
 		}
 		entry := assertions[key]
 		entry.node = assertion
-		entry.Projection = projection.Parse(key, compiler, defaultCompiler)
+		entry.Projection = projection.ParseMapKey(key, compiler, defaultCompiler)
 		assertions[key] = entry
 	}
 	return func(path *field.Path, value any, bindings binding.Bindings) (field.ErrorList, error) {
