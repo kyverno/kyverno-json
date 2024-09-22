@@ -68,9 +68,7 @@ func New() engine.Engine[Request, Response] {
 		resource any
 		bindings jpbinding.Bindings
 	}
-	compiler := matching.Compiler{
-		Compilers: compilers.DefaultCompiler,
-	}
+	compiler := matching.NewCompiler(compilers.DefaultCompiler, 256)
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
 			bindings := r.bindings.Register("$rule", jpbinding.NewBinding(r.rule))
@@ -159,7 +157,7 @@ func New() engine.Engine[Request, Response] {
 					}
 				}
 			}
-			violations, err := matching.MatchAssert(nil, r.rule.Assert, r.resource, bindings, compiler, defaultCompiler)
+			violations, err := matching.Assert(nil, r.rule.Assert, r.resource, bindings, compiler, defaultCompiler)
 			if err != nil {
 				return []RuleResponse{{
 					Rule:       r.rule,
