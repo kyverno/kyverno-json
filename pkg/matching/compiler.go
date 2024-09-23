@@ -34,12 +34,12 @@ func NewCompiler(compiler compilers.Compilers, cacheSize uint32) Compiler {
 
 func (c Compiler) CompileAssertion(hash string, value any, defaultCompiler string) (assertion.Assertion, error) {
 	if c.SyncedLRU == nil || hash == "" {
-		return assertion.Parse(value, c._compilers, defaultCompiler)
+		return assertion.Parse(value, c._compilers.WithDefaultCompiler(defaultCompiler))
 	}
 	entry, _ := c.SyncedLRU.Get(hash)
 	if entry == nil {
 		entry = sync.OnceValues(func() (assertion.Assertion, error) {
-			return assertion.Parse(value, c._compilers, defaultCompiler)
+			return assertion.Parse(value, c._compilers.WithDefaultCompiler(defaultCompiler))
 		})
 		c.SyncedLRU.Add(hash, entry)
 	}
@@ -48,5 +48,5 @@ func (c Compiler) CompileAssertion(hash string, value any, defaultCompiler strin
 
 func (c Compiler) CompileProjection(hash string, value any, defaultCompiler string) (projection.ScalarHandler, error) {
 	// TODO: cache
-	return projection.ParseScalar(value, c._compilers, defaultCompiler)
+	return projection.ParseScalar(value, c._compilers.WithDefaultCompiler(defaultCompiler))
 }

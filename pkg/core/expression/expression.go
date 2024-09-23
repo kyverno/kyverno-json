@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	CompilerJP  = "jp"
-	CompilerCEL = "cel"
+	CompilerJP      = "jp"
+	CompilerCEL     = "cel"
+	CompilerDefault = "default"
 )
 
 var (
@@ -24,7 +25,7 @@ type Expression struct {
 	Compiler    string
 }
 
-func Parse(compiler string, in string) (expression Expression) {
+func Parse(in string) (expression Expression) {
 	// 1. match foreach
 	if match := foreachRegex.FindStringSubmatch(in); match != nil {
 		expression.Foreach = true
@@ -44,7 +45,7 @@ func Parse(compiler string, in string) (expression Expression) {
 			expression.Compiler = match[1]
 			// account for default engine
 			if expression.Compiler == "" {
-				expression.Compiler = compiler
+				expression.Compiler = CompilerDefault
 			}
 			in = match[2]
 		}

@@ -12,19 +12,29 @@ var DefaultCompilers = Compilers{
 }
 
 type Compilers struct {
-	Jp  jp.Compiler
-	Cel cel.Compiler
+	Jp      jp.Compiler
+	Cel     cel.Compiler
+	Default cel.Compiler
 }
 
 func (c Compilers) Compiler(compiler string) Compiler {
 	switch compiler {
-	case "":
-		return nil
 	case expression.CompilerJP:
 		return c.Jp
 	case expression.CompilerCEL:
 		return c.Cel
-	default:
-		return c.Jp
+	case expression.CompilerDefault:
+		return c.Default
 	}
+	return nil
+}
+
+func (c Compilers) WithDefaultCompiler(defaultCompiler string) Compilers {
+	switch defaultCompiler {
+	case expression.CompilerJP:
+		c.Default = c.Jp
+	case expression.CompilerCEL:
+		c.Default = c.Cel
+	}
+	return c
 }

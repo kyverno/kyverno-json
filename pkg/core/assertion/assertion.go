@@ -19,14 +19,14 @@ type Assertion interface {
 	Assert(*field.Path, any, binding.Bindings) (field.ErrorList, error)
 }
 
-func Parse(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
+func Parse(assertion any, compiler compilers.Compilers) (node, error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
-		return parseSlice(assertion, compiler, defaultCompiler)
+		return parseSlice(assertion, compiler)
 	case reflect.Map:
-		return parseMap(assertion, compiler, defaultCompiler)
+		return parseMap(assertion, compiler)
 	default:
-		return parseScalar(assertion, compiler, defaultCompiler)
+		return parseScalar(assertion, compiler)
 	}
 }
 
@@ -40,11 +40,11 @@ func (n node) Assert(path *field.Path, value any, bindings binding.Bindings) (fi
 // parseSlice is the assertion represented by a slice.
 // it first compares the length of the analysed resource with the length of the descendants.
 // if lengths match all descendants are evaluated with their corresponding items.
-func parseSlice(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
+func parseSlice(assertion any, compiler compilers.Compilers) (node, error) {
 	var assertions []node
 	valueOf := reflect.ValueOf(assertion)
 	for i := 0; i < valueOf.Len(); i++ {
-		sub, err := Parse(valueOf.Index(i).Interface(), compiler, defaultCompiler)
+		sub, err := Parse(valueOf.Index(i).Interface(), compiler)
 		if err != nil {
 			return nil, err
 		}
@@ -76,7 +76,7 @@ func parseSlice(assertion any, compiler compilers.Compilers, defaultCompiler str
 
 // parseMap is the assertion represented by a map.
 // it is responsible for projecting the analysed resource and passing the result to the descendant
-func parseMap(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
+func parseMap(assertion any, compiler compilers.Compilers) (node, error) {
 	assertions := map[any]struct {
 		projection.Projection
 		node
@@ -85,13 +85,13 @@ func parseMap(assertion any, compiler compilers.Compilers, defaultCompiler strin
 	for iter.Next() {
 		key := iter.Key().Interface()
 		value := iter.Value().Interface()
-		assertion, err := Parse(value, compiler, defaultCompiler)
+		assertion, err := Parse(value, compiler)
 		if err != nil {
 			return nil, err
 		}
 		entry := assertions[key]
 		entry.node = assertion
-		entry.Projection = projection.ParseMapKey(key, compiler, defaultCompiler)
+		entry.Projection = projection.ParseMapKey(key, compiler)
 		assertions[key] = entry
 	}
 	return func(path *field.Path, value any, bindings binding.Bindings) (field.ErrorList, error) {
@@ -161,11 +161,11 @@ func parseMap(assertion any, compiler compilers.Compilers, defaultCompiler strin
 // parseScalar is the assertion represented by a leaf.
 // it receives a value and compares it with an expected value.
 // the expected value can be the result of an expression.
-func parseScalar(assertion any, compiler compilers.Compilers, defaultCompiler string) (node, error) {
+func parseScalar(assertion any, compiler compilers.Compilers) (node, error) {
 	var project func(value any, bindings binding.Bindings) (any, error)
 	switch typed := assertion.(type) {
 	case string:
-		expr := expression.Parse(defaultCompiler, typed)
+		expr := expression.Parse(typed)
 		if expr.Foreach {
 			return nil, errors.New("foreach is not supported on the RHS")
 		}
