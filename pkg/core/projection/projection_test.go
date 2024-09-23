@@ -5,7 +5,6 @@ import (
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
-	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -90,7 +89,7 @@ func TestParseMap(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			compiler := compilers.DefaultCompilers
-			proj := ParseMapKey(tt.key, compiler, expression.CompilerJP)
+			proj := ParseMapKey(tt.key, compiler)
 			got, found, err := proj.Handler(tt.value, tt.bindings)
 			if tt.wantErr {
 				assert.Error(t, err)

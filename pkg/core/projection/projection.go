@@ -27,11 +27,11 @@ type Projection struct {
 	Handler MapKeyHandler
 }
 
-func ParseMapKey(in any, compiler compilers.Compilers, defaultCompiler string) (projection Projection) {
+func ParseMapKey(in any, compiler compilers.Compilers) (projection Projection) {
 	switch typed := in.(type) {
 	case string:
 		// 1. if we have a string, parse the expression
-		expr := expression.Parse(defaultCompiler, typed)
+		expr := expression.Parse(typed)
 		// 2. record projection infos
 		projection.Foreach = expr.Foreach
 		projection.ForeachName = expr.ForeachName
@@ -86,10 +86,10 @@ func ParseMapKey(in any, compiler compilers.Compilers, defaultCompiler string) (
 	return
 }
 
-func ParseScalar(in any, compiler compilers.Compilers, defaultCompiler string) (ScalarHandler, error) {
+func ParseScalar(in any, compiler compilers.Compilers) (ScalarHandler, error) {
 	switch typed := in.(type) {
 	case string:
-		expr := expression.Parse(defaultCompiler, typed)
+		expr := expression.Parse(typed)
 		if expr.Foreach {
 			return nil, errors.New("foreach is not supported in scalar projections")
 		}

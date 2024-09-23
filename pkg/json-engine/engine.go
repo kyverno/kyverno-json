@@ -204,6 +204,7 @@ func New() engine.Engine[Request, Response] {
 			bindings := r.bindings.Register("$policy", jpbinding.NewBinding(r.policy))
 			for _, rule := range r.policy.Spec.Rules {
 				response.Rules = append(response.Rules, ruleEngine.Run(ctx, ruleRequest{
+					policy:   r.policy,
 					rule:     rule,
 					resource: r.resource,
 					bindings: bindings.Register("$rule", jpbinding.NewBinding(rule)),
