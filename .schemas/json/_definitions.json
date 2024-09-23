@@ -17801,8 +17801,7 @@
                       "description": "Feedback contains a feedback entry.",
                       "type": "object",
                       "required": [
-                        "name",
-                        "value"
+                        "name"
                       ],
                       "properties": {
                         "compiler": {
@@ -17819,7 +17818,7 @@
                         },
                         "value": {
                           "description": "Value is the feedback entry value (a JMESPath expression).",
-                          "type": "string"
+                          "x-kubernetes-preserve-unknown-fields": true
                         }
                       }
                     }

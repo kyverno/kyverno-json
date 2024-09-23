@@ -159,24 +159,24 @@ func New() engine.Engine[Request, Response] {
 			}
 			var feedback map[string]Feedback
 			for _, f := range r.rule.Feedback {
-				// TODO
-				// defaultCompiler := defaultCompiler
-				// if f.Engine != nil {
-				// 	defaultCompiler = string(*f.Engine)
-				// }
-				result, err := compilers.Execute(f.Value, r.resource, bindings, compiler.Jp)
+				entry := Feedback{}
+				if f.Value != nil {
+					defaultCompiler := defaultCompiler
+					if f.Compiler != nil {
+						defaultCompiler = string(*f.Compiler)
+					}
+					if handler, err := f.Value.Compile(compiler.CompileProjection, defaultCompiler); err != nil {
+						entry.Error = err
+					} else if projected, err := handler(r.resource, bindings); err != nil {
+						entry.Error = err
+					} else {
+						entry.Value = projected
+					}
+				}
 				if feedback == nil {
 					feedback = map[string]Feedback{}
 				}
-				if err != nil {
-					feedback[f.Name] = Feedback{
-						Error: err,
-					}
-				} else {
-					feedback[f.Name] = Feedback{
-						Value: result,
-					}
-				}
+				feedback[f.Name] = entry
 			}
 			violations, err := matching.Assert(nil, r.rule.Assert, r.resource, bindings, compiler, defaultCompiler)
 			if err != nil {
