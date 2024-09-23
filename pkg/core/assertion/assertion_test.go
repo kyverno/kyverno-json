@@ -61,3 +61,32 @@ func TestAssert(t *testing.T) {
 		})
 	}
 }
+
+func TestParse(t *testing.T) {
+	tests := []struct {
+		name      string
+		assertion any
+		want      field.ErrorList
+		wantErr   bool
+	}{{
+		name: "bad scalar",
+		assertion: map[string]any{
+			"foo": map[string]any{
+				"bar": "~.(`42`)",
+			},
+		},
+		wantErr: true,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			compiler := compilers.DefaultCompilers
+			parsed, err := Parse(tt.assertion, compiler)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, parsed)
+			}
+		})
+	}
+}
