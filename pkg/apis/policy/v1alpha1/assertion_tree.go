@@ -2,7 +2,7 @@ package v1alpha1
 
 import (
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
-	hashutils "github.com/kyverno/kyverno-json/pkg/utils/hash"
+	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
@@ -12,18 +12,16 @@ import (
 // AssertionTree represents an assertion tree.
 type AssertionTree struct {
 	_tree any
-	_hash string
 }
 
 func NewAssertionTree(value any) AssertionTree {
 	return AssertionTree{
 		_tree: value,
-		_hash: hashutils.Hash(value),
 	}
 }
 
-func (t *AssertionTree) Compile(compiler func(string, any, string) (assertion.Assertion, error), defaultCompiler string) (assertion.Assertion, error) {
-	return compiler(t._hash, t._tree, defaultCompiler)
+func (t *AssertionTree) Compile(compilers compilers.Compilers) (assertion.Assertion, error) {
+	return assertion.Parse(t._tree, compilers)
 }
 
 func (a *AssertionTree) MarshalJSON() ([]byte, error) {
@@ -37,11 +35,9 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	a._tree = v
-	a._hash = hashutils.Hash(a._tree)
 	return nil
 }
 
 func (in *AssertionTree) DeepCopyInto(out *AssertionTree) {
 	out._tree = deepCopy(in._tree)
-	out._hash = in._hash
 }

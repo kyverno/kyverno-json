@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	CompilerJP      = "jp"
 	CompilerCEL     = "cel"
+	CompilerJP      = "jp"
 	CompilerDefault = "default"
 )
 
