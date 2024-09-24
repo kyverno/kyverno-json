@@ -3,12 +3,12 @@ package projection
 import (
 	"errors"
 	"reflect"
-	"sync"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
 	reflectutils "github.com/kyverno/kyverno-json/pkg/utils/reflect"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 type (
@@ -27,7 +27,8 @@ type Projection struct {
 	Handler MapKeyHandler
 }
 
-func ParseMapKey(in any, compiler compilers.Compilers) (projection Projection) {
+func ParseMapKey(path *field.Path, in any, compiler compilers.Compilers) (*Projection, *field.Error) {
+	var projection Projection
 	switch typed := in.(type) {
 	case string:
 		// 1. if we have a string, parse the expression
@@ -38,14 +39,11 @@ func ParseMapKey(in any, compiler compilers.Compilers) (projection Projection) {
 		projection.Binding = expr.Binding
 		// 3. compute the projection func
 		if compiler := compiler.Compiler(expr.Compiler); compiler != nil {
-			compile := sync.OnceValues(func() (compilers.Program, error) {
-				return compiler.Compile(expr.Statement)
-			})
+			program, err := compiler.Compile(expr.Statement)
+			if err != nil {
+				return nil, field.Invalid(path, expr.Statement, err.Error())
+			}
 			projection.Handler = func(value any, bindings binding.Bindings) (any, bool, error) {
-				program, err := compile()
-				if err != nil {
-					return nil, false, err
-				}
 				projected, err := program(value, bindings)
 				if err != nil {
 					return nil, false, err
@@ -83,28 +81,25 @@ func ParseMapKey(in any, compiler compilers.Compilers) (projection Projection) {
 			return nil, false, errors.New("projection not recognized")
 		}
 	}
-	return
+	return &projection, nil
 }
 
-func ParseScalar(in any, compiler compilers.Compilers) (ScalarHandler, error) {
+func ParseScalar(path *field.Path, in any, compiler compilers.Compilers) (ScalarHandler, *field.Error) {
 	switch typed := in.(type) {
 	case string:
 		expr := expression.Parse(typed)
 		if expr.Foreach {
-			return nil, errors.New("foreach is not supported in scalar projections")
+			return nil, field.Invalid(path, typed, "foreach is not supported in scalar projections")
 		}
 		if expr.Binding != "" {
-			return nil, errors.New("binding is not supported in scalar projections")
+			return nil, field.Invalid(path, typed, "binding is not supported in scalar projections")
 		}
 		if compiler := compiler.Compiler(expr.Compiler); compiler != nil {
-			compile := sync.OnceValues(func() (compilers.Program, error) {
-				return compiler.Compile(expr.Statement)
-			})
+			program, err := compiler.Compile(expr.Statement)
+			if err != nil {
+				return nil, field.Invalid(path, expr.Statement, err.Error())
+			}
 			return func(value any, bindings binding.Bindings) (any, error) {
-				program, err := compile()
-				if err != nil {
-					return nil, err
-				}
 				projected, err := program(value, bindings)
 				if err != nil {
 					return nil, err

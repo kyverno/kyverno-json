@@ -4,6 +4,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"k8s.io/apimachinery/pkg/util/json"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 // +k8s:deepcopy-gen=false
@@ -20,8 +21,8 @@ func NewAssertionTree(value any) AssertionTree {
 	}
 }
 
-func (t *AssertionTree) Compile(compilers compilers.Compilers) (assertion.Assertion, error) {
-	return assertion.Parse(t._tree, compilers)
+func (t *AssertionTree) Compile(path *field.Path, compilers compilers.Compilers) (assertion.Assertion, *field.Error) {
+	return assertion.Parse(path, t._tree, compilers)
 }
 
 func (a *AssertionTree) MarshalJSON() ([]byte, error) {

@@ -17,13 +17,13 @@ func (c *compiler) compileContextEntry(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.ContextEntry,
-) (func(any, binding.Bindings) binding.Bindings, error) {
+) (func(any, binding.Bindings) binding.Bindings, *field.Error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	handler, err := in.Variable.Compile(compilers)
+	handler, err := in.Variable.Compile(path.Child("variable"), compilers)
 	if err != nil {
-		return nil, field.InternalError(path.Child("variable"), err)
+		return nil, err
 	}
 	return func(resource any, bindings binding.Bindings) binding.Bindings {
 		binding := binding.NewDelegate(
@@ -45,7 +45,7 @@ func (c *compiler) compileContextEntries(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.ContextEntry,
-) (func(any, binding.Bindings) binding.Bindings, error) {
+) (func(any, binding.Bindings) binding.Bindings, *field.Error) {
 	var out []func(any, binding.Bindings) binding.Bindings
 	for i, entry := range in {
 		entry, err := c.compileContextEntry(path.Index(i), compilers, entry)
@@ -66,7 +66,7 @@ func (c *compiler) compileMatch(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in *v1alpha1.Match,
-) (func(any, binding.Bindings) (field.ErrorList, error), error) {
+) (func(any, binding.Bindings) (field.ErrorList, error), *field.Error) {
 	if in == nil {
 		return nil, nil
 	}
@@ -111,7 +111,7 @@ func (c *compiler) compileAssert(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.Assert,
-) (func(any, binding.Bindings) (Results, error), error) {
+) (func(any, binding.Bindings) (Results, error), *field.Error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
@@ -165,7 +165,7 @@ func (c *compiler) compileAssertions(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.Assertion,
-) ([]func(any, binding.Bindings) (Result, error), error) {
+) ([]func(any, binding.Bindings) (Result, error), *field.Error) {
 	var out []func(any, binding.Bindings) (Result, error)
 	for i, in := range in {
 		if in, err := c.compileAssertion(path.Index(i), compilers, in); err != nil {
@@ -181,7 +181,7 @@ func (c *compiler) compileAssertion(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.Assertion,
-) (func(any, binding.Bindings) (Result, error), error) {
+) (func(any, binding.Bindings) (Result, error), *field.Error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
@@ -206,7 +206,7 @@ func (c *compiler) compileAssertionTrees(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.AssertionTree,
-) ([]func(any, binding.Bindings) (field.ErrorList, error), error) {
+) ([]func(any, binding.Bindings) (field.ErrorList, error), *field.Error) {
 	var out []func(any, binding.Bindings) (field.ErrorList, error)
 	for i, in := range in {
 		if in, err := c.compileAssertionTree(path.Index(i), compilers, in); err != nil {
@@ -222,8 +222,8 @@ func (c *compiler) compileAssertionTree(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.AssertionTree,
-) (func(any, binding.Bindings) (field.ErrorList, error), error) {
-	check, err := in.Compile(compilers)
+) (func(any, binding.Bindings) (field.ErrorList, error), *field.Error) {
+	check, err := in.Compile(path, compilers)
 	if err != nil {
 		return nil, err
 	}
@@ -233,10 +233,10 @@ func (c *compiler) compileAssertionTree(
 }
 
 func (c *compiler) compileIdentifier(
-	_ *field.Path,
+	path *field.Path,
 	compilers compilers.Compilers,
 	in string,
-) (func(any, binding.Bindings) string, error) {
+) (func(any, binding.Bindings) string, *field.Error) {
 	if in == "" {
 		return func(resource any, bindings binding.Bindings) string {
 			return ""
@@ -244,7 +244,7 @@ func (c *compiler) compileIdentifier(
 	}
 	program, err := compilers.Jp.Compile(in)
 	if err != nil {
-		return nil, err
+		return nil, field.InternalError(path, err)
 	}
 	return func(resource any, bindings binding.Bindings) string {
 		result, err := program(resource, bindings)
@@ -260,7 +260,7 @@ func (c *compiler) compileFeedbacks(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.Feedback,
-) (func(any, binding.Bindings) map[string]Feedback, error) {
+) (func(any, binding.Bindings) map[string]Feedback, *field.Error) {
 	if len(in) == 0 {
 		return func(any, binding.Bindings) map[string]Feedback {
 			return nil
@@ -284,14 +284,14 @@ func (c *compiler) compileFeedbacks(
 }
 
 func (c *compiler) compileFeedback(
-	_ *field.Path,
+	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.Feedback,
-) (func(any, binding.Bindings) Feedback, error) {
+) (func(any, binding.Bindings) Feedback, *field.Error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	handler, err := in.Value.Compile(compilers)
+	handler, err := in.Value.Compile(path.Child("value"), compilers)
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +310,7 @@ func (c *compiler) compileRule(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.ValidatingRule,
-) (func(any, binding.Bindings) *RuleResponse, error) {
+) (func(any, binding.Bindings) *RuleResponse, *field.Error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}

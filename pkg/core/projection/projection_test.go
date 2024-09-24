@@ -89,15 +89,18 @@ func TestParseMap(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			compiler := compilers.DefaultCompilers
-			proj := ParseMapKey(tt.key, compiler)
-			got, found, err := proj.Handler(tt.value, tt.bindings)
-			if tt.wantErr {
-				assert.Error(t, err)
-			} else {
-				assert.NoError(t, err)
+			proj, err := ParseMapKey(nil, tt.key, compiler)
+			assert.Nil(t, err)
+			{
+				got, found, err := proj.Handler(tt.value, tt.bindings)
+				if tt.wantErr {
+					assert.Error(t, err)
+				} else {
+					assert.NoError(t, err)
+				}
+				assert.Equal(t, tt.wantFound, found)
+				assert.Equal(t, tt.want, got)
 			}
-			assert.Equal(t, tt.wantFound, found)
-			assert.Equal(t, tt.want, got)
 		})
 	}
 }
