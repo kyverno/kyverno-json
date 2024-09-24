@@ -4,7 +4,7 @@ Pre processing ...
 Running ( evaluating 1 resource against 1 policy ) ...
 - check-dockerfile / deny-external-calls /  FAILED
 -> HTTP calls are not allowed
- -> all[0].check.~.(Stages[].Commands[].Args[].Value)[0].(contains(@, 'https://') || contains(@, 'http://')): Invalid value: true: Expected value: false
+ -> assert.all[0].check.~.(Stages[].Commands[].Args[].Value)[0].(contains(@, 'https://') || contains(@, 'http://')): Invalid value: true: Expected value: false
 -> wget is not allowed
- -> all[3].check.~.(Stages[].Commands[].CmdLine[])[0].(contains(@, 'wget')): Invalid value: true: Expected value: false
+ -> assert.all[3].check.~.(Stages[].Commands[].CmdLine[])[0].(contains(@, 'wget')): Invalid value: true: Expected value: false
 Done

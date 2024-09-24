@@ -41,7 +41,7 @@ func (c *compiler) compileContextEntry(
 	}, nil
 }
 
-func (c *compiler) compileContext(
+func (c *compiler) compileContextEntries(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.ContextEntry,
@@ -310,11 +310,11 @@ func (c *compiler) compileRule(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.ValidatingRule,
-) (func(any, binding.Bindings) []RuleResponse, error) {
+) (func(any, binding.Bindings) *RuleResponse, error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	context, err := c.compileContext(path.Child("context"), compilers, in.Context...)
+	context, err := c.compileContextEntries(path.Child("context"), compilers, in.Context...)
 	if err != nil {
 		return nil, err
 	}
@@ -334,24 +334,23 @@ func (c *compiler) compileRule(
 	if err != nil {
 		return nil, err
 	}
-	// TODO: fix path
-	assert, err := c.compileAssert(nil, compilers, in.Assert)
+	assert, err := c.compileAssert(path.Child("assert"), compilers, in.Assert)
 	if err != nil {
 		return nil, err
 	}
-	return func(resource any, bindings binding.Bindings) []RuleResponse {
+	return func(resource any, bindings binding.Bindings) *RuleResponse {
 		// register context bindings
 		bindings = context(resource, bindings)
 		// process match clause
 		if match != nil {
 			if errs, err := match(resource, bindings); err != nil {
-				return []RuleResponse{{
+				return &RuleResponse{
 					Rule:       in,
 					Timestamp:  time.Now(),
 					Identifier: identifier(resource, bindings),
 					Feedback:   feedback(resource, bindings),
 					Error:      err,
-				}}
+				}
 			} else if len(errs) != 0 {
 				// didn't match
 				return nil
@@ -360,13 +359,13 @@ func (c *compiler) compileRule(
 		// process exclude clause
 		if exclude != nil {
 			if errs, err := exclude(resource, bindings); err != nil {
-				return []RuleResponse{{
+				return &RuleResponse{
 					Rule:       in,
 					Timestamp:  time.Now(),
 					Identifier: identifier(resource, bindings),
 					Feedback:   feedback(resource, bindings),
 					Error:      err,
-				}}
+				}
 			} else if len(errs) == 0 {
 				// matched
 				return nil
@@ -375,20 +374,20 @@ func (c *compiler) compileRule(
 		// evaluate assertions
 		violations, err := assert(resource, bindings)
 		if err != nil {
-			return []RuleResponse{{
+			return &RuleResponse{
 				Rule:       in,
 				Timestamp:  time.Now(),
 				Identifier: identifier(resource, bindings),
 				Feedback:   feedback(resource, bindings),
 				Error:      err,
-			}}
+			}
 		}
-		return []RuleResponse{{
+		return &RuleResponse{
 			Rule:       in,
 			Timestamp:  time.Now(),
 			Identifier: identifier(resource, bindings),
 			Feedback:   feedback(resource, bindings),
 			Violations: violations,
-		}}
+		}
 	}, nil
 }
