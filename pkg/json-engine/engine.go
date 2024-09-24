@@ -26,18 +26,18 @@ func New() engine.Engine[Request, Response] {
 	compilers := compilers.DefaultCompilers.WithDefaultCompiler(compilers.CompilerJP)
 	ruleCompiler := compiler{}
 	ruleEngine := builder.
-		Function(func(ctx context.Context, r ruleRequest) []RuleResponse {
+		Function(func(ctx context.Context, r ruleRequest) *RuleResponse {
 			compilers := compilers
 			if r.policy.Spec.Compiler != nil {
 				compilers = compilers.WithDefaultCompiler(string(*r.policy.Spec.Compiler))
 			}
 			compiled, err := ruleCompiler.compileRule(nil, compilers, r.rule)
 			if err != nil {
-				return []RuleResponse{{
+				return &RuleResponse{
 					Rule:      r.rule,
 					Timestamp: time.Now(),
 					Error:     err,
-				}}
+				}
 			}
 			bindings := r.bindings.Register("$rule", binding.NewBinding(r.rule))
 			return compiled(r.resource, bindings)
@@ -49,12 +49,14 @@ func New() engine.Engine[Request, Response] {
 			}
 			bindings := r.bindings.Register("$policy", binding.NewBinding(r.policy))
 			for _, rule := range r.policy.Spec.Rules {
-				response.Rules = append(response.Rules, ruleEngine.Run(ctx, ruleRequest{
+				if ruleResponse := ruleEngine.Run(ctx, ruleRequest{
 					policy:   r.policy,
 					rule:     rule,
 					resource: r.resource,
 					bindings: bindings.Register("$rule", binding.NewBinding(rule)),
-				})...)
+				}); ruleResponse != nil {
+					response.Rules = append(response.Rules, *ruleResponse)
+				}
 			}
 			return response
 		})
