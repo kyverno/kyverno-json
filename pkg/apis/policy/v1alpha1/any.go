@@ -4,6 +4,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/projection"
 	"k8s.io/apimachinery/pkg/util/json"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 // Any can be any type.
@@ -20,8 +21,8 @@ func NewAny(value any) Any {
 	}
 }
 
-func (t *Any) Compile(compilers compilers.Compilers) (projection.ScalarHandler, error) {
-	return projection.ParseScalar(t._value, compilers)
+func (t *Any) Compile(path *field.Path, compilers compilers.Compilers) (projection.ScalarHandler, *field.Error) {
+	return projection.ParseScalar(path, t._value, compilers)
 }
 
 func (a *Any) MarshalJSON() ([]byte, error) {

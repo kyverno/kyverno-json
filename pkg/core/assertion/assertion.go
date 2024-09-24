@@ -16,15 +16,7 @@ type Assertion interface {
 	Assert(*field.Path, any, binding.Bindings) (field.ErrorList, error)
 }
 
-func Parse(assertion any, compiler compilers.Compilers) (Assertion, error) {
-	out, err := parse(nil, assertion, compiler)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func parse(path *field.Path, assertion any, compiler compilers.Compilers) (Assertion, *field.Error) {
+func Parse(path *field.Path, assertion any, compiler compilers.Compilers) (Assertion, *field.Error) {
 	switch reflectutils.GetKind(assertion) {
 	case reflect.Slice:
 		return parseSlice(path, assertion, compiler)
@@ -68,7 +60,7 @@ func parseSlice(path *field.Path, assertion any, compiler compilers.Compilers) (
 	valueOf := reflect.ValueOf(assertion)
 	for i := 0; i < valueOf.Len(); i++ {
 		path := path.Index(i)
-		sub, err := parse(path, valueOf.Index(i).Interface(), compiler)
+		sub, err := Parse(path, valueOf.Index(i).Interface(), compiler)
 		if err != nil {
 			return nil, err
 		}
@@ -80,7 +72,7 @@ func parseSlice(path *field.Path, assertion any, compiler compilers.Compilers) (
 // mapNode is the assertion represented by a map.
 // it is responsible for projecting the analysed resource and passing the result to the descendant
 type mapNode map[any]struct {
-	projection.Projection
+	*projection.Projection
 	Assertion
 }
 
@@ -154,13 +146,17 @@ func parseMap(path *field.Path, assertion any, compiler compilers.Compilers) (ma
 		key := iter.Key().Interface()
 		value := iter.Value().Interface()
 		path := path.Child(fmt.Sprint(key))
-		assertion, err := parse(path, value, compiler)
+		projection, err := projection.ParseMapKey(path, key, compiler)
+		if err != nil {
+			return nil, err
+		}
+		assertion, err := Parse(path, value, compiler)
 		if err != nil {
 			return nil, err
 		}
 		entry := assertions[key]
+		entry.Projection = projection
 		entry.Assertion = assertion
-		entry.Projection = projection.ParseMapKey(key, compiler)
 		assertions[key] = entry
 	}
 	return assertions, nil
@@ -184,9 +180,9 @@ func (node scalarNode) Assert(path *field.Path, value any, bindings binding.Bind
 }
 
 func parseScalar(path *field.Path, in any, compiler compilers.Compilers) (scalarNode, *field.Error) {
-	proj, err := projection.ParseScalar(in, compiler)
+	proj, err := projection.ParseScalar(path, in, compiler)
 	if err != nil {
-		return nil, field.InternalError(path, err)
+		return nil, err
 	}
 	return proj, nil
 }
