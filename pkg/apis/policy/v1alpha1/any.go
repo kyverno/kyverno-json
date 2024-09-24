@@ -1,8 +1,8 @@
 package v1alpha1
 
 import (
+	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/projection"
-	hashutils "github.com/kyverno/kyverno-json/pkg/utils/hash"
 	"k8s.io/apimachinery/pkg/util/json"
 )
 
@@ -12,18 +12,16 @@ import (
 // +kubebuilder:validation:Type:=""
 type Any struct {
 	_value any
-	_hash  string
 }
 
 func NewAny(value any) Any {
 	return Any{
 		_value: value,
-		_hash:  hashutils.Hash(value),
 	}
 }
 
-func (t *Any) Compile(compiler func(string, any, string) (projection.ScalarHandler, error), defaultCompiler string) (projection.ScalarHandler, error) {
-	return compiler(t._hash, t._value, defaultCompiler)
+func (t *Any) Compile(compilers compilers.Compilers) (projection.ScalarHandler, error) {
+	return projection.ParseScalar(t._value, compilers)
 }
 
 func (a *Any) MarshalJSON() ([]byte, error) {
@@ -37,13 +35,11 @@ func (a *Any) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	a._value = v
-	a._hash = hashutils.Hash(a._value)
 	return nil
 }
 
 func (in *Any) DeepCopyInto(out *Any) {
 	out._value = deepCopy(in._value)
-	out._hash = in._hash
 }
 
 func (in *Any) DeepCopy() *Any {

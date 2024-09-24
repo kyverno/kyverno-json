@@ -6,6 +6,11 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/core/expression"
 )
 
+const (
+	CompilerCEL = expression.CompilerCEL
+	CompilerJP  = expression.CompilerJP
+)
+
 var DefaultCompilers = Compilers{
 	Jp:  jp.NewCompiler(),
 	Cel: cel.NewCompiler(),
