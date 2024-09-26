@@ -1,6 +1,7 @@
 package jsonengine
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -39,13 +40,13 @@ type Result struct {
 	Message string
 }
 
-func (r Result) Error() string {
+func (r Result) Error(prefix string) string {
 	var lines []string
 	if r.Message != "" {
-		lines = append(lines, "-> "+r.Message)
+		lines = append(lines, prefix+"-> "+r.Message)
 	}
 	for _, err := range r.ErrorList {
-		lines = append(lines, " -> "+err.Error())
+		lines = append(lines, prefix+fmt.Sprintf(" -> %s (PATH=%s)", err.ErrorBody(), err.Field))
 	}
 	return strings.Join(lines, "\n")
 }
@@ -53,10 +54,10 @@ func (r Result) Error() string {
 //nolint:errname
 type Results []Result
 
-func (r Results) Error() string {
+func (r Results) Error(prefix string) string {
 	var lines []string
 	for _, err := range r {
-		lines = append(lines, err.Error())
+		lines = append(lines, err.Error(prefix))
 	}
 	return strings.Join(lines, "\n")
 }

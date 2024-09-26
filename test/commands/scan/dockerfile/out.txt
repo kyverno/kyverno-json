@@ -2,9 +2,9 @@ Loading policies ...
 Loading payload ...
 Pre processing ...
 Running ( evaluating 1 resource against 1 policy ) ...
-- check-dockerfile / deny-external-calls /  FAILED
--> HTTP calls are not allowed
- -> spec.rules[0].assert.all[0].check.~.(Stages[].Commands[].Args[].Value)[0].(contains(@, 'https://') || contains(@, 'http://')): Invalid value: true: Expected value: false
--> wget is not allowed
- -> spec.rules[0].assert.all[3].check.~.(Stages[].Commands[].CmdLine[])[0].(contains(@, 'wget')): Invalid value: true: Expected value: false
+- FAILED (POLICY=check-dockerfile, RULE=deny-external-calls)
+ -> HTTP calls are not allowed (CHECK=spec.rules[0].assert.all[0])
+  -> Invalid value: true: Expected value: false (PATH=~.(Stages[].Commands[].Args[].Value)[0].(contains(@, 'https://') || contains(@, 'http://')))
+ -> wget is not allowed (CHECK=spec.rules[0].assert.all[3])
+  -> Invalid value: true: Expected value: false (PATH=~.(Stages[].Commands[].CmdLine[])[0].(contains(@, 'wget')))
 Done
