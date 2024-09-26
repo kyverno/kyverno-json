@@ -111,7 +111,11 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 				} else if len(rule.Violations) != 0 {
 					status = "FAILED"
 				}
-				out.println(fmt.Sprintf("- %s (POLICY=%s, RULE=%s, ID=%s)", status, policy.Policy.Name, rule.Rule.Name, rule.Identifier))
+				if rule.Identifier != "" {
+					out.println(fmt.Sprintf("- %s (POLICY=%s, RULE=%s, ID=%s)", status, policy.Policy.Name, rule.Rule.Name, rule.Identifier))
+				} else {
+					out.println(fmt.Sprintf("- %s (POLICY=%s, RULE=%s)", status, policy.Policy.Name, rule.Rule.Name))
+				}
 				if len(rule.Violations) != 0 {
 					out.println(rule.Violations.Error(" "))
 				}
