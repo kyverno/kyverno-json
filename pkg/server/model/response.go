@@ -50,7 +50,7 @@ func makeMessage(rule jsonengine.RuleResponse) string {
 		return rule.Error.Error()
 	}
 	if len(rule.Violations) != 0 {
-		return rule.Violations.Error()
+		return rule.Violations.Error("")
 	}
 	return ""
 }

@@ -105,15 +105,26 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 	for _, response := range responses {
 		for _, policy := range response.Policies {
 			for _, rule := range policy.Rules {
+				status := "PASSED"
 				if rule.Error != nil {
-					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "ERROR:", rule.Error.Error())
+					status = fmt.Sprintf("ERROR: %s", rule.Error.Error())
 				} else if len(rule.Violations) != 0 {
-					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "FAILED")
-					out.println(rule.Violations.Error())
-				} else {
-					// TODO: handle skip, warn
-					out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "PASSED")
+					status = "FAILED"
 				}
+				out.println(fmt.Sprintf("- %s (POLICY=%s, RULE=%s, ID=%s)", status, policy.Policy.Name, rule.Rule.Name, rule.Identifier))
+				if len(rule.Violations) != 0 {
+					out.println(rule.Violations.Error(" "))
+				}
+
+				// if rule.Error != nil {
+				// 	out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "ERROR:", rule.Error.Error())
+				// } else if len(rule.Violations) != 0 {
+				// 	out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "FAILED")
+				// 	out.println(rule.Violations.Error())
+				// } else {
+				// 	// TODO: handle skip, warn
+				// 	out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "PASSED")
+				// }
 			}
 		}
 	}

@@ -69,7 +69,7 @@ func main() {
 			if rule.Error != nil {
 				logger.Printf("error: %s/%s -> %s: %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Error)
 			} else if len(rule.Violations) != 0 {
-				logger.Printf("fail: %s/%s -> %s\n%s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Violations.Error())
+				logger.Printf("fail: %s/%s -> %s\n%s", policy.Policy.Name, rule.Rule.Name, rule.Identifier, rule.Violations.Error(""))
 			} else {
 				logger.Printf("pass: %s/%s -> %s", policy.Policy.Name, rule.Rule.Name, rule.Identifier)
 			}

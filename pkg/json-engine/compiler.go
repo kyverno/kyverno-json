@@ -194,9 +194,11 @@ func (c *compiler) compileAssertion(
 		errs, err := check(resource, bindings)
 		if len(errs) != 0 {
 			result.ErrorList = errs
+			message := fmt.Sprintf("(CHECK=%s)", path.String())
 			if in.Message != nil {
-				result.Message = in.Message.Format(resource, bindings, compilers.Jp.Options()...)
+				message = fmt.Sprintf("%s %s", in.Message.Format(resource, bindings, compilers.Jp.Options()...), message)
 			}
+			result.Message = message
 		}
 		return result, err
 	}, nil
@@ -228,7 +230,7 @@ func (c *compiler) compileAssertionTree(
 		return nil, err
 	}
 	return func(resource any, bindings binding.Bindings) (field.ErrorList, error) {
-		return check.Assert(path, resource, bindings)
+		return check.Assert(nil, resource, bindings)
 	}, nil
 }
 
