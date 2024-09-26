@@ -4,5 +4,5 @@ Pre processing ...
 Running ( evaluating 1 resource against 1 policy ) ...
 - required-s3-tags / require-team-tag / aws_s3_bucket.example FAILED
 -> Bucket `example` (aws_s3_bucket.example) does not have the required tags {"Team":"Kyverno"}
- -> assert.all[0].check.values.tags: Invalid value: map[string]interface {}{"Environment":"Dev", "Name":"My bucket"}: Expected value: map[string]interface {}{"Team":"Kyverno"}
+ -> spec.rules[0].assert.all[0].check.values.tags: Invalid value: map[string]interface {}{"Environment":"Dev", "Name":"My bucket"}: Expected value: map[string]interface {}{"Team":"Kyverno"}
 Done

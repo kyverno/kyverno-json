@@ -9,29 +9,27 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/engine"
 	"github.com/kyverno/kyverno-json/pkg/engine/builder"
+	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
 func New() engine.Engine[Request, Response] {
 	type ruleRequest struct {
-		policy   v1alpha1.ValidatingPolicy
-		rule     v1alpha1.ValidatingRule
-		resource any
-		bindings binding.Bindings
+		compilers compilers.Compilers
+		path      *field.Path
+		policy    v1alpha1.ValidatingPolicy
+		rule      v1alpha1.ValidatingRule
+		resource  any
+		bindings  binding.Bindings
 	}
 	type policyRequest struct {
 		policy   v1alpha1.ValidatingPolicy
 		resource any
 		bindings binding.Bindings
 	}
-	compilers := compilers.DefaultCompilers.WithDefaultCompiler(compilers.CompilerJP)
-	ruleCompiler := compiler{}
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) *RuleResponse {
-			compilers := compilers
-			if r.policy.Spec.Compiler != nil {
-				compilers = compilers.WithDefaultCompiler(string(*r.policy.Spec.Compiler))
-			}
-			compiled, err := ruleCompiler.compileRule(nil, compilers, r.rule)
+			ruleCompiler := compiler{}
+			compiled, err := ruleCompiler.compileRule(r.path, r.compilers, r.rule)
 			if err != nil {
 				return &RuleResponse{
 					Rule:      r.rule,
@@ -47,13 +45,20 @@ func New() engine.Engine[Request, Response] {
 			response := PolicyResponse{
 				Policy: r.policy,
 			}
+			path := field.NewPath("spec", "rules")
+			compilers := compilers.DefaultCompilers.WithDefaultCompiler(compilers.CompilerJP)
+			if r.policy.Spec.Compiler != nil {
+				compilers = compilers.WithDefaultCompiler(string(*r.policy.Spec.Compiler))
+			}
 			bindings := r.bindings.Register("$policy", binding.NewBinding(r.policy))
-			for _, rule := range r.policy.Spec.Rules {
+			for i, rule := range r.policy.Spec.Rules {
 				if ruleResponse := ruleEngine.Run(ctx, ruleRequest{
-					policy:   r.policy,
-					rule:     rule,
-					resource: r.resource,
-					bindings: bindings.Register("$rule", binding.NewBinding(rule)),
+					compilers: compilers,
+					path:      path.Index(i),
+					policy:    r.policy,
+					rule:      rule,
+					resource:  r.resource,
+					bindings:  bindings.Register("$rule", binding.NewBinding(rule)),
 				}); ruleResponse != nil {
 					response.Rules = append(response.Rules, *ruleResponse)
 				}
