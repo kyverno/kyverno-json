@@ -28,8 +28,7 @@ func New() engine.Engine[Request, Response] {
 	}
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) *RuleResponse {
-			ruleCompiler := compiler{}
-			compiled, err := ruleCompiler.compileRule(r.path, r.compilers, r.rule)
+			compiled, err := CompileRule(r.path, r.compilers, r.rule)
 			if err != nil {
 				return &RuleResponse{
 					Rule:      r.rule,
