@@ -11,9 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
-type compiler struct{}
-
-func (c *compiler) compileContextEntry(
+func CompileContextEntry(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.ContextEntry,
@@ -41,14 +39,14 @@ func (c *compiler) compileContextEntry(
 	}, nil
 }
 
-func (c *compiler) compileContextEntries(
+func CompileContextEntries(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.ContextEntry,
 ) (func(any, binding.Bindings) binding.Bindings, *field.Error) {
 	var out []func(any, binding.Bindings) binding.Bindings
 	for i, entry := range in {
-		entry, err := c.compileContextEntry(path.Index(i), compilers, entry)
+		entry, err := CompileContextEntry(path.Index(i), compilers, entry)
 		if err != nil {
 			return nil, err
 		}
@@ -62,7 +60,7 @@ func (c *compiler) compileContextEntries(
 	}, nil
 }
 
-func (c *compiler) compileMatch(
+func CompileMatch(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in *v1alpha1.Match,
@@ -76,11 +74,11 @@ func (c *compiler) compileMatch(
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	_any, err := c.compileAssertionTrees(path.Child("any"), compilers, in.Any...)
+	_any, err := CompileAssertionTrees(path.Child("any"), compilers, in.Any...)
 	if err != nil {
 		return nil, err
 	}
-	_all, err := c.compileAssertionTrees(path.Child("all"), compilers, in.All...)
+	_all, err := CompileAssertionTrees(path.Child("all"), compilers, in.All...)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +105,7 @@ func (c *compiler) compileMatch(
 	}, nil
 }
 
-func (c *compiler) compileAssert(
+func CompileAssert(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.Assert,
@@ -118,11 +116,11 @@ func (c *compiler) compileAssert(
 	if len(in.Any) == 0 && len(in.All) == 0 {
 		return nil, field.Invalid(path, in, "an empty assert is not valid")
 	}
-	_any, err := c.compileAssertions(path.Child("any"), compilers, in.Any...)
+	_any, err := CompileAssertions(path.Child("any"), compilers, in.Any...)
 	if err != nil {
 		return nil, err
 	}
-	_all, err := c.compileAssertions(path.Child("all"), compilers, in.All...)
+	_all, err := CompileAssertions(path.Child("all"), compilers, in.All...)
 	if err != nil {
 		return nil, err
 	}
@@ -161,14 +159,14 @@ func (c *compiler) compileAssert(
 	}, nil
 }
 
-func (c *compiler) compileAssertions(
+func CompileAssertions(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.Assertion,
 ) ([]func(any, binding.Bindings) (Result, error), *field.Error) {
 	var out []func(any, binding.Bindings) (Result, error)
 	for i, in := range in {
-		if in, err := c.compileAssertion(path.Index(i), compilers, in); err != nil {
+		if in, err := CompileAssertion(path.Index(i), compilers, in); err != nil {
 			return nil, err
 		} else {
 			out = append(out, in)
@@ -177,7 +175,7 @@ func (c *compiler) compileAssertions(
 	return out, nil
 }
 
-func (c *compiler) compileAssertion(
+func CompileAssertion(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.Assertion,
@@ -185,7 +183,7 @@ func (c *compiler) compileAssertion(
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	check, err := c.compileAssertionTree(path.Child("check"), compilers, in.Check)
+	check, err := CompileAssertionTree(path.Child("check"), compilers, in.Check)
 	if err != nil {
 		return nil, err
 	}
@@ -204,14 +202,14 @@ func (c *compiler) compileAssertion(
 	}, nil
 }
 
-func (c *compiler) compileAssertionTrees(
+func CompileAssertionTrees(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.AssertionTree,
 ) ([]func(any, binding.Bindings) (field.ErrorList, error), *field.Error) {
 	var out []func(any, binding.Bindings) (field.ErrorList, error)
 	for i, in := range in {
-		if in, err := c.compileAssertionTree(path.Index(i), compilers, in); err != nil {
+		if in, err := CompileAssertionTree(path.Index(i), compilers, in); err != nil {
 			return nil, err
 		} else {
 			out = append(out, in)
@@ -220,7 +218,7 @@ func (c *compiler) compileAssertionTrees(
 	return out, nil
 }
 
-func (c *compiler) compileAssertionTree(
+func CompileAssertionTree(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.AssertionTree,
@@ -234,7 +232,7 @@ func (c *compiler) compileAssertionTree(
 	}, nil
 }
 
-func (c *compiler) compileIdentifier(
+func CompileIdentifier(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in string,
@@ -258,7 +256,7 @@ func (c *compiler) compileIdentifier(
 	}, nil
 }
 
-func (c *compiler) compileFeedbacks(
+func CompileFeedbacks(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in ...v1alpha1.Feedback,
@@ -270,7 +268,7 @@ func (c *compiler) compileFeedbacks(
 	}
 	feedback := map[string]func(any, binding.Bindings) Feedback{}
 	for i, in := range in {
-		f, err := c.compileFeedback(path.Index(i), compilers, in)
+		f, err := CompileFeedback(path.Index(i), compilers, in)
 		if err != nil {
 			return nil, err
 		}
@@ -285,7 +283,7 @@ func (c *compiler) compileFeedbacks(
 	}, nil
 }
 
-func (c *compiler) compileFeedback(
+func CompileFeedback(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.Feedback,
@@ -308,7 +306,7 @@ func (c *compiler) compileFeedback(
 	}, nil
 }
 
-func (c *compiler) compileRule(
+func CompileRule(
 	path *field.Path,
 	compilers compilers.Compilers,
 	in v1alpha1.ValidatingRule,
@@ -316,27 +314,27 @@ func (c *compiler) compileRule(
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	context, err := c.compileContextEntries(path.Child("context"), compilers, in.Context...)
+	context, err := CompileContextEntries(path.Child("context"), compilers, in.Context...)
 	if err != nil {
 		return nil, err
 	}
-	identifier, err := c.compileIdentifier(path.Child("identifier"), compilers, in.Identifier)
+	identifier, err := CompileIdentifier(path.Child("identifier"), compilers, in.Identifier)
 	if err != nil {
 		return nil, err
 	}
-	match, err := c.compileMatch(path.Child("match"), compilers, in.Match)
+	match, err := CompileMatch(path.Child("match"), compilers, in.Match)
 	if err != nil {
 		return nil, err
 	}
-	exclude, err := c.compileMatch(path.Child("exclude"), compilers, in.Exclude)
+	exclude, err := CompileMatch(path.Child("exclude"), compilers, in.Exclude)
 	if err != nil {
 		return nil, err
 	}
-	feedback, err := c.compileFeedbacks(path.Child("feedback"), compilers, in.Feedback...)
+	feedback, err := CompileFeedbacks(path.Child("feedback"), compilers, in.Feedback...)
 	if err != nil {
 		return nil, err
 	}
-	assert, err := c.compileAssert(path.Child("assert"), compilers, in.Assert)
+	assert, err := CompileAssert(path.Child("assert"), compilers, in.Assert)
 	if err != nil {
 		return nil, err
 	}
