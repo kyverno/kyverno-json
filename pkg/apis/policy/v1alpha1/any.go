@@ -22,6 +22,10 @@ func NewAny(value any) Any {
 	}
 }
 
+func (t *Any) IsNil() bool {
+	return t._value == nil
+}
+
 func (t *Any) Compile(path *field.Path, compilers compilers.Compilers) (projection.ScalarHandler, *field.Error) {
 	return projection.ParseScalar(path, t._value, compilers)
 }

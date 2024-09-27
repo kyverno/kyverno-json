@@ -22,6 +22,10 @@ func NewAssertionTree(value any) AssertionTree {
 	}
 }
 
+func (t *AssertionTree) IsNil() bool {
+	return t._tree == nil
+}
+
 func (t *AssertionTree) Compile(path *field.Path, compilers compilers.Compilers) (assertion.Assertion, *field.Error) {
 	return assertion.Parse(path, t._tree, compilers)
 }
