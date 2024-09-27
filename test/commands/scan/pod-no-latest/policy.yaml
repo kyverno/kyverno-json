@@ -18,7 +18,7 @@ spec:
         - check:
             spec:
               ~foo.containers->foos:
-                (at($foos, $foo).image)->foo:
+                (at($foos, to_number($foo)).image)->foo:
                   # an image tag is required
                   (contains($foo, ':')): true
                   # using a mutable image tag e.g. 'latest' is not allowed

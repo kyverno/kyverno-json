@@ -50,7 +50,7 @@
 
 | Name | Signature |
 |---|---|
-| at | `at(array, any)` |
+| at | `at(array, number)` |
 | concat | `concat(string, string)` |
 | json_parse | `json_parse(string)` |
 | wildcard | `wildcard(string, string)` |

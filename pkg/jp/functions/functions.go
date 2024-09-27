@@ -9,29 +9,32 @@ func GetFunctions() []functions.FunctionEntry {
 		Name: "at",
 		Arguments: []functions.ArgSpec{
 			{Types: []functions.JpType{functions.JpArray}},
-			// TODO: we should introduce a JpInteger type
-			{Types: []functions.JpType{functions.JpAny}},
+			{Types: []functions.JpType{functions.JpNumber}},
 		},
-		Handler: jpfAt,
+		Handler:     jpfAt,
+		Description: "Returns the element in an array at the given index.",
 	}, {
 		Name: "concat",
 		Arguments: []functions.ArgSpec{
 			{Types: []functions.JpType{functions.JpString}},
 			{Types: []functions.JpType{functions.JpString}},
 		},
-		Handler: jpfConcat,
+		Handler:     jpfConcat,
+		Description: "Concatenates two strings together and returns the result.",
 	}, {
 		Name: "json_parse",
 		Arguments: []functions.ArgSpec{
 			{Types: []functions.JpType{functions.JpString}},
 		},
-		Handler: jpfJsonParse,
+		Handler:     jpfJsonParse,
+		Description: "Parses a given JSON string into an object.",
 	}, {
 		Name: "wildcard",
 		Arguments: []functions.ArgSpec{
 			{Types: []functions.JpType{functions.JpString}},
 			{Types: []functions.JpType{functions.JpString}},
 		},
-		Handler: jpfWildcard,
+		Handler:     jpfWildcard,
+		Description: "Compares a wildcard pattern with a given string and returns if they match or not.",
 	}}
 }

@@ -4,9 +4,9 @@ Pre processing ...
 Running ( evaluating 1 resource against 1 policy ) ...
 - FAILED (POLICY=test, RULE=pod-no-latest, ID=webserver)
  -> (CHECK=spec.rules[0].assert.all[0])
-  -> Invalid value: true: Expected value: false (PATH=spec.~foo.containers->foos[0].(at($foos, $foo).image)->foo.(ends_with($foo, $tag)))
-  -> Invalid value: true: Expected value: false (PATH=spec.~foo.containers->foos[1].(at($foos, $foo).image)->foo.(ends_with($foo, $tag)))
-  -> Invalid value: true: Expected value: false (PATH=spec.~foo.containers->foos[2].(at($foos, $foo).image)->foo.(ends_with($foo, $tag)))
+  -> Invalid value: true: Expected value: false (PATH=spec.~foo.containers->foos[0].(at($foos, to_number($foo)).image)->foo.(ends_with($foo, $tag)))
+  -> Invalid value: true: Expected value: false (PATH=spec.~foo.containers->foos[1].(at($foos, to_number($foo)).image)->foo.(ends_with($foo, $tag)))
+  -> Invalid value: true: Expected value: false (PATH=spec.~foo.containers->foos[2].(at($foos, to_number($foo)).image)->foo.(ends_with($foo, $tag)))
  -> (CHECK=spec.rules[0].assert.all[1])
   -> Invalid value: true: Expected value: false (PATH=spec.~.containers->foo[0].image.(ends_with(@, ':latest')))
   -> Invalid value: true: Expected value: false (PATH=spec.~.containers->foo[1].image.(ends_with(@, ':latest')))
