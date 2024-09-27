@@ -3,6 +3,7 @@ package v1alpha1
 import (
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"github.com/kyverno/kyverno-json/pkg/core/projection"
+	"github.com/kyverno/kyverno-json/pkg/utils/copy"
 	"k8s.io/apimachinery/pkg/util/json"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -40,7 +41,7 @@ func (a *Any) UnmarshalJSON(data []byte) error {
 }
 
 func (in *Any) DeepCopyInto(out *Any) {
-	out._value = deepCopy(in._value)
+	out._value = copy.DeepCopy(in._value)
 }
 
 func (in *Any) DeepCopy() *Any {

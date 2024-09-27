@@ -1,10 +1,10 @@
-package v1alpha1
+package copy
 
 import (
 	"fmt"
 )
 
-func deepCopy(in any) any {
+func DeepCopy(in any) any {
 	if in == nil {
 		return nil
 	}
@@ -26,13 +26,13 @@ func deepCopy(in any) any {
 	case []any:
 		var out []any
 		for _, in := range in {
-			out = append(out, deepCopy(in))
+			out = append(out, DeepCopy(in))
 		}
 		return out
 	case map[string]any:
 		out := map[string]any{}
 		for k, in := range in {
-			out[k] = deepCopy(in)
+			out[k] = DeepCopy(in)
 		}
 		return out
 	}
