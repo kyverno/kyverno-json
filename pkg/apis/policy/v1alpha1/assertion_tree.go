@@ -42,3 +42,12 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 func (in *AssertionTree) DeepCopyInto(out *AssertionTree) {
 	out._tree = deepCopy(in._tree)
 }
+
+func (in *AssertionTree) DeepCopy() *AssertionTree {
+	if in == nil {
+		return nil
+	}
+	out := new(AssertionTree)
+	in.DeepCopyInto(out)
+	return out
+}
