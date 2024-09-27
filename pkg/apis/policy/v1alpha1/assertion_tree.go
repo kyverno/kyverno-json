@@ -3,6 +3,7 @@ package v1alpha1
 import (
 	"github.com/kyverno/kyverno-json/pkg/core/assertion"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
+	"github.com/kyverno/kyverno-json/pkg/utils/copy"
 	"k8s.io/apimachinery/pkg/util/json"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
@@ -40,7 +41,7 @@ func (a *AssertionTree) UnmarshalJSON(data []byte) error {
 }
 
 func (in *AssertionTree) DeepCopyInto(out *AssertionTree) {
-	out._tree = deepCopy(in._tree)
+	out._tree = copy.DeepCopy(in._tree)
 }
 
 func (in *AssertionTree) DeepCopy() *AssertionTree {
