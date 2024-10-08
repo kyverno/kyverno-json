@@ -6,12 +6,13 @@ import (
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
 	"github.com/google/cel-go/common/types/ref"
+	"github.com/google/cel-go/ext"
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 )
 
 var (
 	BindingsType = cel.OpaqueType("bindings")
-	DefaultEnv   = sync.OnceValues(func() (*cel.Env, error) {
+	BaseEnv      = sync.OnceValues(func() (*cel.Env, error) {
 		return cel.NewEnv(
 			cel.Variable("object", cel.DynType),
 			cel.Variable("bindings", BindingsType),
@@ -37,5 +38,22 @@ var (
 				),
 			),
 		)
+	})
+	DefaultEnv = sync.OnceValues(func() (*cel.Env, error) {
+		if env, err := BaseEnv(); err != nil {
+			return nil, err
+		} else if env, err := env.Extend(
+			cel.HomogeneousAggregateLiterals(),
+			cel.EagerlyValidateDeclarations(true),
+			cel.DefaultUTCTimeZone(true),
+			cel.CrossTypeNumericComparisons(true),
+			cel.OptionalTypes(),
+			ext.Strings(),
+			ext.Sets(),
+		); err != nil {
+			return nil, err
+		} else {
+			return env, nil
+		}
 	})
 )
