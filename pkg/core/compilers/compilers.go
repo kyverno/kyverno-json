@@ -13,7 +13,7 @@ const (
 
 var DefaultCompilers = Compilers{
 	Jp:  jp.NewCompiler(),
-	Cel: cel.NewCompiler(),
+	Cel: cel.NewCompiler(cel.DefaultEnv),
 }
 
 type Compilers struct {

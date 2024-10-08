@@ -11,14 +11,18 @@ type Compiler interface {
 	Compile(string) (Program, error)
 }
 
-type compiler struct{}
+type compiler struct {
+	env func() (*cel.Env, error)
+}
 
-func NewCompiler() *compiler {
-	return &compiler{}
+func NewCompiler(env func() (*cel.Env, error)) *compiler {
+	return &compiler{
+		env: env,
+	}
 }
 
 func (c *compiler) Compile(statement string) (Program, error) {
-	env, err := DefaultEnv()
+	env, err := c.env()
 	if err != nil {
 		return nil, err
 	}
