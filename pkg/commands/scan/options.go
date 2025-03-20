@@ -9,6 +9,7 @@ import (
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
+	"github.com/kyverno/kyverno-json/pkg/logging"
 	"github.com/kyverno/kyverno-json/pkg/payload"
 	"github.com/kyverno/kyverno-json/pkg/policy"
 	"github.com/kyverno/pkg/ext/output/pluralize"
@@ -26,20 +27,30 @@ type options struct {
 }
 
 func (c *options) run(cmd *cobra.Command, _ []string) error {
+	logger := logging.Default()
+	logger.Debug("Starting scan command")
+
 	out := newOutput(cmd.OutOrStdout(), c.output)
 	out.println("Loading policies ...")
+	logger.Debug("Loading policies", "paths", c.policies)
+
 	policies, err := policy.Load(c.policies...)
 	if err != nil {
+		logger.Error("Failed to load policies", "error", err)
 		return err
 	}
+
 	selector := labels.Everything()
 	if len(c.selectors) != 0 {
+		logger.Debug("Parsing label selectors", "selectors", c.selectors)
 		parsed, err := labels.Parse(strings.Join(c.selectors, ","))
 		if err != nil {
+			logger.Error("Failed to parse label selectors", "error", err)
 			return err
 		}
 		selector = parsed
 	}
+
 	{
 		var filteredPolicies []*v1alpha1.ValidatingPolicy
 		for _, policy := range policies {
@@ -48,12 +59,17 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 			}
 		}
 		policies = filteredPolicies
+		logger.Debug("Filtered policies based on labels", "count", len(policies))
 	}
+
 	var bindings map[string]any
 	if c.bindings != "" {
 		out.println("Loading bindings ...")
+		logger.Debug("Loading bindings", "path", c.bindings)
+
 		payload, err := payload.Load(c.bindings)
 		if err != nil {
+			logger.Error("Failed to load bindings", "error", err)
 			return err
 		}
 		if payload != nil {
@@ -61,78 +77,95 @@ func (c *options) run(cmd *cobra.Command, _ []string) error {
 				bindings = m
 				for key, value := range bindings {
 					out.println("-", key, "->", value)
+					logger.Debug("Binding", "key", key, "value", value)
 				}
 			} else {
+				logger.Error("Bindings are not a map[string]any object")
 				return errors.New("bindings are not a map[string]any object")
 			}
 		}
 	}
+
 	out.println("Loading payload ...")
+	logger.Debug("Loading payload", "path", c.payload)
+
 	payload, err := payload.Load(c.payload)
 	if err != nil {
+		logger.Error("Failed to load payload", "error", err)
 		return err
 	}
 	if payload == nil {
+		logger.Error("Payload is `null`")
 		return errors.New("payload is `null`")
 	}
+
 	out.println("Pre processing ...")
+	logger.Debug("Pre-processing payload", "preprocessors", c.preprocessors)
+
 	for _, preprocessor := range c.preprocessors {
+		logger.Debug("Executing preprocessor", "preprocessor", preprocessor)
 		result, err := compilers.Execute(preprocessor, payload, nil, compilers.DefaultCompilers.Jp)
 		if err != nil {
+			logger.Error("Failed to execute preprocessor", "preprocessor", preprocessor, "error", err)
 			return err
 		}
 		if result == nil {
+			logger.Error("Preprocessor resulted in `null` payload", "preprocessor", preprocessor)
 			return fmt.Errorf("prepocessor resulted in `null` payload (%s)", preprocessor)
 		}
 		payload = result
 	}
+
 	var resources []any
 	if slice, ok := payload.([]any); ok {
 		resources = slice
 	} else {
 		resources = append(resources, payload)
 	}
+
 	out.println("Running", "(", "evaluating", len(resources), pluralize.Pluralize(len(resources), "resource", "resources"), "against", len(policies), pluralize.Pluralize(len(policies), "policy", "policies"), ")", "...")
+	logger.Info("Evaluating resources", "resourceCount", len(resources), "policyCount", len(policies))
+
 	e := jsonengine.New()
 	var responses []jsonengine.Response
-	for _, resource := range resources {
+	for i, resource := range resources {
+		logger.Debug("Evaluating resource", "index", i)
 		responses = append(responses, e.Run(context.Background(), jsonengine.Request{
 			Resource: resource,
 			Policies: policies,
 			Bindings: bindings,
 		}))
 	}
+
 	for _, response := range responses {
 		for _, policy := range response.Policies {
 			for _, rule := range policy.Rules {
 				status := "PASSED"
 				if rule.Error != nil {
 					status = fmt.Sprintf("ERROR: %s", rule.Error.Error())
+					logger.Error("Rule evaluation error", "policy", policy.Policy.Name, "rule", rule.Rule.Name, "id", rule.Identifier, "error", rule.Error)
 				} else if len(rule.Violations) != 0 {
 					status = "FAILED"
+					logger.Warn("Rule violations found", "policy", policy.Policy.Name, "rule", rule.Rule.Name, "id", rule.Identifier, "violationCount", len(rule.Violations))
+				} else {
+					logger.Debug("Rule passed", "policy", policy.Policy.Name, "rule", rule.Rule.Name, "id", rule.Identifier)
 				}
+
 				if rule.Identifier != "" {
 					out.println(fmt.Sprintf("- %s (POLICY=%s, RULE=%s, ID=%s)", status, policy.Policy.Name, rule.Rule.Name, rule.Identifier))
 				} else {
 					out.println(fmt.Sprintf("- %s (POLICY=%s, RULE=%s)", status, policy.Policy.Name, rule.Rule.Name))
 				}
+
 				if len(rule.Violations) != 0 {
 					out.println(rule.Violations.Error(" "))
 				}
-
-				// if rule.Error != nil {
-				// 	out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "ERROR:", rule.Error.Error())
-				// } else if len(rule.Violations) != 0 {
-				// 	out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "FAILED")
-				// 	out.println(rule.Violations.Error())
-				// } else {
-				// 	// TODO: handle skip, warn
-				// 	out.println("-", policy.Policy.Name, "/", rule.Rule.Name, "/", rule.Identifier, "PASSED")
-				// }
 			}
 		}
 	}
+
 	out.responses(responses...)
 	out.println("Done")
+	logger.Debug("Scan command completed")
 	return nil
 }
