@@ -439,6 +439,27 @@
                     "compiler": {
                       "description": "Compiler defines the default compiler to use when evaluating expressions.",
                       "type": [
+                    "configMap": {
+                      "description": "ConfigMap allows referencing a ConfigMap as data source.",
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "required": [
+                        "name",
+                        "namespace"
+                      ],
+                      "properties": {
+                        "name": {
+                          "description": "Name is the ConfigMap name.",
+                          "type": "string"
+                        },
+                        "namespace": {
+                          "description": "Namespace is the ConfigMap namespace.",
+                          "type": "string"
+                        }
+                      }
+                    },
                         "string",
                         "null"
                       ],

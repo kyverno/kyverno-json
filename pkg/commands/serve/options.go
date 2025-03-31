@@ -8,11 +8,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/kyverno/kyverno-json/pkg/client/clientset/versioned"
+	"github.com/kyverno/kyverno-json/pkg/client/configmap"
+	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/server"
 	"github.com/kyverno/kyverno-json/pkg/server/scan"
 	restutils "github.com/kyverno/kyverno-json/pkg/utils/rest"
 	"github.com/loopfz/gadgeto/tonic"
 	"github.com/spf13/cobra"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
@@ -51,6 +54,18 @@ func (c *options) Run(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
+
+	// Initialize Kubernetes clientset
+	k8sClientset, err := kubernetes.NewForConfig(restConfig)
+	if err != nil {
+		return err
+	}
+
+	// Initialize ConfigMap client and set it in the JSONEngine
+	configMapClient := configmap.NewClient(k8sClientset)
+	jsonengine.SetConfigMapClient(configMapClient)
+
+	// Initialize Kyverno JSON clientset
 	client, err := versioned.NewForConfig(restConfig)
 	if err != nil {
 		return err

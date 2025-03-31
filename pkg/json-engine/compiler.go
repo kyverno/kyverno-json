@@ -1,15 +1,25 @@
 package jsonengine
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
 
 	"github.com/jmespath-community/go-jmespath/pkg/binding"
 	"github.com/kyverno/kyverno-json/pkg/apis/policy/v1alpha1"
+	"github.com/kyverno/kyverno-json/pkg/client/configmap"
 	"github.com/kyverno/kyverno-json/pkg/core/compilers"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
+
+// configMapClient is the client used to retrieve ConfigMaps
+var configMapClient configmap.Client
+
+// SetConfigMapClient sets the ConfigMap client
+func SetConfigMapClient(client configmap.Client) {
+	configMapClient = client
+}
 
 func CompileContextEntry(
 	path *field.Path,
@@ -19,24 +29,97 @@ func CompileContextEntry(
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	handler, err := in.Variable.Compile(path.Child("variable"), compilers)
-	if err != nil {
-		return nil, err
+
+	// Handle ConfigMap references
+	if in.ConfigMap != nil {
+		if configMapClient == nil {
+			return nil, field.Invalid(path.Child("configMap"), in.ConfigMap, "ConfigMap client not initialized")
+		}
+
+		return func(resource any, bindings binding.Bindings) binding.Bindings {
+			binding := binding.NewDelegate(
+				sync.OnceValues(
+					func() (any, error) {
+						// Fetch the ConfigMap
+						configMap, err := configMapClient.Get(
+							context.Background(),
+							in.ConfigMap.Name,
+							in.ConfigMap.Namespace,
+						)
+						if err != nil {
+							return nil, field.InternalError(path.Child("configMap"), err)
+						}
+
+						// Convert to a map that includes .data and .metadata
+						result := map[string]interface{}{
+							"metadata": map[string]interface{}{
+								"name":      configMap.Name,
+								"namespace": configMap.Namespace,
+							},
+							"data": toMap(configMap.Data),
+						}
+
+						// Include binary data if available
+						if len(configMap.BinaryData) > 0 {
+							result["binaryData"] = toMapBinary(configMap.BinaryData)
+						}
+
+						return result, nil
+					},
+				),
+			)
+			return bindings.Register("$"+in.Name, binding)
+		}, nil
 	}
-	return func(resource any, bindings binding.Bindings) binding.Bindings {
-		binding := binding.NewDelegate(
-			sync.OnceValues(
-				func() (any, error) {
-					projected, err := handler(resource, bindings)
-					if err != nil {
-						return nil, field.InternalError(path.Child("variable"), err)
-					}
-					return projected, nil
-				},
-			),
-		)
-		return bindings.Register("$"+in.Name, binding)
-	}, nil
+
+	// Handle variable as before
+	if !in.Variable.IsNil() {
+		handler, err := in.Variable.Compile(path.Child("variable"), compilers)
+		if err != nil {
+			return nil, err
+		}
+		return func(resource any, bindings binding.Bindings) binding.Bindings {
+			binding := binding.NewDelegate(
+				sync.OnceValues(
+					func() (any, error) {
+						projected, err := handler(resource, bindings)
+						if err != nil {
+							return nil, field.InternalError(path.Child("variable"), err)
+						}
+						return projected, nil
+					},
+				),
+			)
+			return bindings.Register("$"+in.Name, binding)
+		}, nil
+	}
+
+	// If neither ConfigMap nor Variable is set, return an error
+	return nil, field.Invalid(path, in, "either variable or configMap must be specified")
+}
+
+// toMap converts a map[string]string to map[string]interface{}
+func toMap(in map[string]string) map[string]interface{} {
+	if in == nil {
+		return nil
+	}
+	out := make(map[string]interface{}, len(in))
+	for k, v := range in {
+		out[k] = v
+	}
+	return out
+}
+
+// toMap converts a map[string][]byte to map[string]interface{}
+func toMapBinary(in map[string][]byte) map[string]interface{} {
+	if in == nil {
+		return nil
+	}
+	out := make(map[string]interface{}, len(in))
+	for k, v := range in {
+		out[k] = v
+	}
+	return out
 }
 
 func CompileContextEntries(

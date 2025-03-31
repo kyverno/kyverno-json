@@ -1,0 +1,16 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: test-configmap
+spec:
+  rules:
+    - name: check-value-from-configmap
+      context:
+      - name: appConfig
+        configMap:
+          name: app-config
+          namespace: default
+      assert:
+        all:
+        - check:
+            app.environment: "{{ appConfig.data.environment }}" 

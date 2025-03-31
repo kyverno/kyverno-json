@@ -1,0 +1,11 @@
+{
+  "app": {
+    "name": "my-app",
+    "environment": "production",
+    "version": "1.0.0"
+  },
+  "user": {
+    "id": "12345",
+    "role": "admin"
+  }
+} 

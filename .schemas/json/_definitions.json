@@ -17753,6 +17753,24 @@
                             "cel"
                           ]
                         },
+                        "configMap": {
+                          "description": "ConfigMap allows referencing a ConfigMap as data source.",
+                          "type": "object",
+                          "required": [
+                            "name",
+                            "namespace"
+                          ],
+                          "properties": {
+                            "name": {
+                              "description": "Name is the ConfigMap name.",
+                              "type": "string"
+                            },
+                            "namespace": {
+                              "description": "Namespace is the ConfigMap namespace.",
+                              "type": "string"
+                            }
+                          }
+                        },
                         "name": {
                           "description": "Name is the entry name.",
                           "type": "string"

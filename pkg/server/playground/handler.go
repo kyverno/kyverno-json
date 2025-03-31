@@ -12,8 +12,39 @@ import (
 	jsonengine "github.com/kyverno/kyverno-json/pkg/json-engine"
 	"github.com/kyverno/kyverno-json/pkg/server/model"
 	"github.com/loopfz/gadgeto/tonic"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 )
+
+// Initialize a mock ConfigMapClient when the playground handler is created
+func init() {
+	// Use a mock implementation of the ConfigMapClient for playground
+	// This way users can test policies that use ConfigMap references in the playground
+	// without needing a real Kubernetes cluster
+	jsonengine.SetConfigMapClient(&mockConfigMapClient{})
+}
+
+// mockConfigMapClient is a simple implementation of the ConfigMapClient interface
+// that returns a predefined response for playground use
+type mockConfigMapClient struct{}
+
+// Get returns a mock ConfigMap for playground use
+func (m *mockConfigMapClient) Get(ctx context.Context, name, namespace string) (*v1.ConfigMap, error) {
+	// For playground purposes, return a mock ConfigMap with some sample data
+	// This allows testing policies with ConfigMap references
+	return &v1.ConfigMap{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+		},
+		Data: map[string]string{
+			"key1":      "value1",
+			"key2":      "value2",
+			"allowList": "item1,item2,item3",
+		},
+	}, nil
+}
 
 func newHandler() (gin.HandlerFunc, error) {
 	return tonic.Handler(func(ctx *gin.Context, in *Request) (*model.Response, error) {
