@@ -2,6 +2,7 @@ package serve
 
 import (
 	"context"
+	"fmt"
 	"os/signal"
 	"syscall"
 	"time"
@@ -25,6 +26,7 @@ type options struct {
 type serverFlags struct {
 	host string
 	port int
+	policyDir string
 }
 
 type ginFlags struct {
@@ -47,19 +49,31 @@ func (c *options) Run(_ *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	restConfig, err := restutils.Config(c.clusterFlags.kubeConfigOverrides)
-	if err != nil {
-		return err
-	}
-	client, err := versioned.NewForConfig(restConfig)
-	if err != nil {
-		return err
-	}
-	provider := &provider{
-		client: client,
+
+	// determine provider
+	var prov scan.PolicyProvider
+
+	if c.serverFlags.policyDir != "" {
+		policies, err := LoadPoliciesFromDir(c.serverFlags.policyDir)
+		if err != nil {
+			return fmt.Errorf("failed to load policies: %w", err)
+		}
+		prov = PolicylocalProvider(policies)
+	} else {
+		restConfig, err := restutils.Config(c.clusterFlags.kubeConfigOverrides)
+		if err != nil {
+			return fmt.Errorf("failed to get rest config: %w", err)
+		}
+		client, err := versioned.NewForConfig(restConfig)
+		if err != nil {
+			return fmt.Errorf("failed to create client: %w", err)
+		}
+		prov = &kubeProvider{
+			client: client,
+		}
 	}
 	// register api routes
-	if err := scan.AddRoutes(router.Group(server.ApiPrefix), provider); err != nil {
+	if err := scan.AddRoutes(router.Group(server.ApiPrefix), prov); err != nil {
 		return err
 	}
 	// run server
