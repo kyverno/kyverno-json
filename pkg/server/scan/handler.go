@@ -16,6 +16,8 @@ import (
 
 func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 	return tonic.Handler(func(ctx *gin.Context, in *Request) (*model.Response, error) {
+		policyName := ctx.Param("policy_name")
+
 		// check input
 		if in == nil {
 			return nil, errors.New("input is null")
@@ -49,7 +51,14 @@ func newHandler(policyProvider PolicyProvider) (gin.HandlerFunc, error) {
 		}
 		var pols []*v1alpha1.ValidatingPolicy
 		for i := range policies {
+			if policyName != "" && policies[i].Name != policyName {
+				continue
+			}
 			pols = append(pols, &policies[i])
+		}
+
+		if len(pols) == 0 {
+			return nil, fmt.Errorf("no policies found")
 		}
 		// run engine
 		e := jsonengine.New()
