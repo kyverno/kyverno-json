@@ -12,6 +12,7 @@ func AddRoutes(group *gin.RouterGroup, policyProvider PolicyProvider) error {
 		return err
 	}
 	group.POST("/scan", handler)
+	group.POST("/scan/:policy_name", handler)
 	log.Default().Printf("configured route %s/%s", group.BasePath(), "scan")
 	return nil
 }

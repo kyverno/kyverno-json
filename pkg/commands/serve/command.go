@@ -19,6 +19,7 @@ func Command(parents ...string) *cobra.Command {
 	// server flags
 	cmd.Flags().StringVar(&command.serverFlags.host, "server-host", "0.0.0.0", "server host")
 	cmd.Flags().IntVar(&command.serverFlags.port, "server-port", 8080, "server port")
+	cmd.Flags().StringVar(&command.serverFlags.policyDir, "policy-dir", "", "Directory containing Kyverno policies")
 	// gin flags
 	cmd.Flags().StringVar(&command.ginFlags.mode, "gin-mode", gin.ReleaseMode, "gin run mode")
 	cmd.Flags().BoolVar(&command.ginFlags.log, "gin-log", true, "enable gin logger")
