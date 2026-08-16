@@ -20,15 +20,17 @@ func New() engine.Engine[Request, Response] {
 		rule      v1alpha1.ValidatingRule
 		resource  any
 		bindings  binding.Bindings
+		K8sClient K8sClient
 	}
 	type policyRequest struct {
-		policy   v1alpha1.ValidatingPolicy
-		resource any
-		bindings binding.Bindings
+		policy    v1alpha1.ValidatingPolicy
+		resource  any
+		bindings  binding.Bindings
+		K8sClient K8sClient
 	}
 	ruleEngine := builder.
 		Function(func(ctx context.Context, r ruleRequest) *RuleResponse {
-			compiled, err := CompileRule(r.path, r.compilers, r.rule)
+			compiled, err := CompileRule(r.path, r.compilers, r.K8sClient, r.rule)
 			if err != nil {
 				return &RuleResponse{
 					Rule:      r.rule,
@@ -37,7 +39,7 @@ func New() engine.Engine[Request, Response] {
 				}
 			}
 			bindings := r.bindings.Register("$rule", binding.NewBinding(r.rule))
-			return compiled(r.resource, bindings)
+			return compiled(ctx, r.resource, bindings)
 		})
 	policyEngine := builder.
 		Function(func(ctx context.Context, r policyRequest) PolicyResponse {
@@ -58,6 +60,7 @@ func New() engine.Engine[Request, Response] {
 					rule:      rule,
 					resource:  r.resource,
 					bindings:  bindings.Register("$rule", binding.NewBinding(rule)),
+					K8sClient: r.K8sClient,
 				}); ruleResponse != nil {
 					response.Rules = append(response.Rules, *ruleResponse)
 				}
@@ -76,9 +79,10 @@ func New() engine.Engine[Request, Response] {
 			bindings = bindings.Register("$payload", binding.NewBinding(r.Resource))
 			for _, policy := range r.Policies {
 				response.Policies = append(response.Policies, policyEngine.Run(ctx, policyRequest{
-					policy:   *policy,
-					resource: r.Resource,
-					bindings: bindings,
+					policy:    *policy,
+					resource:  r.Resource,
+					bindings:  bindings,
+					K8sClient: r.K8sClient,
 				}))
 			}
 			return response

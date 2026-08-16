@@ -1,6 +1,7 @@
 package jsonengine
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -9,10 +10,16 @@ import (
 	"k8s.io/apimachinery/pkg/util/validation/field"
 )
 
+// K8sClient is an abstraction for executing Kubernetes API calls.
+type K8sClient interface {
+	DoRaw(ctx context.Context, method, path string, data []byte) ([]byte, error)
+}
+
 type Request struct {
-	Resource any
-	Policies []*v1alpha1.ValidatingPolicy
-	Bindings map[string]any
+	Resource  any
+	Policies  []*v1alpha1.ValidatingPolicy
+	Bindings  map[string]any
+	K8sClient K8sClient
 }
 
 type Response struct {
