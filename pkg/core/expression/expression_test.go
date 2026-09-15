@@ -167,6 +167,48 @@ func TestParse(t *testing.T) {
 			Statement:   "(test)",
 			Binding:     "name",
 		},
+	}, {
+		name: "cel, single binding shorthand",
+		in:   "(cel;$foo == 'bar')",
+		want: Expression{
+			Statement: "bindings.resolve('foo') == 'bar'",
+			Compiler:  CompilerCEL,
+		},
+	}, {
+		name: "cel, multiple binding shorthands",
+		in:   "(cel;$outputs_result.Namespaces.exists(ns, ns.ID==$namespace_id))",
+		want: Expression{
+			Statement: "bindings.resolve('outputs_result').Namespaces.exists(ns, ns.ID==bindings.resolve('namespace_id'))",
+			Compiler:  CompilerCEL,
+		},
+	}, {
+		name: "cel, dollar inside single-quoted string is untouched",
+		in:   "(cel;'cost: $5' == $price)",
+		want: Expression{
+			Statement: "'cost: $5' == bindings.resolve('price')",
+			Compiler:  CompilerCEL,
+		},
+	}, {
+		name: "cel, dollar inside double-quoted string is untouched",
+		in:   `(cel;"cost: $5" == $price)`,
+		want: Expression{
+			Statement: `"cost: $5" == bindings.resolve('price')`,
+			Compiler:  CompilerCEL,
+		},
+	}, {
+		name: "cel, already-explicit resolve call is left as-is",
+		in:   "(cel;bindings.resolve('foo') == 'bar')",
+		want: Expression{
+			Statement: "bindings.resolve('foo') == 'bar'",
+			Compiler:  CompilerCEL,
+		},
+	}, {
+		name: "jp, no shorthand rewrite outside cel",
+		in:   "(jp;$foo)",
+		want: Expression{
+			Statement: "$foo",
+			Compiler:  "jp",
+		},
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
