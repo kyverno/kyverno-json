@@ -2,6 +2,7 @@ package expression
 
 import (
 	"regexp"
+	"strings"
 )
 
 const (
@@ -11,10 +12,11 @@ const (
 )
 
 var (
-	foreachRegex  = regexp.MustCompile(`^~(\w+)?\.(.*)`)
-	bindingRegex  = regexp.MustCompile(`(.*)\s*->\s*(\w+)$`)
-	escapeRegex   = regexp.MustCompile(`^\\(.+)\\$`)
-	compilerRegex = regexp.MustCompile(`^\((?:(\w+);)?(.+)\)$`)
+	foreachRegex   = regexp.MustCompile(`^~(\w+)?\.(.*)`)
+	bindingRegex   = regexp.MustCompile(`(.*)\s*->\s*(\w+)$`)
+	escapeRegex    = regexp.MustCompile(`^\\(.+)\\$`)
+	compilerRegex  = regexp.MustCompile(`^\((?:(\w+);)?(.+)\)$`)
+	celBindingName = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_-]*`)
 )
 
 type Expression struct {
@@ -50,8 +52,57 @@ func Parse(in string) (expression Expression) {
 			in = match[2]
 		}
 	}
-	// 4. assign statement
+	// 4. for CEL statements, rewrite the `$name` shorthand into an explicit
+	// `bindings.resolve('name')` call so users don't have to spell that out
+	// themselves
+	if expression.Compiler == CompilerCEL {
+		in = celBindingShorthand(in)
+	}
+	// 5. assign statement
 	expression.Statement = in
-	// 5. done
+	// 6. done
 	return
+}
+
+// celBindingShorthand rewrites `$name` occurrences in a CEL statement into
+// `bindings.resolve('name')`, skipping anything inside a single- or
+// double-quoted string literal so a literal `$` in a string (e.g. "cost:
+// $5") is left untouched.
+func celBindingShorthand(in string) string {
+	var out strings.Builder
+	var quote rune
+	runes := []rune(in)
+	for i := 0; i < len(runes); i++ {
+		c := runes[i]
+		if quote != 0 {
+			out.WriteRune(c)
+			if c == '\\' && i+1 < len(runes) {
+				// preserve the escaped character verbatim so it can't
+				// prematurely close the string literal
+				i++
+				out.WriteRune(runes[i])
+				continue
+			}
+			if c == quote {
+				quote = 0
+			}
+			continue
+		}
+		if c == '\'' || c == '"' {
+			quote = c
+			out.WriteRune(c)
+			continue
+		}
+		if c == '$' {
+			if name := celBindingName.FindString(string(runes[i+1:])); name != "" {
+				out.WriteString("bindings.resolve('")
+				out.WriteString(name)
+				out.WriteString("')")
+				i += len(name)
+				continue
+			}
+		}
+		out.WriteRune(c)
+	}
+	return out.String()
 }
