@@ -58,7 +58,6 @@ metadata:
 spec:
   rules:
     - name: foo-bar-4
-      validate:
         assert:
           all:
           - message: "..."
