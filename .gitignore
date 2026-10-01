@@ -2,6 +2,7 @@
 .gopath/
 .tools/
 .venv/
+.idea/
 coverage.out
 dist/
 /kyverno-json
