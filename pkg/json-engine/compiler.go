@@ -1,6 +1,7 @@
 package jsonengine
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -14,16 +15,20 @@ import (
 func CompileContextEntry(
 	path *field.Path,
 	compilers compilers.Compilers,
+	client K8sClient,
 	in v1alpha1.ContextEntry,
-) (func(any, binding.Bindings) binding.Bindings, *field.Error) {
+) (func(context.Context, any, binding.Bindings) binding.Bindings, *field.Error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
+	}
+	if in.APICall != nil {
+		return compileAPICall(path.Child("apiCall"), compilers, client, in)
 	}
 	handler, err := in.Variable.Compile(path.Child("variable"), compilers)
 	if err != nil {
 		return nil, err
 	}
-	return func(resource any, bindings binding.Bindings) binding.Bindings {
+	return func(ctx context.Context, resource any, bindings binding.Bindings) binding.Bindings {
 		binding := binding.NewDelegate(
 			sync.OnceValues(
 				func() (any, error) {
@@ -42,19 +47,20 @@ func CompileContextEntry(
 func CompileContextEntries(
 	path *field.Path,
 	compilers compilers.Compilers,
+	client K8sClient,
 	in ...v1alpha1.ContextEntry,
-) (func(any, binding.Bindings) binding.Bindings, *field.Error) {
-	var out []func(any, binding.Bindings) binding.Bindings
+) (func(context.Context, any, binding.Bindings) binding.Bindings, *field.Error) {
+	var out []func(context.Context, any, binding.Bindings) binding.Bindings
 	for i, entry := range in {
-		entry, err := CompileContextEntry(path.Index(i), compilers, entry)
+		entry, err := CompileContextEntry(path.Index(i), compilers, client, entry)
 		if err != nil {
 			return nil, err
 		}
 		out = append(out, entry)
 	}
-	return func(resource any, bindings binding.Bindings) binding.Bindings {
+	return func(ctx context.Context, resource any, bindings binding.Bindings) binding.Bindings {
 		for _, entry := range out {
-			bindings = entry(resource, bindings)
+			bindings = entry(ctx, resource, bindings)
 		}
 		return bindings
 	}, nil
@@ -309,12 +315,13 @@ func CompileFeedback(
 func CompileRule(
 	path *field.Path,
 	compilers compilers.Compilers,
+	client K8sClient,
 	in v1alpha1.ValidatingRule,
-) (func(any, binding.Bindings) *RuleResponse, *field.Error) {
+) (func(context.Context, any, binding.Bindings) *RuleResponse, *field.Error) {
 	if in.Compiler != nil {
 		compilers = compilers.WithDefaultCompiler(string(*in.Compiler))
 	}
-	context, err := CompileContextEntries(path.Child("context"), compilers, in.Context...)
+	compiledContext, err := CompileContextEntries(path.Child("context"), compilers, client, in.Context...)
 	if err != nil {
 		return nil, err
 	}
@@ -338,9 +345,9 @@ func CompileRule(
 	if err != nil {
 		return nil, err
 	}
-	return func(resource any, bindings binding.Bindings) *RuleResponse {
+	return func(ctx context.Context, resource any, bindings binding.Bindings) *RuleResponse {
 		// register context bindings
-		bindings = context(resource, bindings)
+		bindings = compiledContext(ctx, resource, bindings)
 		// process match clause
 		if match != nil {
 			if errs, err := match(resource, bindings); err != nil {

@@ -124,6 +124,62 @@ spec:
                         description: ContextEntry adds variables and data sources
                           to a rule context.
                         properties:
+                          apiCall:
+                            description: APICall defines an HTTP or Kubernetes API
+                              call.
+                            properties:
+                              data:
+                                description: |-
+                                  The data object specifies the POST data sent to the server.
+                                  Only applicable when the method field is set to POST.
+                                items:
+                                  description: RequestData specifies POST data sent
+                                    to the server.
+                                  properties:
+                                    key:
+                                      description: Key is the form key.
+                                      type: string
+                                    value:
+                                      description: Value is the form value.
+                                      x-kubernetes-preserve-unknown-fields: true
+                                  required:
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              default:
+                                description: |-
+                                  Default is an optional arbitrary JSON object that the context
+                                  value is set to, if the apiCall returns an error.
+                                x-kubernetes-preserve-unknown-fields: true
+                              jmesPath:
+                                description: |-
+                                  JMESPath is an optional JSON Match Expression that can be used to
+                                  transform the JSON response returned from the server.
+                                type: string
+                              method:
+                                default: GET
+                                description: Method is the HTTP request type (GET
+                                  or POST). Defaults to GET.
+                                type: string
+                              service:
+                                description: |-
+                                  Service is an API call to a JSON web service.
+                                  This is used for non-Kubernetes API server calls.
+                                  It's mutually exclusive with the URLPath field.
+                                properties:
+                                  url:
+                                    description: URL is the JSON web service URL.
+                                    x-kubernetes-preserve-unknown-fields: true
+                                required:
+                                - url
+                                type: object
+                              urlPath:
+                                description: |-
+                                  URLPath is the URL path to be used in the HTTP GET or POST request to the
+                                  Kubernetes API server (e.g. "/api/v1/namespaces" or  "/apis/apps/v1/deployments").
+                                x-kubernetes-preserve-unknown-fields: true
+                            type: object
                           compiler:
                             description: Compiler defines the default compiler to
                               use when evaluating expressions.
